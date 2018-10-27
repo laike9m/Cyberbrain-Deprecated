@@ -1,10 +1,10 @@
 As the first step, we should build a prototype that is as simple as possible to test if the idea works. No import statement, no class, no fancy stuff, just global variables and functions.
 
 ```python
-def foo(input_var: int):
+def foo(input_var: int) -> int:
     return input_var + 1
 
-def bar(input_var: int):
+def bar(input_var: int) -> int:
     return input_var - 1
 
 def main():
@@ -16,7 +16,7 @@ if __name__ == `__main__`:
     main()
 ```
 
-Supposed we want to analyze `c`, expected output is something like:
+Suppose we want to analyze `c`, expected output is something like:
 
 ```
 a(value: 1)
