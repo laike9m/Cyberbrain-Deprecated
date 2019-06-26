@@ -20,7 +20,18 @@ from frame_id import FrameID
 computations = []
 # 每个 line event，从当前 frame 向上遍历到 global frame，记下所有 frame 的 locals
 class Computation:
-    def __init__(self, *, filepath, lineno, data, code_str, frame_id, event, last_i):
+    def __init__(
+        self,
+        *,
+        filepath,
+        lineno,
+        data,
+        code_str,
+        frame_id,
+        event,
+        last_i,
+        surrounding=None  # See utils.get_code_str_and_surrounding for its meaning.
+    ):
         self.filepath = filepath
         self.lineno = lineno
         self.data = data
@@ -28,15 +39,17 @@ class Computation:
         self.frame_id = frame_id
         self.event = event
         self.last_i = last_i
+        self.surrounding = surrounding
 
     def __str__(self):
         return (
-            'Computation(filepath: %s,\n'
-            '            lineno: %s\n'
-            '            code_str: %s\n'
-            '            frame_id: %s\n'
-            '            event: %s\n'
-            '            last_i: %s\n'
+            "Computation(filepath: %s,\n"
+            "            lineno: %s\n"
+            "            code_str: %s\n"
+            "            frame_id: %s\n"
+            "            event: %s\n"
+            "            last_i: %s\n"
+            "            surrounding: %s\n"
         ) % (
             self.filepath,
             red(self.lineno),
@@ -44,6 +57,7 @@ class Computation:
             self.frame_id,
             self.event,
             self.last_i,
+            self.surrounding,
         )
 
 
@@ -81,9 +95,9 @@ def global_tracer(frame, event, arg):
     """
     if utils.should_exclude(frame.f_code.co_filename):
         return
-    print('\nthis is global: ', frame, frame.f_code.co_filename, red(event), arg)
+    print("\nthis is global: ", frame, frame.f_code.co_filename, red(event), arg)
     # TODO: get function definition line. like def x()
-    if event == 'call':
+    if event == "call":
         f = sys._getframe(2)
 
         code_str = caller_ast.get_cache_callsite_code_str(f.f_code, f.f_lasti)
@@ -100,7 +114,7 @@ def global_tracer(frame, event, arg):
         # computation.
         if (
             computations
-            and computations[-1].event == 'line'
+            and computations[-1].event == "line"
             and computation.frame_id.is_child_of(computations[-1].frame_id)
         ):
             computations[-1] = computation
@@ -114,25 +128,33 @@ def local_tracer(frame, event, arg):
     """
     if utils.should_exclude(frame.f_code.co_filename):
         return
-    print('\nthis is local: ', frame, blue(event), arg)
+    print("\nthis is local: ", frame, blue(event), arg)
 
-    # TODO: deal with multiline
-    if event == 'line':
+    code_str, surrounding = utils.get_code_str_and_surrounding(frame)
+
+    if event == "line":
+        frame_id = FrameID.create(event)
+        # For multiline statement, skips if the logical line has been added.
+        if (
+            computations
+            and computations[-1].frame_id == frame_id
+            and computations[-1].surrounding == surrounding
+        ):
+            return
         # Records location, computation, data
         computations.append(
             Computation(
                 filepath=frame.f_code.co_filename,
                 lineno=frame.f_lineno,
                 data=traverse_frames(frame),
-                code_str=inspect.getsourcelines(frame)[0][
-                    utils.get_lineno_from_lnotab(frame.f_code.co_lnotab, frame.f_lasti)
-                ].rstrip(),
+                code_str=code_str.rstrip(),
                 event=event,
-                frame_id=FrameID.create(event),
+                frame_id=frame_id,
                 last_i=frame.f_lasti,
+                surrounding=surrounding,
             )
         )
-    elif event == 'return':
+    elif event == "return":
         # At this point we don't need to record return but needs to update frame id.
         frame_id = (FrameID.create(event),)
 
@@ -144,7 +166,7 @@ def init():
     global global_frame
 
     global_frame = sys._getframe(1)
-    print('set tracer for frame: ', global_frame, global_frame.f_lasti)
+    print("set tracer for frame: ", global_frame, global_frame.f_lasti)
     sys.settrace(global_tracer)
     global_frame.f_trace = local_tracer
 
