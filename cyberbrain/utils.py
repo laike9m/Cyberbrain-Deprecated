@@ -50,7 +50,6 @@ def _get_lineno_from_lnotab(co_lnotab: bytes, f_lasti: int) -> int:
         if addr > f_lasti:
             return lineno
         lineno += line_incr
-    print(red("lineno is "), lineno)
     return lineno  # Returns here if this is last line in that frame.
 
 
@@ -83,11 +82,11 @@ def get_code_str_and_surrounding(frame):
 
     The reason to record both code_str and surrounding is because code_str is not
     guaranteed to be unique, for example "a = true" appeared twice. While
-    (frame_id, surrounding) is distinct, therefore we can remove duplicate computations
-    if they have the same (frame_id, surrounding).
+    (frame_id, surrounding) is distinct, therefore we can detect duplicate computations
+    by checking their (frame_id, surrounding).
 
-    Note that lineno in lnotab starts at 0, while in tokens it starts at 1. When
-    returning, we are consistent with 0-based index.
+    Note that lineno in lnotab starts at 0, while in tokens it starts at 1. We keep
+    consistent with 0-based index.
     """
     lineno = _get_lineno_from_lnotab(frame.f_code.co_lnotab, frame.f_lasti)
     frame_source = inspect.getsource(frame)
@@ -112,10 +111,10 @@ def get_code_str_and_surrounding(frame):
         if start_lineno <= lineno + 1 <= end_lineno:
             break
     else:
-        # Reach end of groups
+        # Reachs end of groups
         group = next_group
 
-    # Remove leading NL and DEDENT as they cause untokenize to fail.
+    # Removes leading NL and DEDENT as they cause untokenize to fail.
     while group[0].type in {token.NL, token.DEDENT, token.INDENT}:
         group.pop(0)
     # When untokenizing, Python adds \\\n for absent lines(because lineno in

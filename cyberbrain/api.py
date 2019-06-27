@@ -8,13 +8,15 @@ import dis
 import copy
 from pprint import pprint
 from collections import namedtuple, defaultdict
+from pathlib import PurePath
 
 import uncompyle6
 from crayons import red, blue, green, yellow
 
-import caller_ast
-import utils
-from frame_id import FrameID
+from . import caller_ast
+from . import utils
+from .frame_id import FrameID
+from .debugging import dump_computations
 
 
 computations = []
@@ -41,24 +43,20 @@ class Computation:
         self.last_i = last_i
         self.surrounding = surrounding
 
+    def to_dict(self):
+        """Serializes attrs to dict."""
+        return {
+            "filepath": PurePath(self.filepath).name,
+            "lineno": self.lineno,
+            "code_str": self.code_str,
+            "frame_id": str(self.frame_id),
+            "event": self.event,
+            "last_i": self.last_i,
+            "surrounding": str(self.surrounding),
+        }
+
     def __str__(self):
-        return (
-            "Computation(filepath: %s,\n"
-            "            lineno: %s\n"
-            "            code_str: %s\n"
-            "            frame_id: %s\n"
-            "            event: %s\n"
-            "            last_i: %s\n"
-            "            surrounding: %s\n"
-        ) % (
-            self.filepath,
-            red(self.lineno),
-            self.code_str,
-            self.frame_id,
-            self.event,
-            self.last_i,
-            self.surrounding,
-        )
+        return str(self.to_dict())
 
 
 class NameVisitor(ast.NodeVisitor):
@@ -154,6 +152,7 @@ def local_tracer(frame, event, arg):
                 surrounding=surrounding,
             )
         )
+
     elif event == "return":
         # At this point we don't need to record return but needs to update frame id.
         frame_id = (FrameID.create(event),)
@@ -171,12 +170,11 @@ def init():
     global_frame.f_trace = local_tracer
 
 
-def register(target):
+def register(target, output_path=""):
     """Receives target variable and stops recording computation."""
     sys.settrace(None)
     global_frame.f_trace = None
-    for c in computations:
-        print(c)
+    dump_computations(computations, output_path=output_path)
 
 
 #

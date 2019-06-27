@@ -12,6 +12,8 @@ uncompyle6 = "^3.3"
 crayons = "^0.2.0"
 
 [tool.poetry.dev-dependencies]
+pytest = "^4.6"
+tox = "^3.13"
 
 [build-system]
 requires = ["poetry>=0.12"]
