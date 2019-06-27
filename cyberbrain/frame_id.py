@@ -1,6 +1,8 @@
 from collections import defaultdict
 import sys
 
+from crayons import red, blue, green, yellow
+
 
 class FrameID:
 
@@ -22,36 +24,33 @@ class FrameID:
     def add_child(self, child):
         self._children.append(child)
 
+    def child_index(self):
+        assert self.parent is not None
+        return self.parent._children.index(self)
+
     @classmethod
     def create(cls, event: str):
         if cls.current_frame_id_ is None:
             cls.current_frame_id_ = FrameID()
 
-        if event == 'line':
+        if event == "line":
             return cls.current_frame_id_
-        elif event == 'call':
+        elif event == "call":
             new_frame_id = FrameID(parent=cls.current_frame_id_)
             cls.current_frame_id_ = new_frame_id
             return new_frame_id
-        elif event == 'return':
+        elif event == "return":
             cls.current_frame_id_ = cls.current_frame_id_.parent
             return cls.current_frame_id_
         else:
-            raise AttributeError('event type wrong: ', event)
+            raise AttributeError("event type wrong: ", event)
 
-# def __str__(self):
-#     output = ''
-#     for child in self._children:
-#         assert self is not self._parent
-#         assert self is not child
-#         assert self._parent is not child
-#         output += '\n\tchild: %s' % repr(child)
-#     return output
-# def __str__(self):
-#     output = ''
-#     for child in self._children:
-#         assert self is not self._parent
-#         assert self is not child
-#         assert self._parent is not child
-#         output += '\n\tchild: %s' % repr(child)
-#     return output
+    def __str__(self):
+        """outputs (level, index), frame id whose parent is None is at level 0."""
+        level = 0
+        curr = self
+        while curr.parent is not None:
+            level += 1
+            curr = curr.parent
+        index = 0 if self.parent is None else self.child_index()
+        return str((level, index))
