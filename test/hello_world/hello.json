@@ -18,7 +18,7 @@
     "surrounding": "(1, 1)"
   },
   {
-    "code_str": "    cyberbrain.register(None, output_path=\"test/hello_world\")",
+    "code_str": "    cyberbrain.register(None)",
     "event": "line",
     "filepath": "hello.py",
     "frame_id": "(1, 0)",
