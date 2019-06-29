@@ -10,6 +10,7 @@ python = "^3.5"
 bytecode = "^0.8.0"
 uncompyle6 = "^3.3"
 crayons = "^0.2.0"
+tox-run-command = "^0.4.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^4.6"

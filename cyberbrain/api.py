@@ -170,11 +170,11 @@ def init():
     global_frame.f_trace = local_tracer
 
 
-def register(target, output_path=""):
+def register(target):
     """Receives target variable and stops recording computation."""
     sys.settrace(None)
     global_frame.f_trace = None
-    dump_computations(computations, output_path=output_path)
+    dump_computations(computations)
 
 
 #

@@ -1,0 +1,29 @@
+[
+  {
+    "code_str": "Call(func=Name(id='main', ctx=Load()), args=[], keywords=[])",
+    "event": "call",
+    "filepath": "multiline_statement.py",
+    "frame_id": "(1, 0)",
+    "last_i": -1,
+    "lineno": 4,
+    "surrounding": "None"
+  },
+  {
+    "code_str": "    y = {\n        \"longlonglonglong\": 1,\n        \"longlonglonglonglong\": 2,\n        \"longlonglonglonglonglong\": 3,\n    }",
+    "event": "line",
+    "filepath": "multiline_statement.py",
+    "frame_id": "(1, 0)",
+    "last_i": 0,
+    "lineno": 6,
+    "surrounding": "(1, 5)"
+  },
+  {
+    "code_str": "    cyberbrain.register(y)  # register has to be called after init",
+    "event": "line",
+    "filepath": "multiline_statement.py",
+    "frame_id": "(1, 0)",
+    "last_i": 12,
+    "lineno": 10,
+    "surrounding": "(6, 6)"
+  }
+]

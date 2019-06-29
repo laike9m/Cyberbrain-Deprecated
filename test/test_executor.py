@@ -1,14 +1,28 @@
 # Collect and run all test scripts.
 
 import os
-from subprocess import Popen
+from subprocess import Popen, PIPE
+
+import pytest
 
 
-def test_hello_world():
-    test_dir = "test/hello_world/"
-    test_output = os.path.join(test_dir, "output.json")
-    expected_output = os.path.join(test_dir, "expected.json")
-    Popen(["python", "test/hello_world/hello.py"]).wait()
-    with open(test_output, "r") as f1, open(expected_output, "r") as f2:
-        assert f1.read() == f2.read()
-    os.remove(test_output)
+@pytest.fixture
+def run_scripts_and_compare():
+    def runner(directory, filename):
+        test_dir = os.path.join("test", directory)
+        expected_output = os.path.join(test_dir, filename.strip("py") + "json")
+        out, _ = Popen(
+            ["python", os.path.join(test_dir, filename)], stdout=PIPE
+        ).communicate()
+
+        previous, json_text = out.decode("utf-8").split("__SEPERATOR__")
+        print(previous)  # Shows scripts output.
+
+        with open(expected_output, "r") as f:
+            assert json_text == f.read().strip("\n")
+
+    return runner
+
+
+def test_hello_world(run_scripts_and_compare):
+    run_scripts_and_compare("hello_world", "hello.py")

@@ -10,6 +10,6 @@ def main():
     cyberbrain.register(y)  # register has to be called after init
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     cyberbrain.init()  # Can we use import hook to achieve this?
     main()
