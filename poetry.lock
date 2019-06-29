@@ -64,7 +64,7 @@ version = "0.2.0"
 colorama = "*"
 
 [[package]]
-category = "main"
+category = "dev"
 description = "A platform independent file lock."
 name = "filelock"
 optional = false
@@ -72,7 +72,7 @@ python-versions = "*"
 version = "3.0.12"
 
 [[package]]
-category = "main"
+category = "dev"
 description = "Read metadata from Python packages"
 name = "importlib-metadata"
 optional = false
@@ -92,7 +92,7 @@ python-versions = ">=3.4"
 version = "7.0.0"
 
 [[package]]
-category = "main"
+category = "dev"
 description = "Core utilities for Python packages"
 name = "packaging"
 optional = false
@@ -116,7 +116,7 @@ version = "2.3.4"
 six = "*"
 
 [[package]]
-category = "main"
+category = "dev"
 description = "plugin and hook calling mechanisms for python"
 name = "pluggy"
 optional = false
@@ -127,7 +127,7 @@ version = "0.12.0"
 importlib-metadata = ">=0.12"
 
 [[package]]
-category = "main"
+category = "dev"
 description = "library with cross-python path, ini-parsing, io, code, log facilities"
 name = "py"
 optional = false
@@ -135,7 +135,7 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 version = "1.8.0"
 
 [[package]]
-category = "main"
+category = "dev"
 description = "Python parsing module"
 name = "pyparsing"
 optional = false
@@ -170,7 +170,7 @@ python = "<3.6"
 version = ">=2.2.0"
 
 [[package]]
-category = "main"
+category = "dev"
 description = "Python 2 and 3 compatibility utilities"
 name = "six"
 optional = false
@@ -189,7 +189,7 @@ version = "1.8.7"
 click = "*"
 
 [[package]]
-category = "main"
+category = "dev"
 description = "Python Library for Tom's Obvious, Minimal Language"
 name = "toml"
 optional = false
@@ -197,7 +197,7 @@ python-versions = "*"
 version = "0.10.0"
 
 [[package]]
-category = "main"
+category = "dev"
 description = "tox is a generic virtualenv management and test command line tool"
 name = "tox"
 optional = false
@@ -215,7 +215,7 @@ toml = ">=0.9.4"
 virtualenv = ">=14.0.0"
 
 [[package]]
-category = "main"
+category = "dev"
 description = "tox plugin to run arbitrary commands in a virtualenv"
 name = "tox-run-command"
 optional = false
@@ -238,7 +238,7 @@ spark-parser = ">=1.8.7,<1.9.0"
 xdis = ">=4.0.2,<4.1.0"
 
 [[package]]
-category = "main"
+category = "dev"
 description = "Virtual Python Environment builder"
 name = "virtualenv"
 optional = false
@@ -262,7 +262,7 @@ python-versions = "*"
 version = "4.0.2"
 
 [[package]]
-category = "main"
+category = "dev"
 description = "Backport of pathlib-compatible object wrapper for zip files"
 name = "zipp"
 optional = false
@@ -270,7 +270,7 @@ python-versions = ">=2.7"
 version = "0.5.1"
 
 [metadata]
-content-hash = "246e99543ab55f146a105b21e95cad9fef61946de26513faead53c19988ba130"
+content-hash = "60ea9779e1eb8ed11443bd976b838f82f792b4d2675ccd3562755152f37feb2b"
 python-versions = "^3.5"
 
 [metadata.hashes]
