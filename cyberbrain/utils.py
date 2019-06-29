@@ -92,17 +92,15 @@ def get_code_str_and_surrounding(frame):
     frame_source = inspect.getsource(frame)
     toks = list(_tokenize_string(frame_source))  # assuming no exception.
 
-    # Step 1. Group toks by logical lines.
-    size = len(toks)
-    i = logical_line_start = 1  # skips first element token.ENCODING
+    # Step 1. Groups toks by logical lines.
+    logical_line_start = 1  # skips first element token.ENCODING
     groups = []
-    while i < size:
+    for i in range(logical_line_start, len(toks)):
         if toks[i].type == token.NEWLINE:
             groups.append(toks[logical_line_start : i + 1])
             logical_line_start = i + 1
-        i += 1
 
-    # Step 2. Find matching group.
+    # Step 2. Finds matching group.
     if len(groups) == 1:
         return frame_source, (lineno, lineno)
 
