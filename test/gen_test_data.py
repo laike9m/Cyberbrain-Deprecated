@@ -4,21 +4,25 @@ import os
 import glob
 from subprocess import Popen, PIPE
 
+from crayons import green, yellow, cyan
+
 
 def generate_test_data(test_dir, filename):
     expected_output = os.path.join(test_dir, filename.strip("py") + "json")
-    out, _ = Popen(
-        ["python", os.path.join(test_dir, filename)], stdout=PIPE
-    ).communicate()
+    if os.path.exists(expected_output):
+        print(green("Test data already exists, skips " + expected_output))
+        return
+
+    test_filepath = os.path.join(test_dir, filename)
+    print(cyan("Running test: " + test_filepath))
+    out, _ = Popen(["python", test_filepath], stdout=PIPE).communicate()
 
     previous, json_text = out.decode("utf-8").split("__SEPERATOR__")
 
-    print("expected_output is: ", expected_output)
-
-    if not os.path.exists(expected_output):
-        with open(expected_output, "w") as f:
-            f.write(json_text)
-            f.write("\n")
+    print(yellow("Generating test data: " + expected_output))
+    with open(expected_output, "w") as f:
+        f.write(json_text)
+        f.write("\n")
 
 
 def collect_and_run_test_files():
