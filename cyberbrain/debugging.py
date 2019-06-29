@@ -9,3 +9,4 @@ def dump_computations(computations, output_path=""):
 
     with open(os.path.join(output_path, "output.json"), "w") as f:
         json.dump([c.to_dict() for c in computations], f, indent=2, sort_keys=True)
+        f.write("\n")
