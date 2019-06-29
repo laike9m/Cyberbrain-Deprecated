@@ -26,3 +26,11 @@ def run_scripts_and_compare():
 
 def test_hello_world(run_scripts_and_compare):
     run_scripts_and_compare("hello_world", "hello.py")
+
+
+def test_function(run_scripts_and_compare):
+    run_scripts_and_compare("function", "simple_func.py")
+
+
+def test_multiline(run_scripts_and_compare):
+    run_scripts_and_compare("multiline", "multiline_statement.py")
