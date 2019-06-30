@@ -170,8 +170,11 @@ def init():
     global_frame.f_trace = local_tracer
 
 
-def register(target):
-    """Receives target variable and stops recording computation."""
+def register(target=None):
+    """Receives target variable and stops recording computation.
+
+    If target is None, it means it is only called to terminate tracing and dump data.
+    """
     sys.settrace(None)
     global_frame.f_trace = None
     dump_computations(computations)
