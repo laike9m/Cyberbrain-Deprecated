@@ -3,7 +3,7 @@ import cyberbrain
 
 def main():
     print("hello world")
-    cyberbrain.register(None)
+    cyberbrain.register()
 
 
 if __name__ == "__main__":

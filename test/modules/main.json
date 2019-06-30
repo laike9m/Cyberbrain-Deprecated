@@ -1,0 +1,47 @@
+[
+  {
+    "code_str": "Call(func=Attribute(value=Name(id='foo', ctx=Load()), attr='func_in_foo', ctx=Load()), args=[], keywords=[])",
+    "event": "call",
+    "filepath": "foo.py",
+    "frame_id": "(1, 0)",
+    "last_i": -1,
+    "lineno": 4,
+    "surrounding": "None"
+  },
+  {
+    "code_str": "Call(func=Attribute(value=Name(id='bar', ctx=Load()), attr='func_in_bar', ctx=Load()), args=[], keywords=[])",
+    "event": "call",
+    "filepath": "bar.py",
+    "frame_id": "(2, 0)",
+    "last_i": -1,
+    "lineno": 1,
+    "surrounding": "None"
+  },
+  {
+    "code_str": "    return 1",
+    "event": "line",
+    "filepath": "bar.py",
+    "frame_id": "(2, 0)",
+    "last_i": 0,
+    "lineno": 2,
+    "surrounding": "(1, 1)"
+  },
+  {
+    "code_str": "    return a",
+    "event": "line",
+    "filepath": "foo.py",
+    "frame_id": "(1, 0)",
+    "last_i": 8,
+    "lineno": 6,
+    "surrounding": "(2, 2)"
+  },
+  {
+    "code_str": "cyberbrain.register()",
+    "event": "line",
+    "filepath": "main.py",
+    "frame_id": "(0, 0)",
+    "last_i": 32,
+    "lineno": 8,
+    "surrounding": "(7, 7)"
+  }
+]

@@ -63,7 +63,7 @@
     "surrounding": "(1, 1)"
   },
   {
-    "code_str": "    cyberbrain.register(y)  # register has to be called after init",
+    "code_str": "    cyberbrain.register()  # register has to be called after init",
     "event": "line",
     "filepath": "simple_func.py",
     "frame_id": "(1, 0)",

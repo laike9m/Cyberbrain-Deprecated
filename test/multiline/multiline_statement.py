@@ -7,7 +7,7 @@ def main():
         "longlonglonglonglong": 2,
         "longlonglonglonglonglong": 3,
     }
-    cyberbrain.register(y)  # register has to be called after init
+    cyberbrain.register()  # register has to be called after init
 
 
 if __name__ == "__main__":
