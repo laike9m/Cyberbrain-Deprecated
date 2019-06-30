@@ -11,20 +11,31 @@ import inspect
 import io
 
 
-paths = list(sysconfig.get_paths().values())
+installation_paths = list(sysconfig.get_paths().values())
 
 
 @lru_cache()
 def should_exclude(filename):
-    if (
-        "importlib._boostrap" in filename
-        or "importlib._bootstrap_external" in filename
-        or "zipimport" in filename
+    """Determines whether we should log events from file.
+
+    As of now, we exclude files from installation path, which usually means:
+    .../3.7.1/lib/python3.7
+    .../3.7.1/include/python3.7m
+    .../lib/python3.7/site-packages
+
+    Also we exclude frozen modules, as well as some weird cases.
+    """
+    if any(filename.startswith(path) for path in installation_paths) or any(
+        name in filename
+        for name in (
+            "importlib._boostrap",
+            "importlib._bootstrap_external",
+            "zipimport",
+            "<string>",  # not sure what this is, but it somehow exists.
+        )
     ):
         return True
-    for path in paths:
-        if filename.startswith(path):
-            return True
+
     return False
 
 
@@ -34,23 +45,28 @@ def grouped(iterable, n):
     return zip(*[iter(iterable)] * n)
 
 
-@lru_cache()
-def _get_lineno_from_lnotab(co_lnotab: bytes, f_lasti: int) -> int:
+def _get_lineno_from_lnotab(frame) -> int:
     """Gets line number given byte code index.
 
     Line number in lnotab is frame-wise, starts at 0, so is returned line number.
 
     Algorithm is from
     https://svn.python.org/projects/python/branches/pep-0384/Objects/lnotab_notes.txt
+
+    Note that lnotab represents increment, so we need to add first lineno to get real
+    lineno.
     """
-    # print(yellow('in get_lineno_from_lnotab: '), co_lnotab, f_lasti)
+    print("co_firstlineno is: ", frame.f_code.co_firstlineno)
+    co_lnotab = frame.f_code.co_lnotab
+    f_lasti = frame.f_lasti
     lineno = addr = 0
     for addr_incr, line_incr in grouped(co_lnotab, 2):
         addr += addr_incr
         if addr > f_lasti:
-            return lineno
+            return lineno + frame.f_code.co_firstlineno
         lineno += line_incr
-    return lineno  # Returns here if this is last line in that frame.
+    # Returns here if this is last line in that frame.
+    return lineno + frame.f_code.co_firstlineno
 
 
 def _tokenize_string(s):
@@ -85,10 +101,9 @@ def get_code_str_and_surrounding(frame):
     (frame_id, surrounding) is distinct, therefore we can detect duplicate computations
     by checking their (frame_id, surrounding).
 
-    Note that lineno in lnotab starts at 0, while in tokens it starts at 1. We keep
-    consistent with 0-based index.
+    Both lineno in _get_lineno_from_lnotab and tokens starts at 1.
     """
-    lineno = _get_lineno_from_lnotab(frame.f_code.co_lnotab, frame.f_lasti)
+    lineno = _get_lineno_from_lnotab(frame)
     frame_source = inspect.getsource(frame)
     toks = list(_tokenize_string(frame_source))  # assuming no exception.
 
@@ -106,7 +121,8 @@ def get_code_str_and_surrounding(frame):
 
     for group, next_group in zip(groups[:-1], groups[1:]):
         start_lineno, end_lineno = group[0].start[0], group[-1].end[0]
-        if start_lineno <= lineno + 1 <= end_lineno:
+        if start_lineno <= lineno <= end_lineno:
+            print(group, start_lineno, end_lineno)
             break
     else:
         # Reachs end of groups
