@@ -45,7 +45,40 @@ def grouped(iterable, n):
     return zip(*[iter(iterable)] * n)
 
 
-def _get_lineno_from_lnotab(frame) -> int:
+def _get_lineno_base(toks) -> int:
+    """Gets line number for the initial instruction in frame.
+
+    The reason we need this method is because I haven't found a good way to find the
+    start line number in a frame(it's not always zero).
+
+    For example, in a module like this:
+
+    1   # encoding: utf-8
+    2   '''
+    3   doc string
+    4   '''
+    5
+    6   import foo
+
+    co_firstlineno tells us lineno is actually 4, not zero, but more importantly, this
+    lineno is relative to the entire source file, not frame.
+
+    The first two pairs of lnotab are (4, 2), (8, 1). The '2' represents byte offset
+    from end of docstring to import statement, so the lineno of 'import foo' is 4+2=6,
+    relative to the file start, but what is the lineno of 'import foo' in that frame?
+
+    One possible solution could be to always tokenize the entire file, but I don't want
+    to do that. Instead, I choose to manually the base line number. Leading doc string
+    and comments seems to be the only case that base lineno is not 1.
+
+    Let me know if you have a better solution.
+    """
+    for i, tok in enumerate(toks):
+        if tok.type not in {token.ENCODING, token.NL, token.STRING, token.COMMENT}:
+            return tok.end[0]
+
+
+def _get_lineno_offset(frame) -> int:
     """Gets line number given byte code index.
 
     Line number in lnotab is frame-wise, starts at 0, so is returned line number.
@@ -56,17 +89,16 @@ def _get_lineno_from_lnotab(frame) -> int:
     Note that lnotab represents increment, so we need to add first lineno to get real
     lineno.
     """
-    print("co_firstlineno is: ", frame.f_code.co_firstlineno)
     co_lnotab = frame.f_code.co_lnotab
     f_lasti = frame.f_lasti
     lineno = addr = 0
     for addr_incr, line_incr in grouped(co_lnotab, 2):
         addr += addr_incr
         if addr > f_lasti:
-            return lineno + frame.f_code.co_firstlineno
+            return lineno
         lineno += line_incr
     # Returns here if this is last line in that frame.
-    return lineno + frame.f_code.co_firstlineno
+    return lineno
 
 
 def _tokenize_string(s):
@@ -101,11 +133,12 @@ def get_code_str_and_surrounding(frame):
     (frame_id, surrounding) is distinct, therefore we can detect duplicate computations
     by checking their (frame_id, surrounding).
 
-    Both lineno in _get_lineno_from_lnotab and tokens starts at 1.
+    Both lineno in _get_lineno_offset_from_lnotab and tokens starts at 1.
     """
-    lineno = _get_lineno_from_lnotab(frame)
+    # Step 0. Gets lineno relative to frame.
     frame_source = inspect.getsource(frame)
     toks = list(_tokenize_string(frame_source))  # assuming no exception.
+    lineno_in_frame = _get_lineno_base(toks) + _get_lineno_offset(frame)
 
     # Step 1. Groups toks by logical lines.
     logical_line_start = 1  # skips first element token.ENCODING
@@ -121,8 +154,7 @@ def get_code_str_and_surrounding(frame):
 
     for group, next_group in zip(groups[:-1], groups[1:]):
         start_lineno, end_lineno = group[0].start[0], group[-1].end[0]
-        if start_lineno <= lineno <= end_lineno:
-            print(group, start_lineno, end_lineno)
+        if start_lineno <= lineno_in_frame <= end_lineno:
             break
     else:
         # Reachs end of groups

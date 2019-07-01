@@ -34,3 +34,11 @@ def test_function(run_scripts_and_compare):
 
 def test_multiline(run_scripts_and_compare):
     run_scripts_and_compare("multiline", "multiline_statement.py")
+
+
+def test_exclude_events(run_scripts_and_compare):
+    run_scripts_and_compare("exclude_events", "call_libs.py")
+
+
+def test_modules(run_scripts_and_compare):
+    run_scripts_and_compare("modules", "main.py")
