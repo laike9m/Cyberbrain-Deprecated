@@ -8,7 +8,7 @@ python-versions = "*"
 version = "2.1.2"
 
 [[package]]
-category = "dev"
+category = "main"
 description = "Atomic file writes."
 name = "atomicwrites"
 optional = false
@@ -16,7 +16,7 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 version = "1.3.0"
 
 [[package]]
-category = "dev"
+category = "main"
 description = "Classes Without Boilerplate"
 name = "attrs"
 optional = false
@@ -72,7 +72,7 @@ python-versions = "*"
 version = "3.0.12"
 
 [[package]]
-category = "dev"
+category = "main"
 description = "Read metadata from Python packages"
 name = "importlib-metadata"
 optional = false
@@ -83,7 +83,7 @@ version = "0.18"
 zipp = ">=0.5"
 
 [[package]]
-category = "dev"
+category = "main"
 description = "More routines for operating on iterables, beyond itertools"
 marker = "python_version > \"2.7\""
 name = "more-itertools"
@@ -92,7 +92,7 @@ python-versions = ">=3.4"
 version = "7.0.0"
 
 [[package]]
-category = "dev"
+category = "main"
 description = "Core utilities for Python packages"
 name = "packaging"
 optional = false
@@ -104,7 +104,7 @@ pyparsing = ">=2.0.2"
 six = "*"
 
 [[package]]
-category = "dev"
+category = "main"
 description = "Object-oriented filesystem paths"
 marker = "python_version < \"3.6\""
 name = "pathlib2"
@@ -116,7 +116,7 @@ version = "2.3.4"
 six = "*"
 
 [[package]]
-category = "dev"
+category = "main"
 description = "plugin and hook calling mechanisms for python"
 name = "pluggy"
 optional = false
@@ -127,7 +127,7 @@ version = "0.12.0"
 importlib-metadata = ">=0.12"
 
 [[package]]
-category = "dev"
+category = "main"
 description = "library with cross-python path, ini-parsing, io, code, log facilities"
 name = "py"
 optional = false
@@ -135,7 +135,7 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 version = "1.8.0"
 
 [[package]]
-category = "dev"
+category = "main"
 description = "Python parsing module"
 name = "pyparsing"
 optional = false
@@ -143,7 +143,7 @@ python-versions = ">=2.6, !=3.0.*, !=3.1.*, !=3.2.*"
 version = "2.4.0"
 
 [[package]]
-category = "dev"
+category = "main"
 description = "pytest: simple powerful testing with Python"
 name = "pytest"
 optional = false
@@ -170,7 +170,18 @@ python = "<3.6"
 version = ">=2.2.0"
 
 [[package]]
-category = "dev"
+category = "main"
+description = "a pytest plugin for parallel and concurrent testing"
+name = "pytest-parallel"
+optional = false
+python-versions = "*"
+version = "0.0.9"
+
+[package.dependencies]
+pytest = ">=3.0.0"
+
+[[package]]
+category = "main"
 description = "Python 2 and 3 compatibility utilities"
 name = "six"
 optional = false
@@ -246,7 +257,7 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 version = "16.6.1"
 
 [[package]]
-category = "dev"
+category = "main"
 description = "Measures number of Terminal column cells of wide-character codes"
 name = "wcwidth"
 optional = false
@@ -262,7 +273,7 @@ python-versions = "*"
 version = "4.0.2"
 
 [[package]]
-category = "dev"
+category = "main"
 description = "Backport of pathlib-compatible object wrapper for zip files"
 name = "zipp"
 optional = false
@@ -270,7 +281,7 @@ python-versions = ">=2.7"
 version = "0.5.1"
 
 [metadata]
-content-hash = "60ea9779e1eb8ed11443bd976b838f82f792b4d2675ccd3562755152f37feb2b"
+content-hash = "43b8d80a70a6f5f810a0cbec8c0623b428490b6b7f49100884236da4d8a8b0bb"
 python-versions = "^3.5"
 
 [metadata.hashes]
@@ -290,6 +301,7 @@ pluggy = ["0825a152ac059776623854c1543d65a4ad408eb3d33ee114dff91e57ec6ae6fc", "b
 py = ["64f65755aee5b381cea27766a3a147c3f15b9b6b9ac88676de66ba2ae36793fa", "dc639b046a6e2cff5bbe40194ad65936d6ba360b52b3c3fe1d08a82dd50b5e53"]
 pyparsing = ["1873c03321fc118f4e9746baf201ff990ceb915f433f23b395f5580d1840cb2a", "9b6323ef4ab914af344ba97510e966d64ba91055d6b9afa6b30799340e89cc03"]
 pytest = ["4a784f1d4f2ef198fe9b7aef793e9fa1a3b2f84e822d9b3a64a181293a572d45", "926855726d8ae8371803f7b2e6ec0a69953d9c6311fa7c3b6c1b929ff92d27da"]
+pytest-parallel = ["94df6b0ebf48e03cbce66622d55ba6bd2cb116b06cfb39cc5fc4d2d310df25ca", "c4226352462ae32ff01d47a642d087005c3b9bf995cea61fc37a4becb146278d"]
 six = ["3350809f0555b11f552448330d0b52d5f24c91a322ea4a15ef22629740f3761c", "d16a0141ec1a18405cd4ce8b4613101da75da0e9a7aec5bdd4fa804d0e0eba73"]
 spark-parser = ["03e115c9c3cf849658ce191b4ad8a512e88c6337141f44b3d87a51a6bf18413a", "11be196977ce42710d44dbb7adb78b42853875a1f686c64b88315e519a8b1b0d", "1f37849f320d8f8454456c0ca985deda1413974256945f398e30addaa905d198", "4c5e6064afbb3c114749016d585b0e4f9222d4ffa97a1854c9ab70b25783ef48", "5426f3ade7ccad74f12e0ffdf34e28a29b0295c245ee5f5de96a5f942025c53c", "6c1edc94291385d23b56a0eab348aceba72b6d5f363e52e773c7b2c88ec9f8ab", "76bb0acdfba2c7193e608e9cf995f41799b61b2e3b8e1f13320b7ee66aff7b65", "e0769cba3fe78af969b178c571ba297aa8de202a8d48661abf0e46fc8b427e02", "e8e456ffa6e83f963f4830884624830bbbea82c9ae6b3b1700f84566550e1ab0"]
 toml = ["229f81c57791a41d65e399fc06bf0848bab550a9dfd5ed66df18ce5f05e73d5c", "235682dd292d5899d361a811df37e04a8828a5b1da3115886b73cf81ebc9100e", "f1db651f9657708513243e61e6cc67d101a39bad662eaa9b5546f789338e07a3"]
