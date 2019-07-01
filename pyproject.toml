@@ -10,6 +10,7 @@ python = "^3.5"
 bytecode = "^0.8.0"
 uncompyle6 = "^3.3"
 crayons = "^0.2.0"
+pytest-parallel = "^0.0.9"
 
 [tool.poetry.dev-dependencies]
 pytest = "^4.6"
