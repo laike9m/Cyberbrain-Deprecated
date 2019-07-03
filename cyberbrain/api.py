@@ -8,7 +8,6 @@ import dis
 import copy
 from pprint import pprint
 from collections import namedtuple, defaultdict
-from pathlib import PurePath
 
 import uncompyle6
 from crayons import red, blue, green, yellow
@@ -17,46 +16,10 @@ from . import caller_ast
 from . import utils
 from .frame_id import FrameID
 from .debugging import dump_computations
+from .computation import Line, Call
 
 
 computations = []
-# 每个 line event，从当前 frame 向上遍历到 global frame，记下所有 frame 的 locals
-class Computation:
-    def __init__(
-        self,
-        *,
-        filepath,
-        lineno,
-        data,
-        code_str,
-        frame_id,
-        event,
-        last_i,
-        surrounding=None  # See utils.get_code_str_and_surrounding for its meaning.
-    ):
-        self.filepath = filepath
-        self.lineno = lineno
-        self.data = data
-        self.code_str = code_str
-        self.frame_id = frame_id
-        self.event = event
-        self.last_i = last_i
-        self.surrounding = surrounding
-
-    def to_dict(self):
-        """Serializes attrs to dict."""
-        return {
-            "filepath": PurePath(self.filepath).name,
-            "lineno": self.lineno,
-            "code_str": self.code_str,
-            "frame_id": str(self.frame_id),
-            "event": self.event,
-            "last_i": self.last_i,
-            "surrounding": str(self.surrounding),
-        }
-
-    def __str__(self):
-        return str(self.to_dict())
 
 
 class NameVisitor(ast.NodeVisitor):
@@ -94,21 +57,22 @@ def global_tracer(frame, event, arg):
     if utils.should_exclude(frame.f_code.co_filename):
         return
     print("\nthis is global: ", frame, frame.f_code.co_filename, red(event), arg)
-    # TODO: get function definition line. like def x()
+    # TODO: get callee_str
     if event == "call":
         f = sys._getframe(2)
 
         code_str = caller_ast.get_cache_callsite_code_str(f.f_code, f.f_lasti)
-        computation = Computation(
+        computation = Call(
+            caller_str=code_str.rstrip(),
+            callee_str="",
             filepath=frame.f_code.co_filename,
             lineno=frame.f_lineno,
             data=traverse_frames(frame),
-            code_str=code_str.rstrip(),
             event=event,
             frame_id=FrameID.create(event),
             last_i=frame.f_lasti,
         )
-        # When entering a new call, replaces previous line(aka func caller) with caller
+        # When entering a new call, replaces previous line(aka func caller) with a call
         # computation.
         if (
             computations
@@ -141,11 +105,11 @@ def local_tracer(frame, event, arg):
             return
         # Records location, computation, data
         computations.append(
-            Computation(
+            Line(
+                code_str=code_str.rstrip(),
                 filepath=frame.f_code.co_filename,
                 lineno=frame.f_lineno,
                 data=traverse_frames(frame),
-                code_str=code_str.rstrip(),
                 event=event,
                 frame_id=frame_id,
                 last_i=frame.f_lasti,
