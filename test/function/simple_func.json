@@ -5,7 +5,7 @@
     "filepath": "simple_func.py",
     "frame_id": "(1, 0)",
     "last_i": -1,
-    "lineno": 4,
+    "lineno": 6,
     "surrounding": "None"
   },
   {
@@ -14,7 +14,7 @@
     "filepath": "simple_func.py",
     "frame_id": "(1, 0)",
     "last_i": 0,
-    "lineno": 5,
+    "lineno": 7,
     "surrounding": "(1, 1)"
   },
   {
@@ -23,7 +23,7 @@
     "filepath": "simple_func.py",
     "frame_id": "(1, 0)",
     "last_i": 8,
-    "lineno": 8,
+    "lineno": 10,
     "surrounding": "(4, 4)"
   },
   {
@@ -32,7 +32,7 @@
     "filepath": "simple_func.py",
     "frame_id": "(2, 0)",
     "last_i": -1,
-    "lineno": 5,
+    "lineno": 7,
     "surrounding": "None"
   },
   {
@@ -41,7 +41,7 @@
     "filepath": "simple_func.py",
     "frame_id": "(2, 0)",
     "last_i": 0,
-    "lineno": 6,
+    "lineno": 8,
     "surrounding": "(1, 1)"
   },
   {
@@ -50,7 +50,7 @@
     "filepath": "simple_func.py",
     "frame_id": "(2, 1)",
     "last_i": -1,
-    "lineno": 5,
+    "lineno": 7,
     "surrounding": "None"
   },
   {
@@ -59,7 +59,7 @@
     "filepath": "simple_func.py",
     "frame_id": "(2, 1)",
     "last_i": 0,
-    "lineno": 6,
+    "lineno": 8,
     "surrounding": "(1, 1)"
   },
   {
@@ -68,7 +68,7 @@
     "filepath": "simple_func.py",
     "frame_id": "(1, 0)",
     "last_i": 28,
-    "lineno": 10,
+    "lineno": 12,
     "surrounding": "(6, 6)"
   }
 ]

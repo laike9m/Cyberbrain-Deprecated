@@ -31,7 +31,7 @@ def should_exclude(filename):
             "importlib._boostrap",
             "importlib._bootstrap_external",
             "zipimport",
-            "<string>",  # not sure what this is, but it somehow exists.
+            "<string>",  # Dynamically generated frames, like
         )
     ):
         return True

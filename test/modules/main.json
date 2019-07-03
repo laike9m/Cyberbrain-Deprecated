@@ -40,8 +40,8 @@
     "event": "line",
     "filepath": "main.py",
     "frame_id": "(0, 0)",
-    "last_i": 32,
-    "lineno": 8,
-    "surrounding": "(7, 7)"
+    "last_i": 36,
+    "lineno": 10,
+    "surrounding": "(9, 9)"
   }
 ]

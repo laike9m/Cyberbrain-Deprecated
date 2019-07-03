@@ -5,7 +5,7 @@
     "filepath": "multiline_statement.py",
     "frame_id": "(1, 0)",
     "last_i": -1,
-    "lineno": 4,
+    "lineno": 7,
     "surrounding": "None"
   },
   {
@@ -14,7 +14,7 @@
     "filepath": "multiline_statement.py",
     "frame_id": "(1, 0)",
     "last_i": 0,
-    "lineno": 6,
+    "lineno": 9,
     "surrounding": "(1, 5)"
   },
   {
@@ -23,7 +23,7 @@
     "filepath": "multiline_statement.py",
     "frame_id": "(1, 0)",
     "last_i": 12,
-    "lineno": 10,
+    "lineno": 13,
     "surrounding": "(6, 6)"
   }
 ]
