@@ -1,3 +1,5 @@
+"""Program that invokes functions from other modules."""
+
 import foo
 
 import cyberbrain
