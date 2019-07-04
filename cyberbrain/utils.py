@@ -5,6 +5,7 @@ import sysconfig
 import token
 import tokenize
 import types
+import typing
 from functools import lru_cache
 
 import bytecode
@@ -20,7 +21,28 @@ except ImportError:
     from tokenize import NL as token_NL
     from tokenize import COMMENT as token_COMMENT
 
-
+# "surrounding" is a 2-element tuple (start_lineno, end_lineno), representing a
+# logical line. Line number is frame-wise.
+#
+# For single-line statement, start_lineno = end_lineno, and is the line number of the
+# physical line returned by get_lineno_from_lnotab.
+#
+# For multiline statement, start_lineno is the line number of the first physical line,
+# end_lineno is the last. Lines from start_lineno to end_lineno -1 should end with
+# token.NL(or tokenize.NL before 3.7), line end_lineno should end with token.NEWLINE.
+#
+# Example:
+# 0    a = true
+# 1    a = true
+# 2    b = {
+# 3        'foo': 'bar'
+# 4    }
+# 5    c = false
+#
+# For the assignment of b, start_lineno = 2, end_lineno = 4
+Surrounding = typing.NamedTuple(
+    "Surrounding", [("start_lineno", int), ("end_lineno", int)]
+)
 installation_paths = list(sysconfig.get_paths().values())
 
 
@@ -118,26 +140,6 @@ def _tokenize_string(s):
 def get_code_str_and_surrounding(frame):
     """Gets code string and surrounding information for line event.
 
-    "surrounding" is a 2-element tuple (start_lineno, end_lineno), representing a
-    logical line. Line number is frame-wise.
-
-    For single-line statement, start_lineno = end_lineno, and is the line number of the
-    physical line returned by get_lineno_from_lnotab.
-
-    For multiline statement, start_lineno is the line number of the first physical line,
-    end_lineno is the last. Lines from start_lineno to end_lineno -1 should end with
-    token.NL(or tokenize.NL before 3.7), line end_lineno should end with token.NEWLINE.
-
-    Example:
-    0    a = true
-    1    a = true
-    2    b = {
-    3        'foo': 'bar'
-    4    }
-    5    c = false
-
-    For the assignment of b, start_lineno = 2, end_lineno = 4
-
     The reason to record both code_str and surrounding is because code_str is not
     guaranteed to be unique, for example "a = true" appeared twice. While
     (frame_id, surrounding) is distinct, therefore we can detect duplicate computations
@@ -160,7 +162,10 @@ def get_code_str_and_surrounding(frame):
 
     # Step 2. Finds matching group.
     if len(groups) == 1:
-        return frame_source, (lineno_in_frame, lineno_in_frame)
+        return (
+            frame_source,
+            Surrounding(start_lineno=lineno_in_frame, end_lineno=lineno_in_frame),
+        )
 
     for group, next_group in zip(groups[:-1], groups[1:]):
         start_lineno, end_lineno = group[0].start[0], group[-1].end[0]
@@ -177,5 +182,7 @@ def get_code_str_and_surrounding(frame):
     # group doesn't start from 1), removes them.
     return (
         tokenize.untokenize(group).lstrip("\\\n"),
-        (group[0].start[0] - 1, group[-1].end[0] - 1),
+        Surrounding(
+            start_lineno=group[0].start[0] - 1, end_lineno=group[-1].end[0] - 1
+        ),
     )
