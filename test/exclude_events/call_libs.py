@@ -8,8 +8,8 @@ settrace (https://stackoverflow.com/q/16115027/2142577).
 from collections import Counter
 
 import crayons
-import cyberbrain
 
+import cyberbrain
 
 cyberbrain.init()
 c = Counter()

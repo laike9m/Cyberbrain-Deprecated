@@ -1,23 +1,21 @@
+import ast
+import copy
+import dis
+import inspect
+import io
+import os
 import sys
 import typing
-import os
-import ast
-import io
-import inspect
-import dis
-import copy
+from collections import defaultdict, namedtuple
 from pprint import pprint
-from collections import namedtuple, defaultdict
 
 import uncompyle6
-from crayons import red, blue, green, yellow
+from crayons import blue, green, red, yellow
 
-from . import caller_ast
-from . import utils
-from .frame_id import FrameID
+from . import caller_ast, utils
+from .computation import Call, Line
 from .debugging import dump_computations
-from .computation import Line, Call
-
+from .frame_id import FrameID
 
 computations = []
 

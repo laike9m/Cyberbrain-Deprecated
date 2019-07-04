@@ -1,7 +1,7 @@
-from collections import defaultdict
 import sys
+from collections import defaultdict
 
-from crayons import red, blue, green, yellow
+from crayons import blue, green, red, yellow
 
 
 class FrameID:

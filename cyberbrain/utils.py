@@ -1,14 +1,15 @@
-import sysconfig
-import types
-import sys
-import bytecode
-from functools import lru_cache
-import uncompyle6
-from crayons import red, blue, yellow
-import token
-import tokenize
 import inspect
 import io
+import sys
+import sysconfig
+import token
+import tokenize
+import types
+from functools import lru_cache
+
+import bytecode
+import uncompyle6
+from crayons import blue, red, yellow
 
 try:
     from token import ENCODING as token_ENCODING
