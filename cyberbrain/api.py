@@ -57,14 +57,13 @@ def global_tracer(frame, event, arg):
     if utils.should_exclude(frame.f_code.co_filename):
         return
     print("\nthis is global: ", frame, frame.f_code.co_filename, red(event), arg)
-    # TODO: get callee_str
-    if event == "call":
-        f = sys._getframe(2)
 
+    if event == "call":
+        f = frame.f_back
         code_str = caller_ast.get_cache_callsite_code_str(f.f_code, f.f_lasti)
         computation = Call(
             caller_str=code_str.rstrip(),
-            callee_str="",
+            arg_vlues=inspect.getargvalues(frame),
             filepath=frame.f_code.co_filename,
             lineno=frame.f_lineno,
             data=traverse_frames(frame),

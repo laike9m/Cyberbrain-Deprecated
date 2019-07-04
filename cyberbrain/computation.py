@@ -1,6 +1,10 @@
 """Data structures for recording program execution."""
 
+import inspect
 from pathlib import PurePath
+from typing import Optional, Tuple
+
+from .frame_id import FrameID
 
 
 class Computation:
@@ -10,13 +14,15 @@ class Computation:
     def __init__(
         self,
         *,
-        filepath,
-        lineno,
+        filepath: str,
+        lineno: int,
         data,
-        frame_id,
-        event,
-        last_i,
-        surrounding=None  # See utils.get_code_str_and_surrounding for its meaning.
+        frame_id: FrameID,
+        event: str,
+        last_i: int,
+        surrounding: Optional[
+            Tuple[int, int]
+        ] = None  # See utils.get_code_str_and_surrounding for its meaning.
     ):
         self.filepath = filepath
         self.lineno = lineno
@@ -46,7 +52,7 @@ class Line(Computation):
     """Class that represents a logical line without entering into a new call.
     """
 
-    def __init__(self, *, code_str, **kwargs):
+    def __init__(self, *, code_str: str, **kwargs):
         self._code_str = code_str
         super().__init__(**kwargs)
 
@@ -58,9 +64,9 @@ class Line(Computation):
 class Call(Computation):
     """Class that represents a call site."""
 
-    def __init__(self, *, caller_str, callee_str, **kwargs):
+    def __init__(self, *, caller_str: str, arg_vlues: inspect.ArgInfo, **kwargs):
         self._caller_str = caller_str
-        self._callee_str = callee_str
+        self._arg_vlues = arg_vlues
         super().__init__(**kwargs)
 
     @property
