@@ -118,7 +118,7 @@ def local_tracer(frame, event, arg):
 
     elif event == "return":
         # At this point we don't need to record return but needs to update frame id.
-        frame_id = (FrameID.create(event),)
+        FrameID.create(event)
 
 
 global_frame = None
