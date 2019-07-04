@@ -6,7 +6,7 @@
     "frame_id": "(0, 0)",
     "last_i": 40,
     "lineno": 15,
-    "surrounding": "(14, 14)"
+    "surrounding": "Surrounding(start_lineno=14, end_lineno=14)"
   },
   {
     "code_str": "c[\"red\"] += 1",
@@ -15,7 +15,7 @@
     "frame_id": "(0, 0)",
     "last_i": 46,
     "lineno": 16,
-    "surrounding": "(15, 15)"
+    "surrounding": "Surrounding(start_lineno=15, end_lineno=15)"
   },
   {
     "code_str": "c[\"blue\"] += 1",
@@ -24,7 +24,7 @@
     "frame_id": "(0, 0)",
     "last_i": 62,
     "lineno": 17,
-    "surrounding": "(16, 16)"
+    "surrounding": "Surrounding(start_lineno=16, end_lineno=16)"
   },
   {
     "code_str": "c[\"red\"] += 1",
@@ -33,7 +33,7 @@
     "frame_id": "(0, 0)",
     "last_i": 78,
     "lineno": 18,
-    "surrounding": "(17, 17)"
+    "surrounding": "Surrounding(start_lineno=17, end_lineno=17)"
   },
   {
     "code_str": "c.most_common(10)",
@@ -42,7 +42,7 @@
     "frame_id": "(0, 0)",
     "last_i": 94,
     "lineno": 19,
-    "surrounding": "(18, 18)"
+    "surrounding": "Surrounding(start_lineno=18, end_lineno=18)"
   },
   {
     "code_str": "crayons.blue(\"blue\")",
@@ -51,7 +51,7 @@
     "frame_id": "(0, 0)",
     "last_i": 104,
     "lineno": 20,
-    "surrounding": "(19, 19)"
+    "surrounding": "Surrounding(start_lineno=19, end_lineno=19)"
   },
   {
     "code_str": "cyberbrain.register()",
@@ -60,6 +60,6 @@
     "frame_id": "(0, 0)",
     "last_i": 114,
     "lineno": 21,
-    "surrounding": "(20, 20)"
+    "surrounding": "Surrounding(start_lineno=20, end_lineno=20)"
   }
 ]

@@ -1,15 +1,23 @@
 # Collect and run all test scripts.
 
+import argparse
 import glob
 import os
 from subprocess import PIPE, Popen
 
 from crayons import cyan, green, yellow
 
+parser = argparse.ArgumentParser(description="Process some integers.")
+parser.add_argument(
+    "--override", action="store_true", help="Whether to override test data."
+)
+
 
 def generate_test_data(test_dir, filename):
+    override = parser.parse_args().override
+
     expected_output = os.path.join(test_dir, filename.strip("py") + "json")
-    if os.path.exists(expected_output):
+    if not override and os.path.exists(expected_output):
         print(green("Test data already exists, skips " + expected_output))
         return
 
