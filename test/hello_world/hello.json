@@ -15,7 +15,7 @@
     "frame_id": "(1, 0)",
     "last_i": 0,
     "lineno": 5,
-    "surrounding": "(1, 1)"
+    "surrounding": "Surrounding(start_lineno=1, end_lineno=1)"
   },
   {
     "code_str": "    cyberbrain.register()",
@@ -24,6 +24,6 @@
     "frame_id": "(1, 0)",
     "last_i": 8,
     "lineno": 6,
-    "surrounding": "(2, 2)"
+    "surrounding": "Surrounding(start_lineno=2, end_lineno=2)"
   }
 ]

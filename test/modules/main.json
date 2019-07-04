@@ -24,7 +24,7 @@
     "frame_id": "(2, 0)",
     "last_i": 0,
     "lineno": 2,
-    "surrounding": "(1, 1)"
+    "surrounding": "Surrounding(start_lineno=1, end_lineno=1)"
   },
   {
     "code_str": "    return a",
@@ -33,7 +33,7 @@
     "frame_id": "(1, 0)",
     "last_i": 8,
     "lineno": 6,
-    "surrounding": "(2, 2)"
+    "surrounding": "Surrounding(start_lineno=2, end_lineno=2)"
   },
   {
     "code_str": "cyberbrain.register()",
@@ -42,6 +42,6 @@
     "frame_id": "(0, 0)",
     "last_i": 36,
     "lineno": 8,
-    "surrounding": "(7, 7)"
+    "surrounding": "Surrounding(start_lineno=7, end_lineno=7)"
   }
 ]
