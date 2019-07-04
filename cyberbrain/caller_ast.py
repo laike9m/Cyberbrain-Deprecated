@@ -19,7 +19,7 @@ Args = namedtuple("Args", ["args", "kwargs"])
 def _compute_offset(instr):
     if sys.version_info >= (3, 6):
         return 2
-    return (1, 3)[instr._opcode < _opcode.HAVE_ARGUMENT]
+    return (1, 3)[instr.opcode < dis.HAVE_ARGUMENT]
 
 
 def compute_offset(instrs: b.Bytecode, i):
