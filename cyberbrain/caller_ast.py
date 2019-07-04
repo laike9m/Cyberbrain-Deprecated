@@ -1,14 +1,15 @@
 # Moves logic from no_magic to here.
 
-from functools import lru_cache
-from collections import namedtuple
+import ast
+import dis
+import io
 import math
+import sys
+from collections import namedtuple
+from functools import lru_cache
+
 import bytecode as b
 import uncompyle6
-import sys
-import ast
-import io
-import dis
 
 MARK = "__MARK__"
 

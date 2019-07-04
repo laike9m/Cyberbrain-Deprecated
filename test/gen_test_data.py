@@ -1,10 +1,10 @@
 # Collect and run all test scripts.
 
-import os
 import glob
-from subprocess import Popen, PIPE
+import os
+from subprocess import PIPE, Popen
 
-from crayons import green, yellow, cyan
+from crayons import cyan, green, yellow
 
 
 def generate_test_data(test_dir, filename):
