@@ -42,3 +42,7 @@ def test_exclude_events(run_scripts_and_compare):
 
 def test_modules(run_scripts_and_compare):
     run_scripts_and_compare("modules", "main.py")
+
+
+def test_loop(run_scripts_and_compare):
+    run_scripts_and_compare("loop", "loop.py")

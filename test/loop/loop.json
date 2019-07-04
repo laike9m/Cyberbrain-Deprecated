@@ -1,0 +1,119 @@
+[
+  {
+    "code_str": "for i in range(3):",
+    "event": "line",
+    "filepath": "loop.py",
+    "frame_id": "(0, 0)",
+    "last_i": 16,
+    "lineno": 7,
+    "surrounding": "(6, 6)"
+  },
+  {
+    "code_str": "    print(i)",
+    "event": "line",
+    "filepath": "loop.py",
+    "frame_id": "(0, 0)",
+    "last_i": 30,
+    "lineno": 8,
+    "surrounding": "(7, 7)"
+  },
+  {
+    "code_str": "for i in range(3):",
+    "event": "line",
+    "filepath": "loop.py",
+    "frame_id": "(0, 0)",
+    "last_i": 26,
+    "lineno": 7,
+    "surrounding": "(6, 6)"
+  },
+  {
+    "code_str": "    print(i)",
+    "event": "line",
+    "filepath": "loop.py",
+    "frame_id": "(0, 0)",
+    "last_i": 30,
+    "lineno": 8,
+    "surrounding": "(7, 7)"
+  },
+  {
+    "code_str": "for i in range(3):",
+    "event": "line",
+    "filepath": "loop.py",
+    "frame_id": "(0, 0)",
+    "last_i": 26,
+    "lineno": 7,
+    "surrounding": "(6, 6)"
+  },
+  {
+    "code_str": "    print(i)",
+    "event": "line",
+    "filepath": "loop.py",
+    "frame_id": "(0, 0)",
+    "last_i": 30,
+    "lineno": 8,
+    "surrounding": "(7, 7)"
+  },
+  {
+    "code_str": "for i in range(3):",
+    "event": "line",
+    "filepath": "loop.py",
+    "frame_id": "(0, 0)",
+    "last_i": 26,
+    "lineno": 7,
+    "surrounding": "(6, 6)"
+  },
+  {
+    "code_str": "    print(\"in else\")",
+    "event": "line",
+    "filepath": "loop.py",
+    "frame_id": "(0, 0)",
+    "last_i": 42,
+    "lineno": 10,
+    "surrounding": "(9, 9)"
+  },
+  {
+    "code_str": "while i > 0:",
+    "event": "line",
+    "filepath": "loop.py",
+    "frame_id": "(0, 0)",
+    "last_i": 50,
+    "lineno": 12,
+    "surrounding": "(11, 11)"
+  },
+  {
+    "code_str": "    i -= 1",
+    "event": "line",
+    "filepath": "loop.py",
+    "frame_id": "(0, 0)",
+    "last_i": 60,
+    "lineno": 13,
+    "surrounding": "(12, 12)"
+  },
+  {
+    "code_str": "    if i == 1:",
+    "event": "line",
+    "filepath": "loop.py",
+    "frame_id": "(0, 0)",
+    "last_i": 68,
+    "lineno": 14,
+    "surrounding": "(13, 13)"
+  },
+  {
+    "code_str": "        break",
+    "event": "line",
+    "filepath": "loop.py",
+    "frame_id": "(0, 0)",
+    "last_i": 76,
+    "lineno": 15,
+    "surrounding": "(14, 14)"
+  },
+  {
+    "code_str": "cyberbrain.register()",
+    "event": "line",
+    "filepath": "loop.py",
+    "frame_id": "(0, 0)",
+    "last_i": 82,
+    "lineno": 17,
+    "surrounding": "(16, 16)"
+  }
+]
