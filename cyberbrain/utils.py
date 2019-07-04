@@ -10,6 +10,15 @@ import tokenize
 import inspect
 import io
 
+try:
+    from token import ENCODING as token_ENCODING
+    from token import NL as token_NL
+    from token import COMMENT as token_COMMENT
+except ImportError:
+    from tokenize import ENCODING as token_ENCODING
+    from tokenize import NL as token_NL
+    from tokenize import COMMENT as token_COMMENT
+
 
 installation_paths = list(sysconfig.get_paths().values())
 
@@ -74,7 +83,7 @@ def _get_lineno_base(toks) -> int:
     Let me know if you have a better solution.
     """
     for i, tok in enumerate(toks):
-        if tok.type not in {token.ENCODING, token.NL, token.STRING, token.COMMENT}:
+        if tok.type not in {token_ENCODING, token_NL, token.STRING, token_COMMENT}:
             return tok.end[0]
 
 
@@ -150,7 +159,7 @@ def get_code_str_and_surrounding(frame):
 
     # Step 2. Finds matching group.
     if len(groups) == 1:
-        return frame_source, (lineno, lineno)
+        return frame_source, (lineno_in_frame, lineno_in_frame)
 
     for group, next_group in zip(groups[:-1], groups[1:]):
         start_lineno, end_lineno = group[0].start[0], group[-1].end[0]
@@ -161,7 +170,7 @@ def get_code_str_and_surrounding(frame):
         group = next_group
 
     # Removes leading NL and DEDENT as they cause untokenize to fail.
-    while group[0].type in {token.NL, token.DEDENT, token.INDENT}:
+    while group[0].type in {token_NL, token.DEDENT, token.INDENT}:
         group.pop(0)
     # When untokenizing, Python adds \\\n for absent lines(because lineno in
     # group doesn't start from 1), removes them.
