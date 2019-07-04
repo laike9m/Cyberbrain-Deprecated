@@ -5,6 +5,7 @@ from pathlib import PurePath
 from typing import Optional, Tuple
 
 from .frame_id import FrameID
+from .utils import Surrounding
 
 
 class Computation:
@@ -20,9 +21,7 @@ class Computation:
         frame_id: FrameID,
         event: str,
         last_i: int,
-        surrounding: Optional[
-            Tuple[int, int]
-        ] = None  # See utils.get_code_str_and_surrounding for its meaning.
+        surrounding: Optional[Surrounding] = None
     ):
         self.filepath = filepath
         self.lineno = lineno
