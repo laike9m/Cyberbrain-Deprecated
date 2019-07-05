@@ -66,7 +66,7 @@ def get_cache_code(code):
 
 
 @lru_cache()
-def get_cache_callsite_code_str(code, i):
+def get_cache_callsite(code, i) -> ast.AST:
     bc, cbc = get_cache_code(code)
     index = compute_offset(bc, i)
 
@@ -82,9 +82,8 @@ def get_cache_callsite_code_str(code, i):
         i += 1
 
     string_io = io.StringIO()
-    print(bc.to_code())
     uncompyle6.deparse_code2str(code=bc.to_code(), out=string_io)
     arginfo_visitor = GetArgInfo()
     arginfo_visitor.visit(ast.parse(string_io.getvalue()))
     # arginfo_visitor.value is ast node, for now just return str.
-    return ast.dump(arginfo_visitor.value)
+    return arginfo_visitor.value

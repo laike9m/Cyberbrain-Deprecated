@@ -1,13 +1,14 @@
 """Data structures for recording program execution."""
 
 import abc
+import ast
 import inspect
 from pathlib import PurePath
 from typing import Optional
 
 from . import caller_ast, utils
 from .frame_id import FrameID
-from .utils import Surrounding
+from .utils import Surrounding, SourceLocation
 
 
 class Computation(metaclass=abc.ABCMeta):
@@ -16,8 +17,8 @@ class Computation(metaclass=abc.ABCMeta):
     def to_dict(self):
         """Serializes attrs to dict."""
         return {
-            "filepath": PurePath(self.filepath).name,
-            "lineno": self.lineno,
+            "filepath": PurePath(self.source_location.filepath).name,
+            "lineno": self.source_location.lineno,
             "code_str": self.code_str,
             "frame_id": str(self.frame_id),
             "event": self.event_type,
@@ -34,7 +35,7 @@ class Line(Computation):
     def __init__(
         self,
         *,
-        code_str: str,
+        code_str: ast.AST,
         filepath: str,
         lineno: int,
         data,
@@ -44,8 +45,7 @@ class Line(Computation):
         surrounding: Optional[Surrounding],
     ):
         self.code_str = code_str
-        self.filepath = filepath
-        self.lineno = lineno
+        self.source_location = SourceLocation(filepath=filepath, lineno=lineno)
         self.data = data
         self.event_type = event_type
         self.frame_id = frame_id
@@ -59,19 +59,19 @@ class Call(Computation):
     def __init__(
         self,
         *,
-        call_site: str,
+        call_site_ast: ast.AST,
+        call_site_source_location: SourceLocation,
         arg_vlues: inspect.ArgInfo,
-        filepath: str,
-        lineno: int,
+        callee_source_location: SourceLocation,
         data,
         event_type: str,
         frame_id: FrameID,
         last_i: int,
     ):
-        self.call_site = call_site
+        self.call_site_ast = call_site_ast
+        self.call_site_source_location = call_site_source_location
         self.arg_vlues = arg_vlues
-        self.filepath = filepath
-        self.lineno = lineno
+        self.callee_source_location = callee_source_location
         self.data = data
         self.event_type = event_type
         self.frame_id = frame_id
@@ -80,16 +80,27 @@ class Call(Computation):
     @property
     def code_str(self):
         # TODO: return all
-        return self.call_site
+        return ast.dump(self.call_site_ast).rstrip()
+
+    @property
+    def source_location(self):
+        return self.callee_source_location
 
     @staticmethod
-    def create(frame, code_str):
+    def create(frame):
+        caller_frame = frame.f_back
         return Call(
-            call_site=code_str.rstrip(),
+            call_site_ast=caller_ast.get_cache_callsite(
+                caller_frame.f_code, caller_frame.f_lasti
+            ),
+            call_site_source_location=SourceLocation(
+                filepath=caller_frame.f_code.co_filename, lineno=caller_frame.f_lineno
+            ),
             arg_vlues=inspect.getargvalues(frame),
-            filepath=frame.f_code.co_filename,
-            lineno=frame.f_lineno,
-            data=utils.traverse_frames(frame),
+            callee_source_location=SourceLocation(
+                filepath=frame.f_code.co_filename, lineno=frame.f_lineno
+            ),
+            data=utils.traverse_frames(caller_frame),
             event_type="call",
             frame_id=FrameID.create("call"),
             last_i=frame.f_lasti,
@@ -106,6 +117,7 @@ class _ComputationManager:
     def computations(self):
         return self._computations
 
+    @property
     def last_computation(self):
         return self._computations[-1]
 
@@ -135,18 +147,17 @@ class _ComputationManager:
                 )
             )
         elif event_type == "call":
-            f = frame.f_back
-            code_str = caller_ast.get_cache_callsite_code_str(f.f_code, f.f_lasti)
-            computation = Call.create(frame, code_str)
+            computation = Call.create(frame)
             # When entering a new call, replaces previous line(aka func caller) with a
             # call computation.
             if (
                 self._computations
                 and self.computations[-1].event_type == "line"
-                and computation.frame_id.is_child_of(self.last_computation().frame_id)
+                and computation.frame_id.is_child_of(self.last_computation.frame_id)
             ):
                 self._computations[-1] = computation
             else:
+                # raise Exception()
                 self._computations.append(computation)
 
 

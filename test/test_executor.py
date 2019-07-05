@@ -1,4 +1,4 @@
-# Collect and run all test scripts.
+"""Collects and run all test scripts."""
 
 import os
 from subprocess import PIPE, Popen
