@@ -52,7 +52,7 @@ installation_paths = list(sysconfig.get_paths().values())
 
 @lru_cache()
 def _on_laike9m_pc():
-    return os.environ["MY_PC"] == "true"
+    return os.environ.get("MY_PC") == "true"
 
 
 @lru_cache()
