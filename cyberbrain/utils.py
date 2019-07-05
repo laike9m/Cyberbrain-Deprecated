@@ -61,9 +61,11 @@ def should_exclude(filename):
 
     Also we exclude frozen modules, as well as some weird cases.
     """
+    print("filename is: ", filename)
     if any(filename.startswith(path) for path in installation_paths) or any(
         name in filename
         for name in (
+            "cyberbrain",  # Exclude tracking Cyberbrain's own execution.
             "importlib._boostrap",
             "importlib._bootstrap_external",
             "zipimport",
