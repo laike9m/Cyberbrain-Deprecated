@@ -22,7 +22,6 @@ class Computation(metaclass=abc.ABCMeta):
             "code_str": self.code_str,
             "frame_id": str(self.frame_id),
             "event": self.event_type,
-            "last_i": self.last_i,
         }
 
     def __str__(self):
@@ -41,7 +40,6 @@ class Line(Computation):
         data,
         frame_id: FrameID,
         event_type: str,
-        last_i: int,
         surrounding: Optional[Surrounding],
     ):
         self.code_str = code_str
@@ -49,7 +47,6 @@ class Line(Computation):
         self.data = data
         self.event_type = event_type
         self.frame_id = frame_id
-        self.last_i = last_i
         self.surrounding = surrounding
 
 
@@ -66,7 +63,6 @@ class Call(Computation):
         data,
         event_type: str,
         frame_id: FrameID,
-        last_i: int,
     ):
         self.call_site_ast = call_site_ast
         self.call_site_source_location = call_site_source_location
@@ -75,7 +71,6 @@ class Call(Computation):
         self.data = data
         self.event_type = event_type
         self.frame_id = frame_id
-        self.last_i = last_i
 
     @property
     def code_str(self):
@@ -103,7 +98,6 @@ class Call(Computation):
             data=utils.traverse_frames(caller_frame),
             event_type="call",
             frame_id=FrameID.create("call"),
-            last_i=frame.f_lasti,
         )
 
 
@@ -142,7 +136,6 @@ class _ComputationManager:
                     data=utils.traverse_frames(frame),
                     event_type=event_type,
                     frame_id=frame_id,
-                    last_i=frame.f_lasti,
                     surrounding=surrounding,
                 )
             )
