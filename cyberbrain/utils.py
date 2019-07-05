@@ -1,15 +1,15 @@
 """Utility functions."""
 
 import copy
+import inspect
 import io
+import os
 import sysconfig
 import token
 import tokenize
 import typing
-import inspect
 from collections import defaultdict
 from functools import lru_cache
-
 
 try:
     from token import ENCODING as token_ENCODING
@@ -51,6 +51,11 @@ installation_paths = list(sysconfig.get_paths().values())
 
 
 @lru_cache()
+def _on_laike9m_pc():
+    return os.environ["MY_PC"] == "true"
+
+
+@lru_cache()
 def should_exclude(filename):
     """Determines whether we should log events from file.
 
@@ -61,11 +66,9 @@ def should_exclude(filename):
 
     Also we exclude frozen modules, as well as some weird cases.
     """
-    print("filename is: ", filename)
     if any(filename.startswith(path) for path in installation_paths) or any(
         name in filename
         for name in (
-            "cyberbrain",  # Exclude tracking Cyberbrain's own execution.
             "importlib._boostrap",
             "importlib._bootstrap_external",
             "zipimport",
@@ -74,7 +77,8 @@ def should_exclude(filename):
     ):
         return True
 
-    return False
+    # Exclude tracking Cyberbrain's own execution on dev PC to enable pytest.
+    return _on_laike9m_pc() and "cyberbrain" in filename
 
 
 def grouped(iterable, n):
