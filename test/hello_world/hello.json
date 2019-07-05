@@ -1,23 +1,23 @@
 [
   {
-    "code_str": "Call(func=Name(id='main', ctx=Load()), args=[], keywords=[])",
-    "event": "call",
-    "filepath": "hello.py",
-    "frame_id": "(1, 0)",
-    "lineno": 4
-  },
-  {
-    "code_str": "    print(\"hello world\")",
+    "code_str": "x = \"hello world\"",
     "event": "line",
     "filepath": "hello.py",
-    "frame_id": "(1, 0)",
-    "lineno": 5
+    "frame_id": "(0, 0)",
+    "lineno": 7
   },
   {
-    "code_str": "    cyberbrain.register()",
+    "code_str": "y = x",
     "event": "line",
     "filepath": "hello.py",
-    "frame_id": "(1, 0)",
-    "lineno": 6
+    "frame_id": "(0, 0)",
+    "lineno": 8
+  },
+  {
+    "code_str": "cyberbrain.register(y)",
+    "event": "line",
+    "filepath": "hello.py",
+    "frame_id": "(0, 0)",
+    "lineno": 9
   }
 ]
