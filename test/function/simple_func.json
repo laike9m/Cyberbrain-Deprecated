@@ -5,8 +5,7 @@
     "filepath": "simple_func.py",
     "frame_id": "(1, 0)",
     "last_i": -1,
-    "lineno": 6,
-    "surrounding": "None"
+    "lineno": 6
   },
   {
     "code_str": "    def f(x, y):",
@@ -14,8 +13,7 @@
     "filepath": "simple_func.py",
     "frame_id": "(1, 0)",
     "last_i": 0,
-    "lineno": 7,
-    "surrounding": "Surrounding(start_lineno=1, end_lineno=1)"
+    "lineno": 7
   },
   {
     "code_str": "    x = 1",
@@ -23,8 +21,7 @@
     "filepath": "simple_func.py",
     "frame_id": "(1, 0)",
     "last_i": 8,
-    "lineno": 10,
-    "surrounding": "Surrounding(start_lineno=4, end_lineno=4)"
+    "lineno": 10
   },
   {
     "code_str": "Call(func=Name(id='f', ctx=Load()), args=[Num(n=1), Num(n=1)], keywords=[])",
@@ -32,8 +29,7 @@
     "filepath": "simple_func.py",
     "frame_id": "(2, 0)",
     "last_i": -1,
-    "lineno": 7,
-    "surrounding": "None"
+    "lineno": 7
   },
   {
     "code_str": "        return x + y",
@@ -41,8 +37,7 @@
     "filepath": "simple_func.py",
     "frame_id": "(2, 0)",
     "last_i": 0,
-    "lineno": 8,
-    "surrounding": "Surrounding(start_lineno=1, end_lineno=1)"
+    "lineno": 8
   },
   {
     "code_str": "Call(func=Name(id='f', ctx=Load()), args=[Name(id='x', ctx=Load()), Call(func=Name(id='f', ctx=Load()), args=[Num(n=1), Num(n=1)], keywords=[])], keywords=[])",
@@ -50,8 +45,7 @@
     "filepath": "simple_func.py",
     "frame_id": "(2, 1)",
     "last_i": -1,
-    "lineno": 7,
-    "surrounding": "None"
+    "lineno": 7
   },
   {
     "code_str": "        return x + y",
@@ -59,8 +53,7 @@
     "filepath": "simple_func.py",
     "frame_id": "(2, 1)",
     "last_i": 0,
-    "lineno": 8,
-    "surrounding": "Surrounding(start_lineno=1, end_lineno=1)"
+    "lineno": 8
   },
   {
     "code_str": "    cyberbrain.register()  # register has to be called after init",
@@ -68,7 +61,6 @@
     "filepath": "simple_func.py",
     "frame_id": "(1, 0)",
     "last_i": 28,
-    "lineno": 12,
-    "surrounding": "Surrounding(start_lineno=6, end_lineno=6)"
+    "lineno": 12
   }
 ]

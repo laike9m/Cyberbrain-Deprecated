@@ -8,7 +8,7 @@ license = "MIT"
 [tool.poetry.dependencies]
 python = "^3.6"
 bytecode = "^0.8.0"
-uncompyle6 = "^3.3"
+uncompyle6 = "3.3.4"
 crayons = "^0.2.0"
 pytest-parallel = "^0.0.9"
 

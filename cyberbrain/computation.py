@@ -13,25 +13,6 @@ from .utils import Surrounding
 class Computation(metaclass=abc.ABCMeta):
     """Base class to represent a computation unit of the program."""
 
-    def __init__(
-        self,
-        *,
-        filepath: str,
-        lineno: int,
-        data,
-        frame_id: FrameID,
-        event: str,
-        last_i: int,
-        surrounding: Optional[Surrounding] = None
-    ):
-        self.filepath = filepath
-        self.lineno = lineno
-        self.data = data
-        self.frame_id = frame_id
-        self.event = event
-        self.last_i = last_i
-        self.surrounding = surrounding
-
     def to_dict(self):
         """Serializes attrs to dict."""
         return {
@@ -41,7 +22,6 @@ class Computation(metaclass=abc.ABCMeta):
             "frame_id": str(self.frame_id),
             "event": self.event,
             "last_i": self.last_i,
-            "surrounding": str(self.surrounding),
         }
 
     def __str__(self):
@@ -51,27 +31,69 @@ class Computation(metaclass=abc.ABCMeta):
 class Line(Computation):
     """Class that represents a logical line without entering into a new call."""
 
-    def __init__(self, *, code_str: str, **kwargs):
-        self._code_str = code_str
-        super().__init__(**kwargs)
-
-    @property
-    def code_str(self):
-        return self._code_str
+    def __init__(
+        self,
+        *,
+        code_str: str,
+        filepath: str,
+        lineno: int,
+        data,
+        frame_id: FrameID,
+        event: str,
+        last_i: int,
+        surrounding: Optional[Surrounding],
+    ):
+        self.code_str = code_str
+        self.filepath = filepath
+        self.lineno = lineno
+        self.data = data
+        self.event = event
+        self.frame_id = frame_id
+        self.last_i = last_i
+        self.surrounding = surrounding
 
 
 class Call(Computation):
     """Class that represents a call site."""
 
-    def __init__(self, *, caller_str: str, arg_vlues: inspect.ArgInfo, **kwargs):
-        self._caller_str = caller_str
-        self._arg_vlues = arg_vlues
-        super().__init__(**kwargs)
+    def __init__(
+        self,
+        *,
+        call_site: str,
+        arg_vlues: inspect.ArgInfo,
+        filepath: str,
+        lineno: int,
+        data,
+        event: str,
+        frame_id: FrameID,
+        last_i: int,
+    ):
+        self.call_site = call_site
+        self.arg_vlues = arg_vlues
+        self.filepath = filepath
+        self.lineno = lineno
+        self.data = data
+        self.event = event
+        self.frame_id = frame_id
+        self.last_i = last_i
 
     @property
     def code_str(self):
         # TODO: return all
-        return self._caller_str
+        return self.call_site
+
+    @staticmethod
+    def create(frame, code_str):
+        return Call(
+            call_site=code_str.rstrip(),
+            arg_vlues=inspect.getargvalues(frame),
+            filepath=frame.f_code.co_filename,
+            lineno=frame.f_lineno,
+            data=utils.traverse_frames(frame),
+            event="call",
+            frame_id=FrameID.create("call"),
+            last_i=frame.f_lasti,
+        )
 
 
 class _ComputationManager:
@@ -84,13 +106,17 @@ class _ComputationManager:
     def computations(self):
         return self._computations
 
-    def add_computation(self, type, frame):
-        if type == "line":
+    def last_computation(self):
+        return self._computations[-1]
+
+    def add_computation(self, event_type, frame):
+        if event_type == "line":
             code_str, surrounding = utils.get_code_str_and_surrounding(frame)
-            frame_id = FrameID.create(type)
+            frame_id = FrameID.create(event_type)
             # For multiline statement, skips if the logical line has been added.
             if (
                 self.computations
+                and self.computations[-1].event == "line"
                 and self.computations[-1].frame_id == frame_id
                 and self.computations[-1].surrounding == surrounding
             ):
@@ -102,31 +128,22 @@ class _ComputationManager:
                     filepath=frame.f_code.co_filename,
                     lineno=frame.f_lineno,
                     data=utils.traverse_frames(frame),
-                    event=type,
+                    event=event_type,
                     frame_id=frame_id,
                     last_i=frame.f_lasti,
                     surrounding=surrounding,
                 )
             )
-        elif type == "call":
+        elif event_type == "call":
             f = frame.f_back
             code_str = caller_ast.get_cache_callsite_code_str(f.f_code, f.f_lasti)
-            computation = Call(
-                caller_str=code_str.rstrip(),
-                arg_vlues=inspect.getargvalues(frame),
-                filepath=frame.f_code.co_filename,
-                lineno=frame.f_lineno,
-                data=utils.traverse_frames(frame),
-                event=type,
-                frame_id=FrameID.create(type),
-                last_i=frame.f_lasti,
-            )
+            computation = Call.create(frame, code_str)
             # When entering a new call, replaces previous line(aka func caller) with a
             # call computation.
             if (
                 self._computations
                 and self.computations[-1].event == "line"
-                and computation.frame_id.is_child_of(self.computations[-1].frame_id)
+                and computation.frame_id.is_child_of(self.last_computation().frame_id)
             ):
                 self._computations[-1] = computation
             else:
