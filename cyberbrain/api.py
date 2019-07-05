@@ -1,119 +1,44 @@
-import ast
-import copy
-import dis
-import inspect
-import io
-import os
+"""Cyberbrain API."""
+
 import sys
-import typing
-from collections import defaultdict, namedtuple
-from pprint import pprint
 
-import uncompyle6
-from crayons import blue, green, red, yellow
+from crayons import blue, red
 
-from . import caller_ast, utils
-from .computation import Call, Line
+from . import utils
+from .computation import computation_manager
 from .debugging import dump_computations
 from .frame_id import FrameID
 
-computations = []
 
-
-class NameVisitor(ast.NodeVisitor):
-    def __init__(self):
-        self.names = set()
-        super().__init__()
-
-    def visit_Name(self, node):
-        self.names.add(node.id)
-        self.generic_visit(node)
-
-
-# Records variables from bottom to top
-def traverse_frames(frame):
-    frame_vars = defaultdict(dict)  # [frame_level_up][var_name]
-    frame_level_up = 0
-    while frame is not None:
-        for var_name, var_value in frame.f_locals.items():
-            try:
-                frame_vars[frame_level_up][var_name] = copy.deepcopy(var_value)
-            except TypeError:
-                try:
-                    frame_vars[frame_level_up][var_name] = copy.copy(var_value)
-                except TypeError:
-                    frame_vars[frame_level_up][var_name] = var_value
-        frame = frame.f_back
-        frame_level_up += 1
-    return frame_vars
+# class NameVisitor(ast.NodeVisitor):
+#     def __init__(self):
+#         self.names = set()
+#         super().__init__()
+#
+#     def visit_Name(self, node):
+#         self.names.add(node.id)
+#         self.generic_visit(node)
 
 
 def global_tracer(frame, event, arg):
-    """
-    Needs to exclude code from Python stdlib, and ideally, 3rd party code as well.
-    """
+    """Needs to exclude code from Python stdlib, and ideally, 3rd party code as well."""
     if utils.should_exclude(frame.f_code.co_filename):
         return
     print("\nthis is global: ", frame, frame.f_code.co_filename, red(event), arg)
 
     if event == "call":
-        f = frame.f_back
-        code_str = caller_ast.get_cache_callsite_code_str(f.f_code, f.f_lasti)
-        computation = Call(
-            caller_str=code_str.rstrip(),
-            arg_vlues=inspect.getargvalues(frame),
-            filepath=frame.f_code.co_filename,
-            lineno=frame.f_lineno,
-            data=traverse_frames(frame),
-            event=event,
-            frame_id=FrameID.create(event),
-            last_i=frame.f_lasti,
-        )
-        # When entering a new call, replaces previous line(aka func caller) with a call
-        # computation.
-        if (
-            computations
-            and computations[-1].event == "line"
-            and computation.frame_id.is_child_of(computations[-1].frame_id)
-        ):
-            computations[-1] = computation
-        else:
-            computations.append(computation)
+        computation_manager.add_computation(event, frame)
     return local_tracer
 
 
 def local_tracer(frame, event, arg):
-    """Local trace function.
-    """
+    """Local trace function."""
     if utils.should_exclude(frame.f_code.co_filename):
         return
     print("\nthis is local: ", frame, blue(event), arg)
 
-    code_str, surrounding = utils.get_code_str_and_surrounding(frame)
-
     if event == "line":
-        frame_id = FrameID.create(event)
-        # For multiline statement, skips if the logical line has been added.
-        if (
-            computations
-            and computations[-1].frame_id == frame_id
-            and computations[-1].surrounding == surrounding
-        ):
-            return
-        # Records location, computation, data
-        computations.append(
-            Line(
-                code_str=code_str.rstrip(),
-                filepath=frame.f_code.co_filename,
-                lineno=frame.f_lineno,
-                data=traverse_frames(frame),
-                event=event,
-                frame_id=frame_id,
-                last_i=frame.f_lasti,
-                surrounding=surrounding,
-            )
-        )
-
+        computation_manager.add_computation(event, frame)
     elif event == "return":
         # At this point we don't need to record return but needs to update frame id.
         FrameID.create(event)
@@ -123,6 +48,7 @@ global_frame = None
 
 
 def init():
+    """Inits tracing."""
     global global_frame
 
     global_frame = sys._getframe(1)
@@ -138,7 +64,7 @@ def register(target=None):
     """
     sys.settrace(None)
     global_frame.f_trace = None
-    dump_computations(computations)
+    dump_computations(computation_manager.computations)
 
 
 #
