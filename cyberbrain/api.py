@@ -10,16 +10,6 @@ from .debugging import dump_computations
 from .frame_id import FrameID
 
 
-# class NameVisitor(ast.NodeVisitor):
-#     def __init__(self):
-#         self.names = set()
-#         super().__init__()
-#
-#     def visit_Name(self, node):
-#         self.names.add(node.id)
-#         self.generic_visit(node)
-
-
 def global_tracer(frame, event_type, arg):
     """Global trace function."""
     if utils.should_exclude(frame.f_code.co_filename):
@@ -28,6 +18,8 @@ def global_tracer(frame, event_type, arg):
 
     if event_type == "call":
         computation_manager.add_computation(event_type, frame)
+
+    del frame  # https://docs.python.org/3/library/inspect.html#the-interpreter-stack
     return local_tracer
 
 
@@ -42,6 +34,8 @@ def local_tracer(frame, event_type, arg):
     elif event_type == "return":
         # At this point we don't need to record return but needs to update frame id.
         FrameID.create(event_type)
+
+    del frame
 
 
 global_frame = None
@@ -65,25 +59,3 @@ def register(target=None):
     sys.settrace(None)
     global_frame.f_trace = None
     dump_computations(computation_manager.computations)
-
-
-#
-# # prints final trace output
-# def printer(lineno, frame_vars, ast_node, names):
-#     print("code: ", lines[lineno - 1], end="")
-#     print("vars: ")
-#     for name in names:
-#         # need to check existence because line event fires before line is executed.
-#         if name in frame_vars[0]:
-#             print(name, frame_vars[0][name])
-#
-#
-# # A set to record
-# target_identifier = {"y"}
-# # Finally, backtrace the records of each line
-# for computation in reversed(computations):
-#     visitor = NameVisitor()
-#     visitor.visit(computation.ast)
-#     if target_identifier & visitor.names:
-#         printer(computation.lineno, computation.data, computation.ast, visitor.names)
-#         target_identifier |= visitor.names
