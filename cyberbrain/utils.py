@@ -1,16 +1,15 @@
-import inspect
+"""Utility functions."""
+
+import copy
 import io
-import sys
 import sysconfig
 import token
 import tokenize
-import types
 import typing
+import inspect
+from collections import defaultdict
 from functools import lru_cache
 
-import bytecode
-import uncompyle6
-from crayons import blue, red, yellow
 
 try:
     from token import ENCODING as token_ENCODING
@@ -71,9 +70,11 @@ def should_exclude(filename):
     return False
 
 
-# Copied from https://stackoverflow.com/a/5389547/2142577
 def grouped(iterable, n):
-    "s -> (s0,s1,s2,...sn-1), (sn,sn+1,sn+2,...s2n-1), (s2n,s2n+1,s2n+2,...s3n-1), ..."
+    """Copies from https://stackoverflow.com/a/5389547/2142577.
+
+    s -> (s0,s1,s2,...sn-1), (sn,sn+1,sn+2,...s2n-1), (s2n,s2n+1,s2n+2,...s3n-1), ...
+    """
     return zip(*[iter(iterable)] * n)
 
 
@@ -186,3 +187,21 @@ def get_code_str_and_surrounding(frame):
             start_lineno=group[0].start[0] - 1, end_lineno=group[-1].end[0] - 1
         ),
     )
+
+
+def traverse_frames(frame):
+    """Records variables from bottom to top."""
+    frame_vars = defaultdict(dict)  # [frame_level_up][var_name]
+    frame_level_up = 0
+    while frame is not None:
+        for var_name, var_value in frame.f_locals.items():
+            try:
+                frame_vars[frame_level_up][var_name] = copy.deepcopy(var_value)
+            except TypeError:
+                try:
+                    frame_vars[frame_level_up][var_name] = copy.copy(var_value)
+                except TypeError:
+                    frame_vars[frame_level_up][var_name] = var_value
+        frame = frame.f_back
+        frame_level_up += 1
+    return frame_vars
