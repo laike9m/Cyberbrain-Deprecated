@@ -20,28 +20,28 @@ from .frame_id import FrameID
 #         self.generic_visit(node)
 
 
-def global_tracer(frame, event, arg):
+def global_tracer(frame, event_type, arg):
     """Global trace function."""
     if utils.should_exclude(frame.f_code.co_filename):
         return
-    print("\nthis is global: ", frame, frame.f_code.co_filename, red(event), arg)
+    print("\nthis is global: ", frame, frame.f_code.co_filename, red(event_type), arg)
 
-    if event == "call":
-        computation_manager.add_computation(event, frame)
+    if event_type == "call":
+        computation_manager.add_computation(event_type, frame)
     return local_tracer
 
 
-def local_tracer(frame, event, arg):
+def local_tracer(frame, event_type, arg):
     """Local trace function."""
     if utils.should_exclude(frame.f_code.co_filename):
         return
-    print("\nthis is local: ", frame, blue(event), arg)
+    print("\nthis is local: ", frame, blue(event_type), arg)
 
-    if event == "line":
-        computation_manager.add_computation(event, frame)
-    elif event == "return":
+    if event_type == "line":
+        computation_manager.add_computation(event_type, frame)
+    elif event_type == "return":
         # At this point we don't need to record return but needs to update frame id.
-        FrameID.create(event)
+        FrameID.create(event_type)
 
 
 global_frame = None
