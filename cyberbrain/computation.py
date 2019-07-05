@@ -20,7 +20,7 @@ class Computation(metaclass=abc.ABCMeta):
             "lineno": self.lineno,
             "code_str": self.code_str,
             "frame_id": str(self.frame_id),
-            "event": self.event,
+            "event": self.event_type,
             "last_i": self.last_i,
         }
 
@@ -39,7 +39,7 @@ class Line(Computation):
         lineno: int,
         data,
         frame_id: FrameID,
-        event: str,
+        event_type: str,
         last_i: int,
         surrounding: Optional[Surrounding],
     ):
@@ -47,7 +47,7 @@ class Line(Computation):
         self.filepath = filepath
         self.lineno = lineno
         self.data = data
-        self.event = event
+        self.event_type = event_type
         self.frame_id = frame_id
         self.last_i = last_i
         self.surrounding = surrounding
@@ -64,7 +64,7 @@ class Call(Computation):
         filepath: str,
         lineno: int,
         data,
-        event: str,
+        event_type: str,
         frame_id: FrameID,
         last_i: int,
     ):
@@ -73,7 +73,7 @@ class Call(Computation):
         self.filepath = filepath
         self.lineno = lineno
         self.data = data
-        self.event = event
+        self.event_type = event_type
         self.frame_id = frame_id
         self.last_i = last_i
 
@@ -90,7 +90,7 @@ class Call(Computation):
             filepath=frame.f_code.co_filename,
             lineno=frame.f_lineno,
             data=utils.traverse_frames(frame),
-            event="call",
+            event_type="call",
             frame_id=FrameID.create("call"),
             last_i=frame.f_lasti,
         )
@@ -116,7 +116,7 @@ class _ComputationManager:
             # For multiline statement, skips if the logical line has been added.
             if (
                 self.computations
-                and self.computations[-1].event == "line"
+                and self.computations[-1].event_type == "line"
                 and self.computations[-1].frame_id == frame_id
                 and self.computations[-1].surrounding == surrounding
             ):
@@ -128,7 +128,7 @@ class _ComputationManager:
                     filepath=frame.f_code.co_filename,
                     lineno=frame.f_lineno,
                     data=utils.traverse_frames(frame),
-                    event=event_type,
+                    event_type=event_type,
                     frame_id=frame_id,
                     last_i=frame.f_lasti,
                     surrounding=surrounding,
@@ -142,7 +142,7 @@ class _ComputationManager:
             # call computation.
             if (
                 self._computations
-                and self.computations[-1].event == "line"
+                and self.computations[-1].event_type == "line"
                 and computation.frame_id.is_child_of(self.last_computation().frame_id)
             ):
                 self._computations[-1] = computation
