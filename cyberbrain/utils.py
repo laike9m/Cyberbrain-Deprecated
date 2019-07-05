@@ -42,6 +42,11 @@ except ImportError:
 Surrounding = typing.NamedTuple(
     "Surrounding", [("start_lineno", int), ("end_lineno", int)]
 )
+
+SourceLocation = typing.NamedTuple(
+    "SourceLocation", [("filepath", str), ("lineno", int)]
+)
+
 installation_paths = list(sysconfig.get_paths().values())
 
 
