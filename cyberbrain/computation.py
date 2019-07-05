@@ -6,7 +6,7 @@ import inspect
 from pathlib import PurePath
 from typing import Optional
 
-from . import caller_ast, utils
+from . import callsite, utils
 from .frame_id import FrameID
 from .utils import Surrounding, SourceLocation
 
@@ -85,7 +85,7 @@ class Call(Computation):
     def create(frame):
         caller_frame = frame.f_back
         return Call(
-            call_site_ast=caller_ast.get_cache_callsite(
+            call_site_ast=callsite.get_cache_callsite(
                 caller_frame.f_code, caller_frame.f_lasti
             ),
             call_site_source_location=SourceLocation(
@@ -115,6 +115,10 @@ class _ComputationManager:
     def last_computation(self):
         return self._computations[-1]
 
+    @last_computation.setter
+    def last_computation(self, c: Computation):
+        self._computations[-1] = c
+
     def add_computation(self, event_type, frame):
         if event_type == "line":
             code_str, surrounding = utils.get_code_str_and_surrounding(frame)
@@ -122,9 +126,9 @@ class _ComputationManager:
             # For multiline statement, skips if the logical line has been added.
             if (
                 self.computations
-                and self.computations[-1].event_type == "line"
-                and self.computations[-1].frame_id == frame_id
-                and self.computations[-1].surrounding == surrounding
+                and self.last_computation.event_type == "line"
+                and self.last_computation.frame_id == frame_id
+                and self.last_computation.surrounding == surrounding
             ):
                 return
             # Records location, computation, data
@@ -145,10 +149,10 @@ class _ComputationManager:
             # call computation.
             if (
                 self._computations
-                and self.computations[-1].event_type == "line"
+                and self.last_computation.event_type == "line"
                 and computation.frame_id.is_child_of(self.last_computation.frame_id)
             ):
-                self._computations[-1] = computation
+                self.last_computation = computation
             else:
                 # raise Exception()
                 self._computations.append(computation)
