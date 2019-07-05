@@ -1,9 +1,8 @@
-# Moves logic from no_magic to here.
+"""Utilities to get call site."""
 
 import ast
 import dis
 import io
-import math
 import sys
 from collections import namedtuple
 from functools import lru_cache
@@ -83,7 +82,8 @@ def get_cache_callsite_code_str(code, i):
         i += 1
 
     string_io = io.StringIO()
-    uncompyle6.deparse_code2str(bc.to_code(), out=string_io)
+    print(bc.to_code())
+    uncompyle6.deparse_code2str(code=bc.to_code(), out=string_io)
     arginfo_visitor = GetArgInfo()
     arginfo_visitor.visit(ast.parse(string_io.getvalue()))
     # arginfo_visitor.value is ast node, for now just return str.

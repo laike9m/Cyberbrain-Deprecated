@@ -21,7 +21,7 @@ from .frame_id import FrameID
 
 
 def global_tracer(frame, event, arg):
-    """Needs to exclude code from Python stdlib, and ideally, 3rd party code as well."""
+    """Global trace function."""
     if utils.should_exclude(frame.f_code.co_filename):
         return
     print("\nthis is global: ", frame, frame.f_code.co_filename, red(event), arg)

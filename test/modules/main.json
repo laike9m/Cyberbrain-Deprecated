@@ -5,8 +5,7 @@
     "filepath": "foo.py",
     "frame_id": "(1, 0)",
     "last_i": -1,
-    "lineno": 4,
-    "surrounding": "None"
+    "lineno": 4
   },
   {
     "code_str": "Call(func=Attribute(value=Name(id='bar', ctx=Load()), attr='func_in_bar', ctx=Load()), args=[], keywords=[])",
@@ -14,8 +13,7 @@
     "filepath": "bar.py",
     "frame_id": "(2, 0)",
     "last_i": -1,
-    "lineno": 1,
-    "surrounding": "None"
+    "lineno": 1
   },
   {
     "code_str": "    return 1",
@@ -23,8 +21,7 @@
     "filepath": "bar.py",
     "frame_id": "(2, 0)",
     "last_i": 0,
-    "lineno": 2,
-    "surrounding": "Surrounding(start_lineno=1, end_lineno=1)"
+    "lineno": 2
   },
   {
     "code_str": "    return a",
@@ -32,8 +29,7 @@
     "filepath": "foo.py",
     "frame_id": "(1, 0)",
     "last_i": 8,
-    "lineno": 6,
-    "surrounding": "Surrounding(start_lineno=2, end_lineno=2)"
+    "lineno": 6
   },
   {
     "code_str": "cyberbrain.register()",
@@ -41,7 +37,6 @@
     "filepath": "main.py",
     "frame_id": "(0, 0)",
     "last_i": 36,
-    "lineno": 8,
-    "surrounding": "Surrounding(start_lineno=7, end_lineno=7)"
+    "lineno": 8
   }
 ]

@@ -5,8 +5,7 @@
     "filepath": "hello.py",
     "frame_id": "(1, 0)",
     "last_i": -1,
-    "lineno": 4,
-    "surrounding": "None"
+    "lineno": 4
   },
   {
     "code_str": "    print(\"hello world\")",
@@ -14,8 +13,7 @@
     "filepath": "hello.py",
     "frame_id": "(1, 0)",
     "last_i": 0,
-    "lineno": 5,
-    "surrounding": "Surrounding(start_lineno=1, end_lineno=1)"
+    "lineno": 5
   },
   {
     "code_str": "    cyberbrain.register()",
@@ -23,7 +21,6 @@
     "filepath": "hello.py",
     "frame_id": "(1, 0)",
     "last_i": 8,
-    "lineno": 6,
-    "surrounding": "Surrounding(start_lineno=2, end_lineno=2)"
+    "lineno": 6
   }
 ]

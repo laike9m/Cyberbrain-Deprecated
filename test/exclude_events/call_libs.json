@@ -5,8 +5,7 @@
     "filepath": "call_libs.py",
     "frame_id": "(0, 0)",
     "last_i": 40,
-    "lineno": 15,
-    "surrounding": "Surrounding(start_lineno=14, end_lineno=14)"
+    "lineno": 15
   },
   {
     "code_str": "c[\"red\"] += 1",
@@ -14,8 +13,7 @@
     "filepath": "call_libs.py",
     "frame_id": "(0, 0)",
     "last_i": 46,
-    "lineno": 16,
-    "surrounding": "Surrounding(start_lineno=15, end_lineno=15)"
+    "lineno": 16
   },
   {
     "code_str": "c[\"blue\"] += 1",
@@ -23,8 +21,7 @@
     "filepath": "call_libs.py",
     "frame_id": "(0, 0)",
     "last_i": 62,
-    "lineno": 17,
-    "surrounding": "Surrounding(start_lineno=16, end_lineno=16)"
+    "lineno": 17
   },
   {
     "code_str": "c[\"red\"] += 1",
@@ -32,8 +29,7 @@
     "filepath": "call_libs.py",
     "frame_id": "(0, 0)",
     "last_i": 78,
-    "lineno": 18,
-    "surrounding": "Surrounding(start_lineno=17, end_lineno=17)"
+    "lineno": 18
   },
   {
     "code_str": "c.most_common(10)",
@@ -41,8 +37,7 @@
     "filepath": "call_libs.py",
     "frame_id": "(0, 0)",
     "last_i": 94,
-    "lineno": 19,
-    "surrounding": "Surrounding(start_lineno=18, end_lineno=18)"
+    "lineno": 19
   },
   {
     "code_str": "crayons.blue(\"blue\")",
@@ -50,8 +45,7 @@
     "filepath": "call_libs.py",
     "frame_id": "(0, 0)",
     "last_i": 104,
-    "lineno": 20,
-    "surrounding": "Surrounding(start_lineno=19, end_lineno=19)"
+    "lineno": 20
   },
   {
     "code_str": "cyberbrain.register()",
@@ -59,7 +53,6 @@
     "filepath": "call_libs.py",
     "frame_id": "(0, 0)",
     "last_i": 114,
-    "lineno": 21,
-    "surrounding": "Surrounding(start_lineno=20, end_lineno=20)"
+    "lineno": 21
   }
 ]

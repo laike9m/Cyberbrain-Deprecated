@@ -5,8 +5,7 @@
     "filepath": "multiline_statement.py",
     "frame_id": "(1, 0)",
     "last_i": -1,
-    "lineno": 7,
-    "surrounding": "None"
+    "lineno": 7
   },
   {
     "code_str": "    y = {\n        \"longlonglonglong\": 1,\n        \"longlonglonglonglong\": 2,\n        \"longlonglonglonglonglong\": 3,\n    }",
@@ -14,8 +13,7 @@
     "filepath": "multiline_statement.py",
     "frame_id": "(1, 0)",
     "last_i": 0,
-    "lineno": 9,
-    "surrounding": "Surrounding(start_lineno=1, end_lineno=5)"
+    "lineno": 9
   },
   {
     "code_str": "    cyberbrain.register()  # register has to be called after init",
@@ -23,7 +21,6 @@
     "filepath": "multiline_statement.py",
     "frame_id": "(1, 0)",
     "last_i": 12,
-    "lineno": 13,
-    "surrounding": "Surrounding(start_lineno=6, end_lineno=6)"
+    "lineno": 13
   }
 ]

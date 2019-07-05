@@ -5,8 +5,7 @@
     "filepath": "loop.py",
     "frame_id": "(0, 0)",
     "last_i": 16,
-    "lineno": 7,
-    "surrounding": "Surrounding(start_lineno=6, end_lineno=6)"
+    "lineno": 7
   },
   {
     "code_str": "    print(i)",
@@ -14,8 +13,7 @@
     "filepath": "loop.py",
     "frame_id": "(0, 0)",
     "last_i": 30,
-    "lineno": 8,
-    "surrounding": "Surrounding(start_lineno=7, end_lineno=7)"
+    "lineno": 8
   },
   {
     "code_str": "for i in range(3):",
@@ -23,8 +21,7 @@
     "filepath": "loop.py",
     "frame_id": "(0, 0)",
     "last_i": 26,
-    "lineno": 7,
-    "surrounding": "Surrounding(start_lineno=6, end_lineno=6)"
+    "lineno": 7
   },
   {
     "code_str": "    print(i)",
@@ -32,8 +29,7 @@
     "filepath": "loop.py",
     "frame_id": "(0, 0)",
     "last_i": 30,
-    "lineno": 8,
-    "surrounding": "Surrounding(start_lineno=7, end_lineno=7)"
+    "lineno": 8
   },
   {
     "code_str": "for i in range(3):",
@@ -41,8 +37,7 @@
     "filepath": "loop.py",
     "frame_id": "(0, 0)",
     "last_i": 26,
-    "lineno": 7,
-    "surrounding": "Surrounding(start_lineno=6, end_lineno=6)"
+    "lineno": 7
   },
   {
     "code_str": "    print(i)",
@@ -50,8 +45,7 @@
     "filepath": "loop.py",
     "frame_id": "(0, 0)",
     "last_i": 30,
-    "lineno": 8,
-    "surrounding": "Surrounding(start_lineno=7, end_lineno=7)"
+    "lineno": 8
   },
   {
     "code_str": "for i in range(3):",
@@ -59,8 +53,7 @@
     "filepath": "loop.py",
     "frame_id": "(0, 0)",
     "last_i": 26,
-    "lineno": 7,
-    "surrounding": "Surrounding(start_lineno=6, end_lineno=6)"
+    "lineno": 7
   },
   {
     "code_str": "    print(\"in else\")",
@@ -68,8 +61,7 @@
     "filepath": "loop.py",
     "frame_id": "(0, 0)",
     "last_i": 42,
-    "lineno": 10,
-    "surrounding": "Surrounding(start_lineno=9, end_lineno=9)"
+    "lineno": 10
   },
   {
     "code_str": "while i > 0:",
@@ -77,8 +69,7 @@
     "filepath": "loop.py",
     "frame_id": "(0, 0)",
     "last_i": 50,
-    "lineno": 12,
-    "surrounding": "Surrounding(start_lineno=11, end_lineno=11)"
+    "lineno": 12
   },
   {
     "code_str": "    i -= 1",
@@ -86,8 +77,7 @@
     "filepath": "loop.py",
     "frame_id": "(0, 0)",
     "last_i": 60,
-    "lineno": 13,
-    "surrounding": "Surrounding(start_lineno=12, end_lineno=12)"
+    "lineno": 13
   },
   {
     "code_str": "    if i == 1:",
@@ -95,8 +85,7 @@
     "filepath": "loop.py",
     "frame_id": "(0, 0)",
     "last_i": 68,
-    "lineno": 14,
-    "surrounding": "Surrounding(start_lineno=13, end_lineno=13)"
+    "lineno": 14
   },
   {
     "code_str": "        break",
@@ -104,8 +93,7 @@
     "filepath": "loop.py",
     "frame_id": "(0, 0)",
     "last_i": 76,
-    "lineno": 15,
-    "surrounding": "Surrounding(start_lineno=14, end_lineno=14)"
+    "lineno": 15
   },
   {
     "code_str": "cyberbrain.register()",
@@ -113,7 +101,6 @@
     "filepath": "loop.py",
     "frame_id": "(0, 0)",
     "last_i": 82,
-    "lineno": 17,
-    "surrounding": "Surrounding(start_lineno=16, end_lineno=16)"
+    "lineno": 17
   }
 ]
