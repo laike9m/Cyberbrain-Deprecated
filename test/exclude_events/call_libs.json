@@ -42,7 +42,7 @@
     "lineno": 20
   },
   {
-    "code_str": "cyberbrain.register()",
+    "code_str": "cyberbrain.register(c)",
     "event": "line",
     "filepath": "call_libs.py",
     "frame_id": "(0, 0)",

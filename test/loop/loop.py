@@ -14,4 +14,4 @@ while i > 0:
     if i == 1:
         break
 
-cyberbrain.register()
+cyberbrain.register(i)

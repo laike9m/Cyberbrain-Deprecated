@@ -84,7 +84,7 @@
     "lineno": 15
   },
   {
-    "code_str": "cyberbrain.register()",
+    "code_str": "cyberbrain.register(i)",
     "event": "line",
     "filepath": "loop.py",
     "frame_id": "(0, 0)",

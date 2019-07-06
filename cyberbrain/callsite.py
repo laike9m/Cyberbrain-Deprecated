@@ -87,3 +87,6 @@ def get_cache_callsite(code, i) -> ast.AST:
     arginfo_visitor.visit(ast.parse(string_io.getvalue()))
     # arginfo_visitor.value is ast node, for now just return str.
     return arginfo_visitor.value
+
+
+# TODO: bind parameters to arguments

@@ -18,4 +18,4 @@ c["blue"] += 1
 c["red"] += 1
 c.most_common(10)
 crayons.blue("blue")
-cyberbrain.register()
+cyberbrain.register(c)

@@ -4,7 +4,7 @@ import sys
 
 from crayons import blue, red
 
-from . import utils
+from . import utils, backtrace
 from .computation import computation_manager
 from .debugging import dump_computations
 from .frame_id import FrameID
@@ -14,7 +14,7 @@ def global_tracer(frame, event_type, arg):
     """Global trace function."""
     if utils.should_exclude(frame.f_code.co_filename):
         return
-    print("\nthis is global: ", frame, frame.f_code.co_filename, red(event_type), arg)
+    # print("\nthis is global: ", frame, frame.f_code.co_filename, red(event_type), arg)
 
     if event_type == "call":
         computation_manager.add_computation(event_type, frame)
@@ -27,7 +27,7 @@ def local_tracer(frame, event_type, arg):
     """Local trace function."""
     if utils.should_exclude(frame.f_code.co_filename):
         return
-    print("\nthis is local: ", frame, blue(event_type), arg)
+    # print("\nthis is local: ", frame, blue(event_type), arg)
 
     if event_type == "line":
         computation_manager.add_computation(event_type, frame)
@@ -46,16 +46,21 @@ def init():
     global global_frame
 
     global_frame = sys._getframe(1)
-    print("set tracer for frame: ", global_frame, global_frame.f_lasti)
     sys.settrace(global_tracer)
     global_frame.f_trace = local_tracer
 
 
-def register(target=None):
+_dummy_obj = object()
+
+
+def register(target=_dummy_obj):
     """Receives target variable and stops recording computation.
 
     If target is None, it means it is only called to terminate tracing and dump data.
     """
     sys.settrace(None)
     global_frame.f_trace = None
+    if target is not _dummy_obj:
+        backtrace.trace_var(computation_manager)
+
     dump_computations(computation_manager.computations)
