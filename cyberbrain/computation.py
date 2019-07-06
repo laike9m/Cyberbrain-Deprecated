@@ -58,7 +58,7 @@ class Call(Computation):
         *,
         call_site_ast: ast.AST,
         call_site_source_location: SourceLocation,
-        arg_vlues: inspect.ArgInfo,
+        arg_values: inspect.ArgInfo,
         callee_source_location: SourceLocation,
         data,
         event_type: str,
@@ -66,16 +66,12 @@ class Call(Computation):
     ):
         self.call_site_ast = call_site_ast
         self.call_site_source_location = call_site_source_location
-        self.arg_vlues = arg_vlues
+        self.arg_values = arg_values
         self.callee_source_location = callee_source_location
         self.data = data
         self.event_type = event_type
         self.frame_id = frame_id
-
-    @property
-    def code_str(self):
-        # TODO: return all
-        return ast.dump(self.call_site_ast).rstrip()
+        self.code_str = ast.dump(self.call_site_ast).rstrip()
 
     @property
     def source_location(self):
@@ -91,7 +87,7 @@ class Call(Computation):
             call_site_source_location=SourceLocation(
                 filepath=caller_frame.f_code.co_filename, lineno=caller_frame.f_lineno
             ),
-            arg_vlues=inspect.getargvalues(frame),
+            arg_values=inspect.getargvalues(frame),
             callee_source_location=SourceLocation(
                 filepath=frame.f_code.co_filename, lineno=frame.f_lineno
             ),
