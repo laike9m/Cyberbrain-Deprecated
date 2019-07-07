@@ -4,11 +4,16 @@ import ast
 import dis
 import io
 import sys
-from collections import namedtuple
+import inspect
+import itertools
+from collections import namedtuple, defaultdict
 from functools import lru_cache
 
 import bytecode as b
 import uncompyle6
+
+from . import utils
+from .utils import ID
 
 MARK = "__MARK__"
 
@@ -89,4 +94,56 @@ def get_cache_callsite(code, i) -> ast.AST:
     return arginfo_visitor.value
 
 
-# TODO: bind parameters to arguments
+def get_param_arg_pairs(callsite_ast: ast.Call, arg_info: inspect.ArgInfo):
+    """Generates parameter, argument pairs.
+
+    Example:
+
+    def def f(foo, bar, baz=1, *args, **kwargs):
+        pass
+    f(a,b,c,d,qux=e)
+
+    Generates:
+
+    Name(id='a', ctx=Load()), foo
+    Name(id='b', ctx=Load()), bar
+    Name(id='c', ctx=Load()), baz
+    Name(id='d', ctx=Load()), args
+    keyword(arg='qux', value=Name(id='e', ctx=Load())), kwargs
+    """
+    _ARGS = arg_info.varargs  # extra arguments' name, could be anything.
+    _KWARGS = arg_info.keywords  # extra kw-arguments' name, could be anything.
+
+    pos_args = callsite_ast.args
+    kw_args = callsite_ast.keywords
+    # Builds a parameter list that expands *args and **kwargs
+    parameters = (
+        arg_info.args[:]
+        + [_ARGS] * len(arg_info.locals[_ARGS])
+        + [_KWARGS] * len(arg_info.locals[_KWARGS])
+    )
+    for arg, param in zip(itertools.chain(pos_args, kw_args), parameters):
+        print(ast.dump(arg), param)
+        yield arg, ID(param)
+
+
+def bind_param_arg(callsite_ast: ast.Call, arg_info: inspect.ArgInfo):
+    """Binds argument identifiers to parameter identifiers.
+
+    For now we'll flatten parameter identifiers as long as they contribute to the same
+    argument, for example:
+
+    def f(x, **kwargs):
+        pass
+    f(x = {a: 1, b: 2}, y=1, z=2)
+
+    Generates:
+
+    {ID(x): {ID(a), ID(b)}, ID(kwargs): {ID(y), ID(z)}}
+
+    In the future, we *might* record fine grained info.
+    """
+    param_to_args = defaultdict(set)
+    for arg, param in get_param_arg_pairs(callsite_ast, arg_info):
+        param_to_args[param] |= utils.find_names(arg)
+    return param_to_args

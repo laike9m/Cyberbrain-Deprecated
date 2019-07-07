@@ -109,6 +109,18 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 version = "1.8.0"
 
 [[package]]
+category = "dev"
+description = "Hamcrest framework for matcher objects"
+name = "pyhamcrest"
+optional = false
+python-versions = "*"
+version = "1.9.0"
+
+[package.dependencies]
+setuptools = "*"
+six = "*"
+
+[[package]]
 category = "main"
 description = "Python parsing module"
 name = "pyparsing"
@@ -262,7 +274,7 @@ python-versions = ">=2.7"
 version = "0.5.1"
 
 [metadata]
-content-hash = "25603afc488f97d93be9e5c93c3fca43c5bc590c0d0a0a4824983607826bfdc6"
+content-hash = "f29199bf776a55ccd076262aa6b16880ecf389379c79d81b706caf95001dbe3b"
 python-versions = "^3.6"
 
 [metadata.hashes]
@@ -278,6 +290,7 @@ more-itertools = ["3ad685ff8512bf6dc5a8b82ebf73543999b657eded8c11803d9ba6b648986
 packaging = ["0c98a5d0be38ed775798ece1b9727178c4469d9c3b4ada66e8e6b7849f8732af", "9e1cbf8c12b1f1ce0bb5344b8d7ecf66a6f8a6e91bcb0c84593ed6d3ab5c4ab3"]
 pluggy = ["0825a152ac059776623854c1543d65a4ad408eb3d33ee114dff91e57ec6ae6fc", "b9817417e95936bf75d85d3f8767f7df6cdde751fc40aed3bb3074cbcb77757c"]
 py = ["64f65755aee5b381cea27766a3a147c3f15b9b6b9ac88676de66ba2ae36793fa", "dc639b046a6e2cff5bbe40194ad65936d6ba360b52b3c3fe1d08a82dd50b5e53"]
+pyhamcrest = ["6b672c02fdf7470df9674ab82263841ce8333fb143f32f021f6cb26f0e512420", "7a4bdade0ed98c699d728191a058a60a44d2f9c213c51e2dd1e6fb42f2c6128a", "8ffaa0a53da57e89de14ced7185ac746227a8894dbd5a3c718bf05ddbd1d56cd", "bac0bea7358666ce52e3c6c85139632ed89f115e9af52d44b3c36e0bf8cf16a9", "f30e9a310bcc1808de817a92e95169ffd16b60cbc5a016a49c8d0e8ababfae79"]
 pyparsing = ["1873c03321fc118f4e9746baf201ff990ceb915f433f23b395f5580d1840cb2a", "9b6323ef4ab914af344ba97510e966d64ba91055d6b9afa6b30799340e89cc03"]
 pytest = ["6aa9bc2f6f6504d7949e9df2a756739ca06e58ffda19b5e53c725f7b03fb4aae", "b77ae6f2d1a760760902a7676887b665c086f71e3461c64ed2a312afcedc00d6"]
 pytest-parallel = ["94df6b0ebf48e03cbce66622d55ba6bd2cb116b06cfb39cc5fc4d2d310df25ca", "c4226352462ae32ff01d47a642d087005c3b9bf995cea61fc37a4becb146278d"]

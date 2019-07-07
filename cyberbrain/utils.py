@@ -228,15 +228,15 @@ def traverse_frames(frame):
 
 class _NameVisitor(ast.NodeVisitor):
     def __init__(self):
-        self.names = set()
+        self.names: typing.Set[ID] = set()
         super().__init__()
 
     def visit_Name(self, node):
-        self.names.add(node.id)
+        self.names.add(ID(node.id))
         self.generic_visit(node)
 
 
-def get_names(code_ast: ast.AST):
+def find_names(code_ast: ast.AST) -> typing.Set[ID]:
     """Finds idenditifiers in given ast node."""
     visitor = _NameVisitor()
     visitor.visit(code_ast)
