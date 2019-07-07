@@ -1,5 +1,6 @@
 """Utility functions."""
 
+import ast
 import copy
 import inspect
 import io
@@ -48,6 +49,13 @@ SourceLocation = typing.NamedTuple(
 )
 
 installation_paths = list(sysconfig.get_paths().values())
+
+
+class ID(str):
+    """A class that represents an identifier.
+
+    TODO: Create a hash function so that ID can be differenciated with string.
+    """
 
 
 @lru_cache()
@@ -216,3 +224,20 @@ def traverse_frames(frame):
         frame = frame.f_back
         frame_level_up += 1
     return frame_vars
+
+
+class _NameVisitor(ast.NodeVisitor):
+    def __init__(self):
+        self.names = set()
+        super().__init__()
+
+    def visit_Name(self, node):
+        self.names.add(node.id)
+        self.generic_visit(node)
+
+
+def get_names(code_ast: ast.AST):
+    """Finds idenditifiers in given ast node."""
+    visitor = _NameVisitor()
+    visitor.visit(code_ast)
+    return visitor.names
