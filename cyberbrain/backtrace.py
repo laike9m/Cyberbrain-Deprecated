@@ -5,6 +5,12 @@ import ast
 from . import utils
 
 
+# TODO: We need some sort of data structure to consume computations and analyze its
+# related computations and build relationships. It should be able to extend with
+# infinite layers, and each node should be isomorphic and generic to maintain different
+# types of relations.
+
+
 def parse_code_str(code_str) -> ast.AST:
     """Parses code string in a computation, which can be incomplete.
 
@@ -40,12 +46,12 @@ def trace_var(computation_manager):
     for computation in reversed(computation_manager.computations):
         if computation.event_type == "line":
             print("code_str is:", computation.code_str)
-            names = utils.get_names(parse_code_str(computation.code_str))
+            names = utils.find_names(parse_code_str(computation.code_str))
             if target_identifiers & names:
                 printer(computation, names)
                 target_identifiers |= names
         elif computation.event_type == "call":
-            names = utils.get_names(parse_code_str(computation.code_str))
+            names = utils.find_names(parse_code_str(computation.code_str))
             if target_identifiers & names:
                 printer(computation, names)
                 target_identifiers |= names
