@@ -2,17 +2,7 @@
 
 import ast
 
-
-class NameVisitor(ast.NodeVisitor):
-    """Finds all idenditifiers in a computation."""
-
-    def __init__(self):
-        self.names = set()
-        super().__init__()
-
-    def visit_Name(self, node):
-        self.names.add(node.id)
-        self.generic_visit(node)
+from . import utils
 
 
 def parse_code_str(code_str) -> ast.AST:
@@ -48,15 +38,14 @@ def trace_var(computation_manager):
 
     # Finally, backtrace the records of each line
     for computation in reversed(computation_manager.computations):
-        visitor = NameVisitor()
         if computation.event_type == "line":
             print("code_str is:", computation.code_str)
-            visitor.visit(parse_code_str(computation.code_str))
-            if target_identifiers & visitor.names:
-                printer(computation, visitor.names)
-                target_identifiers |= visitor.names
+            names = utils.get_names(parse_code_str(computation.code_str))
+            if target_identifiers & names:
+                printer(computation, names)
+                target_identifiers |= names
         elif computation.event_type == "call":
-            visitor.visit(computation.call_site_ast)
-            if target_identifiers & visitor.names:
-                printer(computation, visitor.names)
-                target_identifiers |= visitor.names
+            names = utils.get_names(parse_code_str(computation.code_str))
+            if target_identifiers & names:
+                printer(computation, names)
+                target_identifiers |= names
