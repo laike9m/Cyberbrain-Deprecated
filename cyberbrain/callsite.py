@@ -27,17 +27,19 @@ def _compute_offset(instr):
     return (1, 3)[instr.opcode < dis.HAVE_ARGUMENT]
 
 
-def compute_offset(instrs: b.Bytecode, i):
+def compute_offset(instrs: b.Bytecode, last_i):
     now = 0
     for index, instr in enumerate(instrs):
         # Only real instruction should increase offset
         if type(instr) != b.Instr:
             continue
         now += _compute_offset(instr)
-        if i <= now:
+        if now > last_i:
             break
-    # We stop at instruction before CALL_XXX, by adding 2 we get instr after CALL_XXX.
-    return index + 2
+    # When calling a function, caller_frame.last_i points to the instruction just before
+    # CALL_XXX. When now > last_i, it stops at CALL_XXX, by adding 1 we get the position
+    # after CALL_XXX, and that's where we want to insert __MARK__.
+    return index + 1
 
 
 class GetArgInfo(ast.NodeVisitor):
@@ -49,7 +51,7 @@ class GetArgInfo(ast.NodeVisitor):
     def visit_Attribute(self, node):
         if node.attr == MARK:
             self.activated = True
-            self.value = node.value
+            self.callsite_ast = node.value
             self.visit(node.value)
             self.activated = False
 
@@ -63,35 +65,17 @@ class GetArgInfo(ast.NodeVisitor):
             self.visit(each)
 
 
-def get_cache_code(code):
-    bc = b.Bytecode.from_code(code)
-    # arg of loading freevar/cellvar represented via integers
-    concrete_bc = bc.to_concrete_bytecode()
-    return bc, concrete_bc
-
-
 @lru_cache()
-def get_cache_callsite(code, i) -> ast.AST:
-    bc, cbc = get_cache_code(code)
-    index = compute_offset(bc, i)
-
-    i = 0
-    for real_index, instr in enumerate(bc):
-        # Again, we need to skip non-instruction object.
-        if i == index:
-            bc.insert(real_index, b.Instr("LOAD_ATTR", MARK))
-            break
-        if type(instr) != b.Instr:
-            print("type is ", type(instr))
-            continue
-        i += 1
+def get_callsite_ast(code, last_i) -> ast.AST:
+    bc = b.Bytecode.from_code(code)
+    index = compute_offset(bc, last_i)
+    bc.insert(index, b.Instr("LOAD_ATTR", MARK))
 
     string_io = io.StringIO()
     uncompyle6.deparse_code2str(code=bc.to_code(), out=string_io)
     arginfo_visitor = GetArgInfo()
     arginfo_visitor.visit(ast.parse(string_io.getvalue()))
-    # arginfo_visitor.value is ast node, for now just return str.
-    return arginfo_visitor.value
+    return arginfo_visitor.callsite_ast
 
 
 def get_param_arg_pairs(callsite_ast: ast.Call, arg_info: inspect.ArgInfo):
