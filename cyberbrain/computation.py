@@ -81,7 +81,7 @@ class Call(Computation):
     def create(frame):
         caller_frame = frame.f_back
         return Call(
-            call_site_ast=callsite.get_cache_callsite(
+            call_site_ast=callsite.get_callsite_ast(
                 caller_frame.f_code, caller_frame.f_lasti
             ),
             call_site_source_location=SourceLocation(

@@ -1,4 +1,12 @@
 [[package]]
+category = "dev"
+description = "Pretty print the output of python stdlib `ast.parse`."
+name = "astpretty"
+optional = false
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
+version = "1.6.0"
+
+[[package]]
 category = "main"
 description = "Atomic file writes."
 name = "atomicwrites"
@@ -274,10 +282,11 @@ python-versions = ">=2.7"
 version = "0.5.1"
 
 [metadata]
-content-hash = "f29199bf776a55ccd076262aa6b16880ecf389379c79d81b706caf95001dbe3b"
+content-hash = "68937d7601051e0f719616fdf0d4f6898ca4fb11c766eb958b534df264b54a13"
 python-versions = "^3.6"
 
 [metadata.hashes]
+astpretty = ["d45c06d07cbd4387aaa696cbb955d809fd6977fea8d00c9c409c1524d358cd54", "f9769a73381a9095581435d9477811b2cdd9cd4c721e2650db564624183191a1"]
 atomicwrites = ["03472c30eb2c5d1ba9227e4c2ca66ab8287fbfbbda3888aa93dc2e28fc6811b4", "75a9445bac02d8d058d5e1fe689654ba5a6556a1dfd8ce6ec55a0ed79866cfa6"]
 attrs = ["69c0dbf2ed392de1cb5ec704444b08a5ef81680a61cb899dc08127123af36a79", "f0b870f674851ecbfbbbd364d6b5cbdff9dcedbc7f3f5e18a6891057f21fe399"]
 bytecode = ["68b1d591c7af0e5c5273e028d3cc0299fbe374dff0cf9149ec7e569be0c573e7", "c43d5052cbff076bfdf5b0b93ff6c76e461aab628ce47d30637bb200b6b7bb2c"]
