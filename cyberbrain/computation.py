@@ -8,7 +8,7 @@ from typing import Optional
 
 from . import callsite, utils
 from .frame_id import FrameID
-from .utils import Surrounding, SourceLocation
+from .utils import SourceLocation, Surrounding
 
 
 class Computation(metaclass=abc.ABCMeta):
