@@ -2,17 +2,57 @@
 
 import ast
 import inspect
+import sys
 
+import astor
 from hamcrest import (
+    equal_to,
+    all_of,
     assert_that,
     contains,
-    has_property,
-    all_of,
-    instance_of,
     has_properties,
+    has_property,
+    instance_of,
 )
 
 from . import callsite
+
+
+def test_get_callsite_ast():
+    x = 1
+
+    def f(*args, **kwargs):
+        callsite_frame = sys._getframe(1)
+        return callsite.get_callsite_ast(callsite_frame.f_code, callsite_frame.f_lasti)
+
+    def g(*args, **kwargs):
+        callsite_frame = sys._getframe(1)
+        assert_that(
+            astor.to_source(
+                callsite.get_callsite_ast(callsite_frame.f_code, callsite_frame.f_lasti)
+            ).strip(),
+            equal_to("g(1, 1)"),
+        )
+
+    callsite_ast = f(1)
+    # We can't use assert here cause pytest will modify source and mess up things.
+    assert_that(astor.to_source(callsite_ast).strip(), equal_to("f(1)"))
+
+    callsite_ast = f(1, x=2)
+    # We can't use assert here cause pytest will modify source and mess up things.
+    assert_that(astor.to_source(callsite_ast).strip(), equal_to("f(1, x=2)"))
+
+    callsite_ast = f(x, g(1, 1), True if x else False)
+    assert_that(
+        astor.to_source(callsite_ast).strip(),
+        equal_to("f(x, g(1, 1), True if x else False)"),
+    )
+
+    def h(x):
+        return x
+
+    callsite_ast = h(h(h(f(1))))
+    assert_that(astor.to_source(callsite_ast).strip(), equal_to("f(1)"))
 
 
 def _get_call(module_ast):

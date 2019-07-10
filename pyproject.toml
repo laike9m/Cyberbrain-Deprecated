@@ -11,6 +11,7 @@ bytecode = "^0.8.0"
 uncompyle6 = "3.3.4"
 crayons = "^0.2.0"
 pytest-parallel = "^0.0.9"
+astor = "^0.8.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^4.6"
