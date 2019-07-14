@@ -116,9 +116,9 @@ def get_callsite_ast(code, last_i) -> ast.AST:
 
     string_io = io.StringIO()
     uncompyle6.deparse_code2str(code=bc.to_code(), out=string_io)
-    arginfo_visitor = MarkedCallVisitor()
-    arginfo_visitor.visit(ast.parse(string_io.getvalue()))
-    return arginfo_visitor.callsite_ast, arginfo_visitor.get_outer_call()
+    visitor = MarkedCallVisitor()
+    visitor.visit(ast.parse(string_io.getvalue()))
+    return visitor.callsite_ast, visitor.get_outer_call()
 
 
 def get_param_arg_pairs(callsite_ast: ast.Call, arg_info: inspect.ArgInfo):
