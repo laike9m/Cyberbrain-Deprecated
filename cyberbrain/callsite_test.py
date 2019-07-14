@@ -35,7 +35,7 @@ def test_get_callsite_ast():
             callsite_frame.f_code, callsite_frame.f_lasti
         )
         assert_ast(callsite_ast, "g(1, 1)")
-        assert_ast(outer_callsite_ast, "f(x, g(1, 1).__MARK__, True if x else False)")
+        assert_ast(outer_callsite_ast, "f(x, g(1, 1), True if x else False)")
 
     callsite_ast, outer_callsite_ast = f(1)
     # We can't use assert here cause pytest will modify source and mess up things.
@@ -65,7 +65,7 @@ def test_get_callsite_ast():
 
     callsite_ast, outer_callsite_ast = h(h(h(f(1))))
     assert_ast(callsite_ast, "f(1)")
-    assert_ast(outer_callsite_ast, "h(f(1).__MARK__)")
+    assert_ast(outer_callsite_ast, "h(f(1))")
 
 
 def _get_call(module_ast):

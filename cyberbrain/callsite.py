@@ -53,6 +53,16 @@ class MarkedCallVisitor(ast.NodeVisitor):
     Meanwhile, this visitor also records the parent of each ast node.
     """
 
+    class RemoveMarkTransformer(ast.NodeTransformer):
+        """Node transformer that removes __MARK__.
+
+        f(1).__MARK__ --> f(1)
+        """
+
+        def visit_Attribute(self, node):
+            if node.attr == MARK:
+                return node.value
+
     def __init__(self):
         self.activated = False
         self.callsite_ast = None
@@ -69,7 +79,6 @@ class MarkedCallVisitor(ast.NodeVisitor):
         callsite_ast. It recursively visits all parent nodes to find the nearest Call
         node.
         """
-        # TODO: remove __MARK__
         if self.callsite_ast is None:
             raise RuntimeError("get_outer_call should be called after .visit()")
 
@@ -77,10 +86,7 @@ class MarkedCallVisitor(ast.NodeVisitor):
         while hasattr(node, "parent"):
             node = node.parent
             if isinstance(node, ast.Call):
-                print("outer call is")
-                astpretty.pprint(node)
-                return node
-
+                return self.RemoveMarkTransformer().visit(node)
         return None
 
     def _add_parent(self, node):
