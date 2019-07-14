@@ -9,6 +9,7 @@ from typing import Optional
 from . import callsite, utils
 from .frame_id import FrameID
 from .utils import SourceLocation, Surrounding
+from .data import DataContainer
 
 
 class Computation(metaclass=abc.ABCMeta):
@@ -92,7 +93,7 @@ class Call(Computation):
             callee_source_location=SourceLocation(
                 filepath=frame.f_code.co_filename, lineno=frame.f_lineno
             ),
-            data=utils.traverse_frames(caller_frame),
+            data=DataContainer(caller_frame),
             event_type="call",
             frame_id=FrameID.create("call"),
         )
@@ -134,7 +135,7 @@ class _ComputationManager:
                     code_str=code_str.rstrip(),
                     filepath=frame.f_code.co_filename,
                     lineno=frame.f_lineno,
-                    data=utils.traverse_frames(frame),
+                    data=DataContainer(frame),
                     event_type=event_type,
                     frame_id=frame_id,
                     surrounding=surrounding,
