@@ -208,24 +208,6 @@ def get_code_str_and_surrounding(frame):
     )
 
 
-def traverse_frames(frame):
-    """Records variables from bottom to top."""
-    frame_vars = defaultdict(dict)  # [frame_level_up][var_name]
-    frame_level_up = 0
-    while frame is not None:
-        for var_name, var_value in frame.f_locals.items():
-            try:
-                frame_vars[frame_level_up][var_name] = copy.deepcopy(var_value)
-            except TypeError:
-                try:
-                    frame_vars[frame_level_up][var_name] = copy.copy(var_value)
-                except TypeError:
-                    frame_vars[frame_level_up][var_name] = var_value
-        frame = frame.f_back
-        frame_level_up += 1
-    return frame_vars
-
-
 class _NameVisitor(ast.NodeVisitor):
     def __init__(self):
         self.names: typing.Set[ID] = set()

@@ -51,6 +51,15 @@ def test_get_callsite_ast():
     assert_ast(callsite_ast, "f(x, g(1, 1), True if x else False)")
     assert_that(outer_callsite_ast, equal_to(None))
 
+    # Tests multiline won't affect processing ast.
+    # fmt: off
+    callsite_ast, outer_callsite_ast = f(x,
+                                         g(1, 1),
+                                         True if x else False)
+    assert_ast(callsite_ast, "f(x, g(1, 1), True if x else False)")
+    assert_that(outer_callsite_ast, equal_to(None))
+    # fmt: on
+
     def h(x):
         return x
 
