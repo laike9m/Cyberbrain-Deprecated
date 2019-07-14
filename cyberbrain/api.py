@@ -2,8 +2,6 @@
 
 import sys
 
-from crayons import blue, red
-
 from . import utils, backtrace
 from .computation import computation_manager
 from .debugging import dump_computations

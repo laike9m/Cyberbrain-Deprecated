@@ -9,6 +9,7 @@ import itertools
 from collections import namedtuple, defaultdict
 from functools import lru_cache
 
+import astpretty
 import bytecode as b
 import uncompyle6
 
@@ -42,13 +43,56 @@ def compute_offset(instrs: b.Bytecode, last_i):
     return index + 1
 
 
-class GetArgInfo(ast.NodeVisitor):
+class MarkedCallVisitor(ast.NodeVisitor):
+    """A node visitor that locates and records call node with __MARK__.
+
+    We use __MARK__ to mark a call that's being executed, e.g. f(a, b).__MARK__
+    We finds __MARK__ by checking node.attr in visit_Attribute, and node.value is
+    f(a, b), which is what we want.
+
+    Meanwhile, this visitor also records the parent of each ast node.
+    """
+
     def __init__(self):
         self.activated = False
-        self.result = None
-        self.value = None
+        self.callsite_ast = None
+
+    def get_outer_call(self):
+        """Finds outer call in case callsite_ast represents a nested call.
+
+        Given f(g(h()))
+        if current callsite_ast is h(), returns g(h()).
+        if current callsite_ast is g(h()), returns f(g(h())).
+        If current callsite_ast is f(g(h())), returns None.
+
+        This method should be called after calling .visit() to ensure non-None
+        callsite_ast. It recursively visits all parent nodes to find the nearest Call
+        node.
+        """
+        # TODO: remove __MARK__
+        if self.callsite_ast is None:
+            raise RuntimeError("get_outer_call should be called after .visit()")
+
+        node = self.callsite_ast
+        while hasattr(node, "parent"):
+            node = node.parent
+            if isinstance(node, ast.Call):
+                print("outer call is")
+                astpretty.pprint(node)
+                return node
+
+        return None
+
+    def _add_parent(self, node):
+        for child in ast.iter_child_nodes(node):
+            child.parent = node
+
+    def generic_visit(self, node):
+        self._add_parent(node)
+        super().generic_visit(node)
 
     def visit_Attribute(self, node):
+        self._add_parent(node)
         if node.attr == MARK:
             self.activated = True
             self.callsite_ast = node.value
@@ -56,9 +100,8 @@ class GetArgInfo(ast.NodeVisitor):
             self.activated = False
 
     def visit_Call(self, node):
+        self._add_parent(node)
         self.visit(node.func)
-        if self.activated:
-            self.result = Args(node.args, node.keywords)
         for each in node.args:
             self.visit(each)
         for each in node.keywords:
@@ -73,9 +116,9 @@ def get_callsite_ast(code, last_i) -> ast.AST:
 
     string_io = io.StringIO()
     uncompyle6.deparse_code2str(code=bc.to_code(), out=string_io)
-    arginfo_visitor = GetArgInfo()
+    arginfo_visitor = MarkedCallVisitor()
     arginfo_visitor.visit(ast.parse(string_io.getvalue()))
-    return arginfo_visitor.callsite_ast
+    return arginfo_visitor.callsite_ast, arginfo_visitor.get_outer_call()
 
 
 def get_param_arg_pairs(callsite_ast: ast.Call, arg_info: inspect.ArgInfo):
@@ -107,7 +150,6 @@ def get_param_arg_pairs(callsite_ast: ast.Call, arg_info: inspect.ArgInfo):
         + [_KWARGS] * len(arg_info.locals[_KWARGS])
     )
     for arg, param in zip(itertools.chain(pos_args, kw_args), parameters):
-        print(ast.dump(arg), param)
         yield arg, ID(param)
 
 
