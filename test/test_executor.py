@@ -32,6 +32,10 @@ def test_function(run_scripts_and_compare):
     run_scripts_and_compare("function", "simple_func.py")
 
 
+# def test_loop(run_scripts_and_compare):
+#     run_scripts_and_compare("expression_arg", "expression_arg.py")
+
+
 def test_multiline(run_scripts_and_compare):
     run_scripts_and_compare("multiline", "multiline_statement.py")
 

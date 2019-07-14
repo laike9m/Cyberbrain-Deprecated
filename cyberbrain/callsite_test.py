@@ -18,6 +18,10 @@ from hamcrest import (
 from . import callsite
 
 
+def assert_ast(ast_node, code_str):
+    assert_that(astor.to_source(ast_node).strip(), equal_to(code_str))
+
+
 def test_get_callsite_ast():
     x = 1
 
@@ -27,32 +31,32 @@ def test_get_callsite_ast():
 
     def g(*args, **kwargs):
         callsite_frame = sys._getframe(1)
-        assert_that(
-            astor.to_source(
-                callsite.get_callsite_ast(callsite_frame.f_code, callsite_frame.f_lasti)
-            ).strip(),
-            equal_to("g(1, 1)"),
+        callsite_ast, outer_callsite_ast = callsite.get_callsite_ast(
+            callsite_frame.f_code, callsite_frame.f_lasti
         )
+        assert_ast(callsite_ast, "g(1, 1)")
+        assert_ast(outer_callsite_ast, "f(x, g(1, 1).__MARK__, True if x else False)")
 
-    callsite_ast = f(1)
+    callsite_ast, outer_callsite_ast = f(1)
     # We can't use assert here cause pytest will modify source and mess up things.
-    assert_that(astor.to_source(callsite_ast).strip(), equal_to("f(1)"))
+    assert_ast(callsite_ast, "f(1)")
+    assert_that(outer_callsite_ast, equal_to(None))
 
-    callsite_ast = f(1, x=2)
+    callsite_ast, outer_call_site_ast = f(1, x=2)
     # We can't use assert here cause pytest will modify source and mess up things.
-    assert_that(astor.to_source(callsite_ast).strip(), equal_to("f(1, x=2)"))
+    assert_ast(callsite_ast, "f(1, x=2)")
+    assert_that(outer_call_site_ast, equal_to(None))
 
-    callsite_ast = f(x, g(1, 1), True if x else False)
-    assert_that(
-        astor.to_source(callsite_ast).strip(),
-        equal_to("f(x, g(1, 1), True if x else False)"),
-    )
+    callsite_ast, outer_callsite_ast = f(x, g(1, 1), True if x else False)
+    assert_ast(callsite_ast, "f(x, g(1, 1), True if x else False)")
+    assert_that(outer_callsite_ast, equal_to(None))
 
     def h(x):
         return x
 
-    callsite_ast = h(h(h(f(1))))
-    assert_that(astor.to_source(callsite_ast).strip(), equal_to("f(1)"))
+    callsite_ast, outer_callsite_ast = h(h(h(f(1))))
+    assert_ast(callsite_ast, "f(1)")
+    assert_ast(outer_callsite_ast, "h(f(1).__MARK__)")
 
 
 def _get_call(module_ast):

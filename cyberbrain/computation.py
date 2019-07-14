@@ -80,10 +80,11 @@ class Call(Computation):
     @staticmethod
     def create(frame):
         caller_frame = frame.f_back
+        call_site_ast, outer_call_site_ast = callsite.get_callsite_ast(
+            caller_frame.f_code, caller_frame.f_lasti
+        )
         return Call(
-            call_site_ast=callsite.get_callsite_ast(
-                caller_frame.f_code, caller_frame.f_lasti
-            ),
+            call_site_ast=call_site_ast,
             call_site_source_location=SourceLocation(
                 filepath=caller_frame.f_code.co_filename, lineno=caller_frame.f_lineno
             ),
