@@ -19,9 +19,9 @@ def run_scripts_and_compare():
         print(previous)  # Shows scripts output.
 
         with open(expected_output, "r") as f:
-            assert json_text == f.read().replace("\r\n", "\n").replace(
+            assert json_text.replace("\r\n", "\n").replace(
                 r"\r\n", r"\n"
-            ).strip("\r\n")
+            ) == f.read().strip("\r\n")
 
     return runner
 
