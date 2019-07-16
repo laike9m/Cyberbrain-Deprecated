@@ -19,7 +19,7 @@ def run_scripts_and_compare():
         print(previous)  # Shows scripts output.
 
         with open(expected_output, "r") as f:
-            assert json_text == f.read().strip("\n")
+            assert json_text == f.read().replace("\r\n", "\n").strip("\r\n")
 
     return runner
 
@@ -30,10 +30,6 @@ def test_hello_world(run_scripts_and_compare):
 
 def test_function(run_scripts_and_compare):
     run_scripts_and_compare("function", "simple_func.py")
-
-
-# def test_loop(run_scripts_and_compare):
-#     run_scripts_and_compare("expression_arg", "expression_arg.py")
 
 
 def test_multiline(run_scripts_and_compare):
