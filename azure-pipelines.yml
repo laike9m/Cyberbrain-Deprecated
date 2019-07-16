@@ -40,9 +40,7 @@ jobs:
       package_readme: null
       dev: null
     before:
-      - script: |
-          python -m pip install --upgrade pip poetry
-          poetry config settings.virtualenvs.create false
+      - script: python -m pip install --upgrade pip poetry
         displayName: 'setup'
       - script: poetry install && poetry develop
         displayName: 'install dependencies'
