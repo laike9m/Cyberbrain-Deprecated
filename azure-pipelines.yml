@@ -30,15 +30,10 @@ jobs:
 - template: run-tox-env.yml@tox
   parameters:
     jobs:
-      fix_lint: null
       py36:
         image: [linux, windows, macOs]
       py37:
         image: [linux, windows, macOs]
-      merge: null
-      type: null
-      package_readme: null
-      dev: null
     before:
       - script: |
           python -m pip install --upgrade pip poetry
