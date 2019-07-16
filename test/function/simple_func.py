@@ -8,7 +8,7 @@ def main():
         return x + y
 
     x = 1
-    y = f(x, f(1, 1))  # y is our target
+    y = f(x, f(1, 1))  # y is our target. TODO: add [1 for x in range(4)] as arg.
     cyberbrain.register()  # register has to be called after init
 
 

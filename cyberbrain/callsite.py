@@ -63,6 +63,8 @@ class MarkedCallVisitor(ast.NodeVisitor):
             if node.attr == MARK:
                 return node.value
 
+    remove_remark_transformer = RemoveMarkTransformer()
+
     def __init__(self):
         self.activated = False
         self.callsite_ast = None
@@ -86,7 +88,7 @@ class MarkedCallVisitor(ast.NodeVisitor):
         while hasattr(node, "parent"):
             node = node.parent
             if isinstance(node, ast.Call):
-                return self.RemoveMarkTransformer().visit(node)
+                return self.remove_remark_transformer.visit(node)
         return None
 
     def _add_parent(self, node):
