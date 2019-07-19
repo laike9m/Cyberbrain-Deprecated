@@ -13,7 +13,7 @@ class Node:
         """A convenient function to add relations at once.
 
         Usage:
-            node.build_relation({'prev': node_x, 'next': node_y})
+            node.build_relation(prev=node_x, next=node_y)
         """
         for relation_name, node in relation_dict.items():
             if relation_name not in {"prev", "next", "step_into", "returned_from"}:
