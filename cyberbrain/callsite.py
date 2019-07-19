@@ -161,8 +161,8 @@ def get_param_arg_pairs(callsite_ast: ast.Call, arg_info: inspect.ArgInfo):
         yield arg, ID(param)
 
 
-def bind_param_arg(callsite_ast: ast.Call, arg_info: inspect.ArgInfo):
-    """Binds argument identifiers to parameter identifiers.
+def maps_arg_to_param(callsite_ast: ast.Call, arg_info: inspect.ArgInfo):
+    """Maps argument identifiers to parameter identifiers.
 
     For now we'll flatten parameter identifiers as long as they contribute to the same
     argument, for example:
