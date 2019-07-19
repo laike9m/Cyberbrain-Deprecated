@@ -42,10 +42,10 @@ def test_get_callsite_ast():
     assert_ast(callsite_ast, "f(1)")
     assert_that(outer_callsite_ast, equal_to(None))
 
-    callsite_ast, outer_call_site_ast = f(1, x=2)
+    callsite_ast, outer_callsite_ast = f(1, x=2)
     # We can't use assert here cause pytest will modify source and mess up things.
     assert_ast(callsite_ast, "f(1, x=2)")
-    assert_that(outer_call_site_ast, equal_to(None))
+    assert_that(outer_callsite_ast, equal_to(None))
 
     callsite_ast, outer_callsite_ast = f(x, g(1, 1), True if x else False)
     assert_ast(callsite_ast, "f(x, g(1, 1), True if x else False)")
@@ -125,32 +125,30 @@ def test_get_param_arg_pairs():
     )
 
 
-def test_bind_param_arg():
+def test_maps_arg_to_param():
     def f(foo, bar, baz=1, *args, **kwargs):
         return inspect.getargvalues(inspect.currentframe())
 
     # Tests passing values directly.
-    assert callsite.bind_param_arg(_get_call(ast.parse("f(1,2)")), f(1, 2)) == {
+    assert callsite.maps_arg_to_param(_get_call(ast.parse("f(1,2)")), f(1, 2)) == {
         "foo": set(),
         "bar": set(),
     }
 
     # Tests passing variables.
     a, b, c = 1, 2, 3
-    assert callsite.bind_param_arg(_get_call(ast.parse("f(a,b,c)")), f(a, b, z=c)) == {
-        "foo": {"a"},
-        "bar": {"b"},
-        "baz": {"c"},
-    }
+    assert callsite.maps_arg_to_param(
+        _get_call(ast.parse("f(a,b,c)")), f(a, b, z=c)
+    ) == {"foo": {"a"}, "bar": {"b"}, "baz": {"c"}}
 
     # Tests catching extra args.
     d, e = 4, 5
-    assert callsite.bind_param_arg(
+    assert callsite.maps_arg_to_param(
         _get_call(ast.parse("f(a,b,c,d,qux=e)")), f(a, b, c, d, qux=e)
     ) == {"foo": {"a"}, "bar": {"b"}, "baz": {"c"}, "args": {"d"}, "kwargs": {"e"}}
 
     # Tests binding multiple params to one argument.
-    assert callsite.bind_param_arg(
+    assert callsite.maps_arg_to_param(
         _get_call(ast.parse("f(a,(b,c),c,qux=(d, e))")), f(a, (b, c), c, qux=(d, e))
     ) == {"foo": {"a"}, "bar": {"b", "c"}, "baz": {"c"}, "kwargs": {"d", "e"}}
 
@@ -158,9 +156,8 @@ def test_bind_param_arg():
     def g(*foo, **bar):
         return inspect.getargvalues(inspect.currentframe())
 
-    assert callsite.bind_param_arg(_get_call(ast.parse("g(d,qux=e)")), g(d, qux=e)) == {
-        "foo": {"d"},
-        "bar": {"e"},
-    }
+    assert callsite.maps_arg_to_param(
+        _get_call(ast.parse("g(d,qux=e)")), g(d, qux=e)
+    ) == {"foo": {"d"}, "bar": {"e"}}
 
     # TODO: tests nested call.

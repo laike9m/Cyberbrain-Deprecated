@@ -5,12 +5,6 @@ import ast
 from . import utils
 
 
-# TODO: We need some sort of data structure to consume computations and analyze its
-# related computations and build relationships. It should be able to extend with
-# infinite layers, and each node should be isomorphic and generic to maintain different
-# types of relations.
-
-
 def parse_code_str(code_str) -> ast.AST:
     """Parses code string in a computation, which can be incomplete.
 
