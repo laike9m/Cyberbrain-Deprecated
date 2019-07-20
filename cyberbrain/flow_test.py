@@ -5,7 +5,7 @@ from .utils import ID
 
 
 def create_flow():
-    """Creates the following execution flow.
+    """Creates an execution flow.
 
     start
       |   b
@@ -29,19 +29,56 @@ def create_flow():
     h      { type: Line, next: f, prev: g}
     target { type: Line, next: None, prev: f}
 
-    Assuming code all live in a single module.
+    Assuming code live in a single module, like this:
+
+    def func_f(bar):
+        x = len(bar)              # g
+        return x                  # h
+
+    def func_c(baa):
+        baa.append(None)          # d
+        baa.append('???')         # e
+
+    def func_a(foo):
+        ba = [foo]                # b
+        func_c(ba)                # c
+        foo = func_f(ba)          # f
+        cyberbrain.register(foo)  # target
+
+    fo = 1                        # start
+    func_a(fo)                    # a
     """
-    # Creats nodes.
-    node_start = Line("fo = 1")
-    node_a = Call("func_a(fo)", {ID("fo"): ID("foo")})
-    node_b = Line("ba = [foo]")
-    node_c = Call("func_c(ba)", {ID("ba"): ID("baa")})
-    node_d = Line("baa.append(None)")
-    node_e = Line("baa.append('???')")
-    node_f = Call("foo = func_f(baa)", {ID("baa"): ID("baaa")})
-    node_g = Line("x = len(baaa)")
-    node_h = Line("return x")
-    node_target = Line("cyberbrain.register(foo)")
+    # Common data
+    functions = {
+        "func_f": "<function func_f at 0x01>",
+        "func_c": "<function func_c at 0x02>",
+        "func_a": "<function func_a at 0x03>",
+        "len": "<built-in function len>",
+    }
+
+    # Creates nodes.
+    node_start = Line("fo = 1", data={**functions})
+    node_a = Call(
+        "func_a(fo)", arg_to_param={ID("fo"): ID("foo")}, data={"fo": 1, **functions}
+    )
+    node_b = Line("ba = [foo]", data={"foo": 1, **functions})
+    node_c = Call(
+        "func_c(ba)",
+        arg_to_param={ID("ba"): ID("baa")},
+        data={"foo": 1, "ba": [1], **functions},
+    )
+    node_d = Line("baa.append(None)", data={"baa": [1], **functions})
+    node_e = Line("baa.append('???')", data={"baa": [1, None], **functions})
+    node_f = Call(
+        "foo = func_f(ba)",
+        arg_to_param={ID("ba"): ID("bar")},
+        data={"foo": 1, "ba": [1, None, "???"], **functions},
+    )
+    node_g = Line("x = len(bar)", data={"bar": [1, None, "???"], **functions})
+    node_h = Line("return x", data={"bar": [1, None, "???"], "x": 3, **functions})
+    node_target = Line(
+        "cyberbrain.register(foo)", data={"foo": 3, "ba": [1, None, "???"], **functions}
+    )
 
     # Builds relation.
     node_start.next = node_a
