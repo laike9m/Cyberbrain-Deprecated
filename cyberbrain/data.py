@@ -7,6 +7,9 @@ from collections import defaultdict
 class DataContainer:
     """A class that holds variable values in a trace event."""
 
+    # TODO: Should we flatten variables in different frames? Is there still a need to
+    # keep the data - frame binding here?
+
     def __init__(self, frame):
         self._traverse_frames(frame)
         del frame

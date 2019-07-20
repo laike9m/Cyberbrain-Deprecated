@@ -24,17 +24,21 @@ class Node:
 class Line(Node):
     """Node that forms the execution flow."""
 
-    def __init__(self, code_str: str):
+    def __init__(self, code_str: str, data: typing.Dict):
         self.code_str = code_str
         self.code_ast = backtrace.parse_code_str(code_str)
         self.prev = None
         self.next = None
+        # For simplicity, uses a dict to represent data for now.
+        self.data = data
 
 
 class Call(Node):
     """Node that represents a callsite."""
 
-    def __init__(self, code_str: str, arg_to_param: typing.Dict[ID, ID]):
+    def __init__(
+        self, code_str: str, arg_to_param: typing.Dict[ID, ID], data: typing.Dict
+    ):
         self.code_str = code_str
         self.callsite_ast = backtrace.parse_code_str(code_str)
         self.arg_to_param = arg_to_param
@@ -42,6 +46,7 @@ class Call(Node):
         self.next = None
         self.step_into = None
         self.returned_from = None
+        self.data = data
 
 
 class Flow:

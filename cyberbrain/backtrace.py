@@ -49,3 +49,8 @@ def trace_var(computation_manager):
             if target_identifiers & names:
                 printer(computation, names)
                 target_identifiers |= names
+
+
+def trace_flow(start, target):
+    """Traces a flow and generates final output, aka the var change process."""
+    pass
