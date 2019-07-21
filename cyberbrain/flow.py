@@ -7,6 +7,7 @@ import astor
 
 from .utils import ID
 from . import backtrace
+from .frame_id import FrameID
 
 
 class Node:
@@ -14,6 +15,7 @@ class Node:
 
     def __init__(
         self,
+        frame_id: FrameID = None,
         *,
         code_str: str = None,
         code_ast: ast.AST = None,

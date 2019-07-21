@@ -12,7 +12,7 @@ def global_tracer(frame, event_type, arg):
     """Global trace function."""
     if utils.should_exclude(frame.f_code.co_filename):
         return
-    # print("\nthis is global: ", frame, frame.f_code.co_filename, red(event_type), arg)
+    print("\nthis is global: ", frame, frame.f_code.co_filename, event_type, arg)
 
     if event_type == "call":
         computation_manager.add_computation(event_type, frame)
@@ -25,7 +25,7 @@ def local_tracer(frame, event_type, arg):
     """Local trace function."""
     if utils.should_exclude(frame.f_code.co_filename):
         return
-    # print("\nthis is local: ", frame, blue(event_type), arg)
+    print("\nthis is local: ", frame, event_type, arg)
 
     if event_type == "line":
         computation_manager.add_computation(event_type, frame)
