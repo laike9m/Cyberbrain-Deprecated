@@ -1,9 +1,11 @@
 """Backtraces var change from target to program start."""
 
 import ast
+import typing
 
 from . import utils
 from .flow import Flow
+from .frame_id import FrameID
 
 
 def parse_code_str(code_str) -> ast.AST:
@@ -55,3 +57,15 @@ def trace_var(computation_manager):
 def trace_flow(flow: Flow):
     """Traces a flow and generates final output, aka the var change process."""
     current_node = flow.target
+
+    # Idenfiers being tracked in each frame.
+    target_identifiers: typing.Dict[FrameID, set] = {}
+
+    while current_node is not flow.start:
+        prev, step_into, returned_from = (
+            current_node.prev,
+            current_node.step_into,
+            current_node.returned_from,
+        )
+        # TODO: what to trace next, update target_identifiers.
+        current_node = prev or returned_from
