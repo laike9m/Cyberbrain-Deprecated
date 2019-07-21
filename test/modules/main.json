@@ -3,14 +3,14 @@
     "code_str": "Call(func=Attribute(value=Name(id='foo', ctx=Load()), attr='func_in_foo', ctx=Load()), args=[], keywords=[])",
     "event": "call",
     "filepath": "foo.py",
-    "frame_id": "(1, 0)",
+    "frame_id": "(0, 0)",
     "lineno": 4
   },
   {
     "code_str": "Call(func=Attribute(value=Name(id='bar', ctx=Load()), attr='func_in_bar', ctx=Load()), args=[], keywords=[])",
     "event": "call",
     "filepath": "bar.py",
-    "frame_id": "(2, 0)",
+    "frame_id": "(1, 0)",
     "lineno": 1
   },
   {

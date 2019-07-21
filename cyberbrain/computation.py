@@ -148,7 +148,7 @@ class _ComputationManager:
             if (
                 self._computations
                 and self.last_computation.event_type == "line"
-                and computation.frame_id.is_child_of(self.last_computation.frame_id)
+                and computation.frame_id == self.last_computation.frame_id
             ):
                 self.last_computation = computation
             else:
