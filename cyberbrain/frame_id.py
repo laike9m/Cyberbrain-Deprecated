@@ -38,7 +38,7 @@ class FrameID:
         elif event == "call":
             new_frame_id = FrameID(parent=cls.current_frame_id_)
             cls.current_frame_id_ = new_frame_id
-            return new_frame_id
+            return new_frame_id.parent  # callsite is in caller frame.
         elif event == "return":
             cls.current_frame_id_ = cls.current_frame_id_.parent
             return cls.current_frame_id_
