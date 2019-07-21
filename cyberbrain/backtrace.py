@@ -3,6 +3,7 @@
 import ast
 
 from . import utils
+from .flow import Flow
 
 
 def parse_code_str(code_str) -> ast.AST:
@@ -51,6 +52,6 @@ def trace_var(computation_manager):
                 target_identifiers |= names
 
 
-def trace_flow(start, target):
+def trace_flow(flow: Flow):
     """Traces a flow and generates final output, aka the var change process."""
-    pass
+    current_node = flow.target

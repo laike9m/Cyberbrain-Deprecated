@@ -1,6 +1,7 @@
 """Unit tests for flow."""
 
-from .flow import Line, Call
+from . import backtrace
+from .flow import Node, Flow
 from .utils import ID
 
 
@@ -18,16 +19,16 @@ def create_flow():
           |    |  |
        target  h  e
 
-    start  { type: Line, next: a, prev: None}
-    a      { type: Call, next: None, prev: start, step_into: b, returned_from: None}
-    b      { type: Line, next: c, prev: a}
-    c      { type: Call, next: f, prev: b, step_into: d, returned_from: e}
-    d      { type: Line, next: e, prev: c}
-    e      { type: Line, next: c, prev: d}
-    f      { type: Call, next: target, prev: b, step_into: g, returned_from: h}
-    g      { type: Line, next: h, prev: f}
-    h      { type: Line, next: f, prev: g}
-    target { type: Line, next: None, prev: f}
+    start  { next: a, prev: None}
+    a      { next: None, prev: start, step_into: b, returned_from: None}
+    b      { next: c, prev: a}
+    c      { next: f, prev: b, step_into: d, returned_from: e}
+    d      { next: e, prev: c}
+    e      { next: c, prev: d}
+    f      { next: target, prev: b, step_into: g, returned_from: h}
+    g      { next: h, prev: f}
+    h      { next: f, prev: g}
+    target { next: None, prev: f}
 
     Assuming code live in a single module, like this:
 
@@ -37,7 +38,7 @@ def create_flow():
 
     def func_c(baa):
         baa.append(None)          # d
-        baa.append('???')         # e
+        baa.append('?')           # e
 
     def func_a(foo):
         ba = [foo]                # b
@@ -45,6 +46,7 @@ def create_flow():
         foo = func_f(ba)          # f
         cyberbrain.register(foo)  # target
 
+    cyberbrain.init()
     fo = 1                        # start
     func_a(fo)                    # a
     """
@@ -57,27 +59,32 @@ def create_flow():
     }
 
     # Creates nodes.
-    node_start = Line("fo = 1", data={**functions})
-    node_a = Call(
-        "func_a(fo)", arg_to_param={ID("fo"): ID("foo")}, data={"fo": 1, **functions}
+    node_start = Node(code_str="fo = 1", data={**functions})
+    node_a = Node(
+        code_str="func_a(fo)",
+        arg_to_param={ID("fo"): ID("foo")},
+        data={"fo": 1, **functions},
     )
-    node_b = Line("ba = [foo]", data={"foo": 1, **functions})
-    node_c = Call(
-        "func_c(ba)",
+    node_b = Node(code_str="ba = [foo]", data={"foo": 1, **functions})
+    node_c = Node(
+        code_str="func_c(ba)",
         arg_to_param={ID("ba"): ID("baa")},
         data={"foo": 1, "ba": [1], **functions},
     )
-    node_d = Line("baa.append(None)", data={"baa": [1], **functions})
-    node_e = Line("baa.append('???')", data={"baa": [1, None], **functions})
-    node_f = Call(
-        "foo = func_f(ba)",
+    node_d = Node(code_str="baa.append(None)", data={"baa": [1], **functions})
+    node_e = Node(code_str="baa.append('?')", data={"baa": [1, None], **functions})
+    node_f = Node(
+        code_str="foo = func_f(ba)",
         arg_to_param={ID("ba"): ID("bar")},
-        data={"foo": 1, "ba": [1, None, "???"], **functions},
+        data={"foo": 1, "ba": [1, None, "?"], **functions},
     )
-    node_g = Line("x = len(bar)", data={"bar": [1, None, "???"], **functions})
-    node_h = Line("return x", data={"bar": [1, None, "???"], "x": 3, **functions})
-    node_target = Line(
-        "cyberbrain.register(foo)", data={"foo": 3, "ba": [1, None, "???"], **functions}
+    node_g = Node(code_str="x = len(bar)", data={"bar": [1, None, "?"], **functions})
+    node_h = Node(
+        code_str="return x", data={"bar": [1, None, "?"], "x": 3, **functions}
+    )
+    node_target = Node(
+        code_str="cyberbrain.register(foo)",
+        data={"foo": 3, "ba": [1, None, "?"], **functions},
     )
 
     # Builds relation.
@@ -96,6 +103,9 @@ def create_flow():
     node_h.build_relation(next=node_f, prev=node_g)
     node_target.build_relation(prev=node_f)
 
+    return Flow(start=node_start, target=node_target)
+
 
 def test_traverse_flow():
-    create_flow()
+    flow = create_flow()
+    backtrace.trace_flow(flow)
