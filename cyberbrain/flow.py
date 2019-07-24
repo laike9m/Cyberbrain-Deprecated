@@ -80,14 +80,15 @@ class Node:
         self.returned_from = None
         self.metadata = TrackingMetadata(**kwargs)
 
+    def __getattr__(self, name):
+        """Redirects attributes and calls to metadata.
+
+        __getattr__ is only called when name is not in node's __dict__.
+        """
+        return getattr(self.metadata, name)
+
     def is_callsite(self):
         return self.step_into is not None
-
-    def add_var_change(self, var_change):
-        self.metadata.add_var_change(var_change)
-
-    def update_tracking(self, tracking: typing.Set[ID]):
-        self.metadata.update_tracking(tracking)
 
     def build_relation(self, **relation_dict: typing.Dict[str, "Node"]):
         """A convenient function to add relations at once.
@@ -114,11 +115,9 @@ class Flow:
 
     def _get_target_id(self) -> ID:
         """Gets ID('x') out of cyberbrain.register(x)."""
-        register_call_ast = ast.parse(self.target.metadata.code_str.strip())
+        register_call_ast = ast.parse(self.target.code_str.strip())
         assert register_call_ast.body[0].value.func.value.id == "cyberbrain"
 
         # Finds the target identifier by checking argument passed to register().
         # Assuming argument is a single identifier.
-        self.target.metadata.update_tracking(
-            ID(register_call_ast.body[0].value.args[0].id)
-        )
+        self.target.update_tracking(ID(register_call_ast.body[0].value.args[0].id))
