@@ -3,8 +3,11 @@
 import ast
 import typing
 
+from deepdiff import DeepDiff
+
 from . import utils
-from .flow import Flow
+from .utils import ID
+from .flow import Flow, VarChange, Node
 from .frame_id import FrameID
 
 
@@ -31,13 +34,7 @@ def trace_var(computation_manager):
             if name in computation.data[0]:
                 print(name, computation.data[0][name], computation.code_str)
 
-    register_call_ast = ast.parse(computation_manager.last_computation.code_str.strip())
-    # Asserts last computation is cyberbrain.register(target)
-    assert register_call_ast.body[0].value.func.value.id == "cyberbrain"
-
-    # Finds the target identifier by checking argument passed to register().
-    target_identifier = register_call_ast.body[0].value.args[0].id
-    target_identifiers = {target_identifier}
+    target_identifiers = set()
 
     # Finally, backtrace the records of each line
     for computation in reversed(computation_manager.computations):
@@ -54,18 +51,38 @@ def trace_var(computation_manager):
                 target_identifiers |= names
 
 
+def _has_diff(x, y):
+    return DeepDiff(x, y) != {}
+
+
 def trace_flow(flow: Flow):
     """Traces a flow and generates final output, aka the var change process."""
-    current_node = flow.target
+    current: Node
+    next: Node
+    current, next = flow.target.prev, flow.target
 
-    # Idenfiers being tracked in each frame.
-    target_identifiers: typing.Dict[FrameID, set] = {}
-
-    while current_node is not flow.start:
-        prev, step_into, returned_from = (
-            current_node.prev,
-            current_node.step_into,
-            current_node.returned_from,
-        )
-        # TODO: what to trace next, update target_identifiers.
-        current_node = prev or returned_from
+    #
+    # while current is not flow.start:
+    #     if not current.is_callsite():
+    #         pass
+    #     next, step_into, returned_from = (
+    #         current.next,
+    #         current.step_into,
+    #         current.returned_from,
+    #     )
+    #     local_targets = targets.get(current.frame_id, set())
+    #     if current.returned_from is None:  # is not call node
+    #         for identifier in targets[current.frame_id]:
+    #             if _has_diff(current.data[identifier], next.data[identifier]):
+    #                 # Note that we add var change to current, because data contains the
+    #                 # value before executing this node.
+    #                 current.add_var_change(
+    #                     VarChange(
+    #                         id=identifier,
+    #                         old_value=current.data[identifier],
+    #                         new_value=next.data[identifier],
+    #                     )
+    #                 )
+    #     else:
+    #         # TODO: deal with callsite.
+    #         pass

@@ -2,6 +2,7 @@
 
 import ast
 import typing
+from dataclasses import dataclass
 
 import astor
 
@@ -10,28 +11,83 @@ from . import backtrace
 from .frame_id import FrameID
 
 
-class Node:
-    """Basic unit of an execution flow."""
+@dataclass
+class VarAppear:
+    """Variable/Idenfier appears in current frame."""
+
+    id: ID
+    value: typing.Any
+
+
+@dataclass
+class VarChange:
+    """Variable/Idenfier changes in current frame."""
+
+    id: ID
+    old_value: typing.Any
+    old_value: typing.Any
+
+
+@dataclass
+class VarSwitch:
+    """Variable/Idenfier switches at callsite."""
+
+    old_id: ID
+    new_id: ID
+    value: typing.Any
+
+
+class TrackingMetadata:
+    """Class that stores metadata during tracing."""
 
     def __init__(
         self,
-        frame_id: FrameID = None,
-        *,
+        data: typing.Dict,
         code_str: str = None,
         code_ast: ast.AST = None,
-        data: typing.Dict,
-        arg_to_param: typing.Dict[ID, ID] = None
+        arg_to_param: typing.Dict[ID, ID] = None,
     ):
         if not any([code_str, code_ast]):
             raise ValueError("Should provide code_str or code_ast.")
         self.code_str = code_str or astor.to_source(code_ast)
         self.code_ast = code_ast or backtrace.parse_code_str(code_str)
+        self.var_changes = set()
+        self.tracking: typing.Set[ID] = set()
+        # For simplicity, uses a dict to represent data for now.
+        self.data = data
+
+    def add_var_change(self, var_change):
+        self.var_changes.add(var_change)
+
+    def update_tracking(self, *new_ids: ID):
+        """Updates identifiers being tracked.
+
+        When updating tracking, identifiers need to exist in data because we can't
+        tracking identifiers that don't exist.
+        """
+        for new_id in new_ids:
+            self.tracking.add(new_id)
+
+
+class Node:
+    """Basic unit of an execution flow."""
+
+    def __init__(self, frame_id: FrameID, **kwargs):
+        self.frame_id = frame_id
         self.prev = None
         self.next = None
         self.step_into = None
         self.returned_from = None
-        # For simplicity, uses a dict to represent data for now.
-        self.data = data
+        self.metadata = TrackingMetadata(**kwargs)
+
+    def is_callsite(self):
+        return self.step_into is not None
+
+    def add_var_change(self, var_change):
+        self.metadata.add_var_change(var_change)
+
+    def update_tracking(self, tracking: typing.Set[ID]):
+        self.metadata.update_tracking(tracking)
 
     def build_relation(self, **relation_dict: typing.Dict[str, "Node"]):
         """A convenient function to add relations at once.
@@ -54,3 +110,15 @@ class Flow:
     def __init__(self, start: Node, target: Node):
         self.start = start
         self.target = target
+        self._get_target_id()
+
+    def _get_target_id(self) -> ID:
+        """Gets ID('x') out of cyberbrain.register(x)."""
+        register_call_ast = ast.parse(self.target.metadata.code_str.strip())
+        assert register_call_ast.body[0].value.func.value.id == "cyberbrain"
+
+        # Finds the target identifier by checking argument passed to register().
+        # Assuming argument is a single identifier.
+        self.target.metadata.update_tracking(
+            ID(register_call_ast.body[0].value.args[0].id)
+        )

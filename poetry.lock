@@ -66,6 +66,26 @@ version = "0.2.0"
 colorama = "*"
 
 [[package]]
+category = "main"
+description = "A backport of the dataclasses module for Python 3.6"
+name = "dataclasses"
+optional = false
+python-versions = "*"
+version = "0.6"
+
+[[package]]
+category = "main"
+description = "Deep Difference and Search of any Python object/data."
+name = "deepdiff"
+optional = false
+python-versions = ">=3.4"
+version = "4.0.7"
+
+[package.dependencies]
+jsonpickle = ">=1.0"
+ordered-set = ">=3.1"
+
+[[package]]
 category = "dev"
 description = "A platform independent file lock."
 name = "filelock"
@@ -86,12 +106,28 @@ zipp = ">=0.5"
 
 [[package]]
 category = "main"
+description = "Python library for serializing any arbitrary object graph into JSON"
+name = "jsonpickle"
+optional = false
+python-versions = "*"
+version = "1.2"
+
+[[package]]
+category = "main"
 description = "More routines for operating on iterables, beyond itertools"
 marker = "python_version > \"2.7\""
 name = "more-itertools"
 optional = false
 python-versions = ">=3.4"
 version = "7.1.0"
+
+[[package]]
+category = "main"
+description = "A MutableSet that remembers its order, so that every entry has an index."
+name = "ordered-set"
+optional = false
+python-versions = ">=2.7"
+version = "3.1.1"
 
 [[package]]
 category = "main"
@@ -290,7 +326,7 @@ python-versions = ">=2.7"
 version = "0.5.1"
 
 [metadata]
-content-hash = "539b1fdfe37912eaac9e618a35adfd7a42ecc0e8d10ee728e8e87a2bcfb8dddf"
+content-hash = "5fb8730ad956a1baa84fac3423b0a90ec63f8134dcb3260dd6a6a63a281b3eb4"
 python-versions = "^3.6"
 
 [metadata.hashes]
@@ -302,9 +338,13 @@ bytecode = ["68b1d591c7af0e5c5273e028d3cc0299fbe374dff0cf9149ec7e569be0c573e7", 
 click = ["2335065e6395b9e67ca716de5f7526736bfa6ceead690adf616d925bdc622b13", "5b94b49521f6456670fdb30cd82a4eca9412788a93fa6dd6df72c94d5a8ff2d7"]
 colorama = ["05eed71e2e327246ad6b38c540c4a3117230b19679b875190486ddd2d721422d", "f8ac84de7840f5b9c4e3347b3c1eaa50f7e49c2b07596221daec5edaabbd7c48"]
 crayons = ["41f0843815a8e3ac6fb445b7970d8b9c766e6f164092d84e7ea809b4c91418ec", "8edcadb7f197e25f2cc094aec5bf7f1b6001d3f76c82d56f8d46f6fb1405554f"]
+dataclasses = ["454a69d788c7fda44efd71e259be79577822f5e3f53f029a22d08004e951dc9f", "6988bd2b895eef432d562370bb707d540f32f7360ab13da45340101bc2307d84"]
+deepdiff = ["1123762580af0904621136d117c8397392a244d3ff0fa0a50de57a7939582476", "6ab13e0cbb627dadc312deaca9bef38de88a737a9bbdbfbe6e3857748219c127"]
 filelock = ["18d82244ee114f543149c66a6e0c14e9c4f8a1044b5cdaadd0f82159d6a6ff59", "929b7d63ec5b7d6b71b0fa5ac14e030b3f70b75747cef1b10da9b879fef15836"]
 importlib-metadata = ["6dfd58dfe281e8d240937776065dd3624ad5469c835248219bd16cf2e12dbeb7", "cb6ee23b46173539939964df59d3d72c3e0c1b5d54b84f1d8a7e912fe43612db"]
+jsonpickle = ["d0c5a4e6cb4e58f6d5406bdded44365c2bcf9c836c4f52910cc9ba7245a59dc2", "d3e922d781b1d0096df2dad89a2e1f47177d7969b596aea806a9d91b4626b29b"]
 more-itertools = ["3ad685ff8512bf6dc5a8b82ebf73543999b657eded8c11803d9ba6b648986f4d", "8bb43d1f51ecef60d81854af61a3a880555a14643691cc4b64a6ee269c78f09a"]
+ordered-set = ["a7bfa858748c73b096e43db14eb23e2bc714a503f990c89fac8fab9b0ee79724"]
 packaging = ["0c98a5d0be38ed775798ece1b9727178c4469d9c3b4ada66e8e6b7849f8732af", "9e1cbf8c12b1f1ce0bb5344b8d7ecf66a6f8a6e91bcb0c84593ed6d3ab5c4ab3"]
 pluggy = ["0825a152ac059776623854c1543d65a4ad408eb3d33ee114dff91e57ec6ae6fc", "b9817417e95936bf75d85d3f8767f7df6cdde751fc40aed3bb3074cbcb77757c"]
 py = ["64f65755aee5b381cea27766a3a147c3f15b9b6b9ac88676de66ba2ae36793fa", "dc639b046a6e2cff5bbe40194ad65936d6ba360b52b3c3fe1d08a82dd50b5e53"]

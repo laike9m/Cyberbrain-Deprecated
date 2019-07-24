@@ -53,10 +53,10 @@ def create_flow():
     """
     # Common data
     functions = {
-        "func_f": "<function func_f at 0x01>",
-        "func_c": "<function func_c at 0x02>",
-        "func_a": "<function func_a at 0x03>",
-        "len": "<built-in function len>",
+        ID("func_f"): "<function func_f at 0x01>",
+        ID("func_c"): "<function func_c at 0x02>",
+        ID("func_a"): "<function func_a at 0x03>",
+        ID("len"): "<built-in function len>",
     }
 
     # Creates nodes.
@@ -65,47 +65,47 @@ def create_flow():
         FrameID.create("call"),
         code_str="func_a(fo)",
         arg_to_param={ID("fo"): ID("foo")},
-        data={"fo": 1, **functions},
+        data={ID("fo"): 1, **functions},
     )
     node_b = Node(
-        FrameID.create("line"), code_str="ba = [foo]", data={"foo": 1, **functions}
+        FrameID.create("line"), code_str="ba = [foo]", data={ID("foo"): 1, **functions}
     )
     node_c = Node(
         FrameID.create("call"),
         code_str="func_c(ba)",
         arg_to_param={ID("ba"): ID("baa")},
-        data={"foo": 1, "ba": [1], **functions},
+        data={ID("foo"): 1, ID("ba"): [1], **functions},
     )
     node_d = Node(
         FrameID.create("line"),
         code_str="baa.append(None)",
-        data={"baa": [1], **functions},
+        data={ID("baa"): [1], **functions},
     )
     node_e = Node(
         FrameID.create("line"),
         code_str="baa.append('?')",
-        data={"baa": [1, None], **functions},
+        data={ID("baa"): [1, None], **functions},
     )
     node_f = Node(
         FrameID.create("call"),
         code_str="foo = func_f(ba)",
         arg_to_param={ID("ba"): ID("bar")},
-        data={"foo": 1, "ba": [1, None, "?"], **functions},
+        data={ID("foo"): 1, ID("ba"): [1, None, "?"], **functions},
     )
     node_g = Node(
         FrameID.create("line"),
         code_str="x = len(bar)",
-        data={"bar": [1, None, "?"], **functions},
+        data={ID("bar"): [1, None, "?"], **functions},
     )
     node_h = Node(
         FrameID.create("line"),
         code_str="return x",
-        data={"bar": [1, None, "?"], "x": 3, **functions},
+        data={ID("bar"): [1, None, "?"], ID("x"): 3, **functions},
     )
     node_target = Node(
         FrameID.create("line"),
         code_str="cyberbrain.register(foo)",
-        data={"foo": 3, "ba": [1, None, "?"], **functions},
+        data={ID("foo"): 3, ID("ba"): [1, None, "?"], **functions},
     )
 
     # Builds relation.
