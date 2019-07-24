@@ -12,6 +12,8 @@ uncompyle6 = "3.3.4"
 crayons = "^0.2.0"
 pytest-parallel = "^0.0.9"
 astor = "^0.8.0"
+deepdiff = "^4.0"
+dataclasses = "^0.6.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^4.6"
