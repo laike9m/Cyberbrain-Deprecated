@@ -61,10 +61,9 @@ def trace_flow(flow: Flow):
     next: Node
     current, next = flow.target.prev, flow.target
 
-    #
     # while current is not flow.start:
     #     if not current.is_callsite():
-    #         pass
+    #         current.update_tracking(*next.tracking)
     #     next, step_into, returned_from = (
     #         current.next,
     #         current.step_into,

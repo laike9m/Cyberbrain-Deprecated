@@ -5,6 +5,8 @@ from subprocess import PIPE, Popen
 
 import pytest
 
+os.environ["CYBERBRAIN_DEV_PC"] = "true"
+
 
 @pytest.fixture
 def run_scripts_and_compare():
