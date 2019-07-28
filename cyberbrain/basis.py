@@ -1,8 +1,8 @@
 """Some basic data structures used throughout the project."""
 
 import sys
-import typing
 from collections import defaultdict
+from typing import Dict, Tuple, NamedTuple
 
 
 # "surrounding" is a 2-element tuple (start_lineno, end_lineno), representing a
@@ -24,65 +24,73 @@ from collections import defaultdict
 # 5    c = false
 #
 # For the assignment of b, start_lineno = 2, end_lineno = 4
-Surrounding = typing.NamedTuple(
-    "Surrounding", [("start_lineno", int), ("end_lineno", int)]
-)
+Surrounding = NamedTuple("Surrounding", [("start_lineno", int), ("end_lineno", int)])
 
-SourceLocation = typing.NamedTuple(
-    "SourceLocation", [("filepath", str), ("lineno", int)]
-)
+SourceLocation = NamedTuple("SourceLocation", [("filepath", str), ("lineno", int)])
 
 
 class FrameID:
+    """Class that represents a frame.
 
-    current_frame_id_ = None
+    Basically, a frame id is just a tuple, where each element represents the frame index
+    within the same parent frame. For example, consider this snippet:
 
-    def __init__(self, parent=None):
-        self._parent = parent
-        self._children = []
-        if parent:
-            parent.add_child(self)
+    def f(): g()
+
+    def g(): pass
+
+    f()
+    f()
+
+    Assuming the frame id for global frame is (0,). We called f two times with two
+    frames (0, 0) and (0, 1). f calls g, which also generates two frames (0, 0, 0) and
+    (0, 1, 0). By comparing prefixes, it's easy to know whether one frame is the parent
+    frame of the other.
+
+    We also maintain the frame id of current code location. New frame ids are generated
+    based on event type and current frame id.
+    """
+
+    current_ = (0,)
+
+    # Mapping from parent frame id to max child frame index.
+    child_index: Dict[Tuple, int] = defaultdict(int)
+
+    def __init__(self, frame_id_tuple):
+        self._frame_id_tuple = frame_id_tuple
+
+    def __eq__(self, other):
+        return self._frame_id_tuple == other._frame_id_tuple
 
     @property
     def parent(self):
-        return self._parent
+        return FrameID(self._frame_id_tuple[:-1])
 
     def is_child_of(self, other):
-        return other is self._parent
+        return other == self._frame_id_tuple
 
-    def add_child(self, child):
-        self._children.append(child)
-
-    def child_index(self):
-        assert self.parent is not None
-        return self.parent._children.index(self)
+    def is_parent_of(self, other):
+        return self == other._frame_id_tuple
 
     @classmethod
     def create(cls, event: str):
-        if cls.current_frame_id_ is None:
-            cls.current_frame_id_ = FrameID()
-
         if event == "line":
-            return cls.current_frame_id_
+            return FrameID(cls.current_)
         elif event == "call":
-            new_frame_id = FrameID(parent=cls.current_frame_id_)
-            cls.current_frame_id_ = new_frame_id
-            return new_frame_id.parent  # callsite is in caller frame.
+            frame_id = FrameID(cls.current_)
+            cls.current_ = cls.current_ + (cls.child_index[cls.current_],)
+            return frame_id  # callsite is in caller frame.
         elif event == "return":
-            cls.current_frame_id_ = cls.current_frame_id_.parent
-            return cls.current_frame_id_
+            cls.current_ = cls.current_[:-1]
+            # After exiting call frame, increments call frame's child index.
+            cls.child_index[cls.current_] += 1
+            return FrameID(cls.current_)
         else:
             raise AttributeError("event type wrong: ", event)
 
     def __str__(self):
-        """outputs (level, index), frame id whose parent is None is at level 0."""
-        level = 0
-        curr = self
-        while curr.parent is not None:
-            level += 1
-            curr = curr.parent
-        index = 0 if self.parent is None else self.child_index()
-        return str((level, index))
+        """Prints the tuple representation."""
+        return str(self._frame_id_tuple)
 
 
 class ID(str):
