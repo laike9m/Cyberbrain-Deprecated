@@ -5,7 +5,7 @@ import sys
 from . import utils, backtrace
 from .computation import computation_manager
 from .debugging import dump_computations
-from .frame_id import FrameID
+from .basis import FrameID
 
 
 def global_tracer(frame, event_type, arg):

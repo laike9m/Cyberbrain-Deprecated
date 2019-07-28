@@ -7,8 +7,8 @@ from pathlib import PurePath
 from typing import Optional
 
 from . import callsite, utils
-from .frame_id import FrameID
-from .utils import SourceLocation, Surrounding
+from .basis import FrameID
+from .basis import SourceLocation, Surrounding
 from .data import DataContainer
 
 

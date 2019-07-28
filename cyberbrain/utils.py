@@ -12,6 +12,8 @@ import typing
 from collections import defaultdict
 from functools import lru_cache
 
+from .basis import ID, Surrounding
+
 try:
     from token import ENCODING as token_ENCODING
     from token import NL as token_NL
@@ -21,41 +23,7 @@ except ImportError:
     from tokenize import NL as token_NL
     from tokenize import COMMENT as token_COMMENT
 
-# "surrounding" is a 2-element tuple (start_lineno, end_lineno), representing a
-# logical line. Line number is frame-wise.
-#
-# For single-line statement, start_lineno = end_lineno, and is the line number of the
-# physical line returned by get_lineno_from_lnotab.
-#
-# For multiline statement, start_lineno is the line number of the first physical line,
-# end_lineno is the last. Lines from start_lineno to end_lineno -1 should end with
-# token.NL(or tokenize.NL before 3.7), line end_lineno should end with token.NEWLINE.
-#
-# Example:
-# 0    a = true
-# 1    a = true
-# 2    b = {
-# 3        'foo': 'bar'
-# 4    }
-# 5    c = false
-#
-# For the assignment of b, start_lineno = 2, end_lineno = 4
-Surrounding = typing.NamedTuple(
-    "Surrounding", [("start_lineno", int), ("end_lineno", int)]
-)
-
-SourceLocation = typing.NamedTuple(
-    "SourceLocation", [("filepath", str), ("lineno", int)]
-)
-
-installation_paths = list(sysconfig.get_paths().values())
-
-
-class ID(str):
-    """A class that represents an identifier.
-
-    TODO: Create a hash function so that ID can be differenciated with string.
-    """
+_INSTALLATION_PATHS = list(sysconfig.get_paths().values())
 
 
 @lru_cache()
@@ -74,7 +42,7 @@ def should_exclude(filename):
 
     Also we exclude frozen modules, as well as some weird cases.
     """
-    if any(filename.startswith(path) for path in installation_paths) or any(
+    if any(filename.startswith(path) for path in _INSTALLATION_PATHS) or any(
         name in filename
         for name in (
             "importlib._boostrap",
@@ -223,3 +191,7 @@ def find_names(code_ast: ast.AST) -> typing.Set[ID]:
     visitor = _NameVisitor()
     visitor.visit(code_ast)
     return visitor.names
+
+
+def has_diff(x, y):
+    return DeepDiff(x, y) != {}
