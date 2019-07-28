@@ -3,49 +3,49 @@
     "code_str": "c = Counter()",
     "event": "line",
     "filepath": "call_libs.py",
-    "frame_id": "(0, 0)",
+    "frame_id": "(0,)",
     "lineno": 15
   },
   {
     "code_str": "c[\"red\"] += 1",
     "event": "line",
     "filepath": "call_libs.py",
-    "frame_id": "(0, 0)",
+    "frame_id": "(0,)",
     "lineno": 16
   },
   {
     "code_str": "c[\"blue\"] += 1",
     "event": "line",
     "filepath": "call_libs.py",
-    "frame_id": "(0, 0)",
+    "frame_id": "(0,)",
     "lineno": 17
   },
   {
     "code_str": "c[\"red\"] += 1",
     "event": "line",
     "filepath": "call_libs.py",
-    "frame_id": "(0, 0)",
+    "frame_id": "(0,)",
     "lineno": 18
   },
   {
     "code_str": "c.most_common(10)",
     "event": "line",
     "filepath": "call_libs.py",
-    "frame_id": "(0, 0)",
+    "frame_id": "(0,)",
     "lineno": 19
   },
   {
     "code_str": "crayons.blue(\"blue\")",
     "event": "line",
     "filepath": "call_libs.py",
-    "frame_id": "(0, 0)",
+    "frame_id": "(0,)",
     "lineno": 20
   },
   {
     "code_str": "cyberbrain.register(c)",
     "event": "line",
     "filepath": "call_libs.py",
-    "frame_id": "(0, 0)",
+    "frame_id": "(0,)",
     "lineno": 21
   }
 ]

@@ -3,56 +3,56 @@
     "code_str": "Call(func=Name(id='main', ctx=Load()), args=[], keywords=[])",
     "event": "call",
     "filepath": "simple_func.py",
-    "frame_id": "(0, 0)",
+    "frame_id": "(0,)",
     "lineno": 6
   },
   {
     "code_str": "    def f(x, y):",
     "event": "line",
     "filepath": "simple_func.py",
-    "frame_id": "(1, 0)",
+    "frame_id": "(0, 0)",
     "lineno": 7
   },
   {
     "code_str": "    x = 1",
     "event": "line",
     "filepath": "simple_func.py",
-    "frame_id": "(1, 0)",
+    "frame_id": "(0, 0)",
     "lineno": 10
   },
   {
     "code_str": "Call(func=Name(id='f', ctx=Load()), args=[Num(n=1), Num(n=1)], keywords=[])",
     "event": "call",
     "filepath": "simple_func.py",
-    "frame_id": "(1, 0)",
+    "frame_id": "(0, 0)",
     "lineno": 7
   },
   {
     "code_str": "        return x + y",
     "event": "line",
     "filepath": "simple_func.py",
-    "frame_id": "(2, 0)",
+    "frame_id": "(0, 0, 0)",
     "lineno": 8
   },
   {
     "code_str": "Call(func=Name(id='f', ctx=Load()), args=[Name(id='x', ctx=Load()), Call(func=Name(id='f', ctx=Load()), args=[Num(n=1), Num(n=1)], keywords=[])], keywords=[])",
     "event": "call",
     "filepath": "simple_func.py",
-    "frame_id": "(1, 0)",
+    "frame_id": "(0, 0)",
     "lineno": 7
   },
   {
     "code_str": "        return x + y",
     "event": "line",
     "filepath": "simple_func.py",
-    "frame_id": "(2, 1)",
+    "frame_id": "(0, 0, 1)",
     "lineno": 8
   },
   {
     "code_str": "    cyberbrain.register()  # register has to be called after init",
     "event": "line",
     "filepath": "simple_func.py",
-    "frame_id": "(1, 0)",
+    "frame_id": "(0, 0)",
     "lineno": 12
   }
 ]

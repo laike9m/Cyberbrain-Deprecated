@@ -3,14 +3,14 @@
     "code_str": "y = {\n    \"longlonglonglonglonglonglonglong\": 1,\n    \"longlonglonglonglonglonglonglonglong\": 2,\n    \"longlonglonglonglonglonglonglonglonglong\": 3,\n}",
     "event": "line",
     "filepath": "multiline_statement.py",
-    "frame_id": "(0, 0)",
+    "frame_id": "(0,)",
     "lineno": 10
   },
   {
     "code_str": "cyberbrain.register(y)  # register has to be called after init",
     "event": "line",
     "filepath": "multiline_statement.py",
-    "frame_id": "(0, 0)",
+    "frame_id": "(0,)",
     "lineno": 15
   }
 ]
