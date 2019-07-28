@@ -83,13 +83,13 @@ def _get_lineno_base(toks) -> int:
     co_firstlineno tells us lineno is actually 4, not zero, but more importantly, this
     lineno is relative to the entire source file, not frame.
 
-    The first two pairs of lnotab are (4, 2), (8, 1). The '2' represents byte offset
+    The first two pairs of lnotab are (4, 2), (8, 1). The '2' represents line offset
     from end of docstring to import statement, so the lineno of 'import foo' is 4+2=6,
     relative to the file start, but what is the lineno of 'import foo' in that frame?
 
     One possible solution could be to always tokenize the entire file, but I don't want
-    to do that. Instead, I choose to manually the base line number. Leading doc string
-    and comments seems to be the only case that base lineno is not 1.
+    to do that. Instead, I choose to manually count the base line number. Leading doc
+    string and comments seems to be the only case that base lineno is not 1.
 
     Let me know if you have a better solution.
     """
