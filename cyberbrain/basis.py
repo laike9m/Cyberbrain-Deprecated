@@ -1,7 +1,36 @@
+"""Some basic data structures used throughout the project."""
+
 import sys
+import typing
 from collections import defaultdict
 
-from crayons import blue, green, red, yellow
+
+# "surrounding" is a 2-element tuple (start_lineno, end_lineno), representing a
+# logical line. Line number is frame-wise.
+#
+# For single-line statement, start_lineno = end_lineno, and is the line number of the
+# physical line returned by get_lineno_from_lnotab.
+#
+# For multiline statement, start_lineno is the line number of the first physical line,
+# end_lineno is the last. Lines from start_lineno to end_lineno -1 should end with
+# token.NL(or tokenize.NL before 3.7), line end_lineno should end with token.NEWLINE.
+#
+# Example:
+# 0    a = true
+# 1    a = true
+# 2    b = {
+# 3        'foo': 'bar'
+# 4    }
+# 5    c = false
+#
+# For the assignment of b, start_lineno = 2, end_lineno = 4
+Surrounding = typing.NamedTuple(
+    "Surrounding", [("start_lineno", int), ("end_lineno", int)]
+)
+
+SourceLocation = typing.NamedTuple(
+    "SourceLocation", [("filepath", str), ("lineno", int)]
+)
 
 
 class FrameID:
@@ -54,3 +83,10 @@ class FrameID:
             curr = curr.parent
         index = 0 if self.parent is None else self.child_index()
         return str((level, index))
+
+
+class ID(str):
+    """A class that represents an identifier.
+
+    TODO: Create a hash function so that ID can be differenciated with string.
+    """

@@ -14,7 +14,7 @@ import bytecode as b
 import uncompyle6
 
 from . import utils
-from .utils import ID
+from .basis import ID
 
 MARK = "__MARK__"
 

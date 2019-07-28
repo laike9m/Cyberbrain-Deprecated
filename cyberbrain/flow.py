@@ -6,9 +6,9 @@ from dataclasses import dataclass
 
 import astor
 
-from .utils import ID
+from .basis import ID
 from . import backtrace
-from .frame_id import FrameID
+from .basis import FrameID
 
 
 @dataclass
@@ -37,6 +37,9 @@ class VarSwitch:
     value: typing.Any
 
 
+_PLACE_HOLDER = object()
+
+
 class TrackingMetadata:
     """Class that stores metadata during tracing."""
 
@@ -52,12 +55,18 @@ class TrackingMetadata:
         self.code_str = code_str or astor.to_source(code_ast)
         self.code_ast = code_ast or backtrace.parse_code_str(code_str)
         self.var_changes = set()
+        # It seems that tracking and data should all be flattened, aka they should
+        # simply be a mapping of ID -> value. When backtracing, we don't really care
+        # about where an identifer is defined in, we only care about whether its value
+        # has changed during execution.
         self.tracking: typing.Set[ID] = set()
-        # For simplicity, uses a dict to represent data for now.
         self.data = data
 
     def add_var_change(self, var_change):
         self.var_changes.add(var_change)
+
+    def update_tracking_from_other(self, tracking: typing.Set[ID]):
+        self.update_tracking(*tracking)
 
     def update_tracking(self, *new_ids: ID):
         """Updates identifiers being tracked.
@@ -102,6 +111,16 @@ class Node:
             setattr(self, relation_name, node)
 
 
+def vars_changed(current: Node, next: Node):
+    """Checks whether variables being tracked have changed during executing current.
+    """
+    for identifier in next.tracking:
+        old_value = current.data.get(identifier, _PLACE_HOLDER)
+        new_value = next.data[identifier]
+        if old_value is _PLACE_HOLDER:
+            pass
+
+
 class Flow:
     """Class that represents program's execution.
 
@@ -111,9 +130,9 @@ class Flow:
     def __init__(self, start: Node, target: Node):
         self.start = start
         self.target = target
-        self._get_target_id()
+        self._update_target_id()
 
-    def _get_target_id(self) -> ID:
+    def _update_target_id(self) -> ID:
         """Gets ID('x') out of cyberbrain.register(x)."""
         register_call_ast = ast.parse(self.target.code_str.strip())
         assert register_call_ast.body[0].value.func.value.id == "cyberbrain"
