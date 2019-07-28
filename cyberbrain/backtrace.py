@@ -39,7 +39,6 @@ def trace_var(computation_manager):
     # Finally, backtrace the records of each line
     for computation in reversed(computation_manager.computations):
         if computation.event_type == "line":
-            print("code_str is:", computation.code_str)
             names = utils.find_names(parse_code_str(computation.code_str))
             if target_identifiers & names:
                 printer(computation, names)
