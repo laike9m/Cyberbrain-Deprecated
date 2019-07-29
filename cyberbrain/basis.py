@@ -63,6 +63,10 @@ class FrameID:
         return self._frame_id_tuple == other._frame_id_tuple
 
     @property
+    def tuple(self):
+        return self._frame_id_tuple
+
+    @property
     def parent(self):
         return FrameID(self._frame_id_tuple[:-1])
 
@@ -107,7 +111,7 @@ class ID:
             self.frame_id = frame_id_or_tuple
         elif isinstance(frame_id_or_tuple, tuple):
             self.frame_id = FrameID(frame_id_or_tuple)
-        self._key = (name, self.frame_id._frame_id_tuple)
+        self._key = (name, self.frame_id.tuple)
 
     def __eq__(self, other):
         return self._key == other._key
