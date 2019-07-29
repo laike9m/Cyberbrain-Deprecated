@@ -191,8 +191,7 @@ def maps_arg_to_param(
     """
     param_to_args = defaultdict(set)
     for arg, param in get_param_arg_pairs(callsite_ast, arg_info):
-        arg_names = utils.find_names(arg)
         param_to_args[ID(param, callee_frame_id)] |= {
-            ID(arg, callsite_frame_id) for arg in arg_names
+            ID(arg, callsite_frame_id) for arg in utils.find_names(arg)
         }
     return param_to_args

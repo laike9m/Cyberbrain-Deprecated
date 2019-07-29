@@ -6,9 +6,9 @@ authors = ["laike9m <laike9m@gmail.com>"]
 license = "MIT"
 
 [tool.poetry.dependencies]
-python = ">=3.6.7, <3.7.4"
+python = "^3.6.7"
 bytecode = "^0.8.0"
-uncompyle6 = "3.3.4"
+uncompyle6 = { git = "https://github.com/rocky/python-uncompyle6.git", branch = "master" }
 crayons = "^0.2.0"
 pytest-parallel = "^0.0.9"
 astor = "^0.8.0"
