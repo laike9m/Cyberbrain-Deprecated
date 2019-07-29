@@ -5,17 +5,10 @@ import inspect
 import sys
 
 import astor
-from hamcrest import (
-    equal_to,
-    all_of,
-    assert_that,
-    contains,
-    has_properties,
-    has_property,
-    instance_of,
-)
+from hamcrest import equal_to, assert_that
 
 from . import callsite
+from .basis import ID
 
 
 def assert_ast(ast_node, code_str):
@@ -72,92 +65,74 @@ def _get_call(module_ast):
     return module_ast.body[0].value
 
 
-def test_get_param_arg_pairs():
-    def f(foo, bar, baz=1, *args, **kwargs):
-        return inspect.getargvalues(inspect.currentframe())
-
-    # Tests passing values directly.
-    assert_that(
-        callsite.get_param_arg_pairs(_get_call(ast.parse("f(1,2)")), f(1, 2)),
-        contains(
-            contains(all_of(instance_of(ast.Num), has_property("n", 1)), "foo"),
-            contains(all_of(instance_of(ast.Num), has_property("n", 2)), "bar"),
-        ),
-    )
-
-    # Tests passing variables.
-    a, b, c = 1, 2, 3
-    assert_that(
-        callsite.get_param_arg_pairs(_get_call(ast.parse("f(a,b,c)")), f(a, b, z=c)),
-        contains(
-            contains(all_of(instance_of(ast.Name), has_property("id", "a")), "foo"),
-            contains(all_of(instance_of(ast.Name), has_property("id", "b")), "bar"),
-            contains(all_of(instance_of(ast.Name), has_property("id", "c")), "baz"),
-        ),
-    )
-
-    # Tests catching extra args.
-    d, e = 4, 5
-    assert_that(
-        callsite.get_param_arg_pairs(
-            _get_call(ast.parse("f(a,b,c,d,qux=e)")), f(a, b, c, d, qux=e)
-        ),
-        contains(
-            contains(all_of(instance_of(ast.Name), has_property("id", "a")), "foo"),
-            contains(all_of(instance_of(ast.Name), has_property("id", "b")), "bar"),
-            contains(all_of(instance_of(ast.Name), has_property("id", "c")), "baz"),
-            contains(all_of(instance_of(ast.Name), has_property("id", "d")), "args"),
-            contains(
-                all_of(
-                    instance_of(ast.keyword),
-                    has_properties(
-                        {
-                            "arg": "qux",
-                            "value": all_of(
-                                instance_of(ast.Name), has_property("id", "e")
-                            ),
-                        }
-                    ),
-                ),
-                "kwargs",
-            ),
-        ),
-    )
-
-
 def test_maps_arg_to_param():
     def f(foo, bar, baz=1, *args, **kwargs):
         return inspect.getargvalues(inspect.currentframe())
 
+    CALLER_F = (0,)
+    CALLEE_F = (0, 0)
+
     # Tests passing values directly.
-    assert callsite.maps_arg_to_param(_get_call(ast.parse("f(1,2)")), f(1, 2)) == {
-        "foo": set(),
-        "bar": set(),
-    }
+    assert callsite.maps_arg_to_param(
+        _get_call(ast.parse("f(1,2)")),
+        f(1, 2),
+        callsite_frame_id=CALLER_F,
+        callee_frame_id=CALLEE_F,
+    ) == {ID("foo", CALLEE_F): set(), ID("bar", CALLEE_F): set()}
 
     # Tests passing variables.
     a, b, c = 1, 2, 3
     assert callsite.maps_arg_to_param(
-        _get_call(ast.parse("f(a,b,c)")), f(a, b, z=c)
-    ) == {"foo": {"a"}, "bar": {"b"}, "baz": {"c"}}
+        _get_call(ast.parse("f(a,b,c)")),
+        f(a, b, z=c),
+        callsite_frame_id=CALLER_F,
+        callee_frame_id=CALLEE_F,
+    ) == {
+        ID("foo", CALLEE_F): {ID("a", CALLER_F)},
+        ID("bar", CALLEE_F): {ID("b", CALLER_F)},
+        ID("baz", CALLEE_F): {ID("c", CALLER_F)},
+    }
 
     # Tests catching extra args.
     d, e = 4, 5
     assert callsite.maps_arg_to_param(
-        _get_call(ast.parse("f(a,b,c,d,qux=e)")), f(a, b, c, d, qux=e)
-    ) == {"foo": {"a"}, "bar": {"b"}, "baz": {"c"}, "args": {"d"}, "kwargs": {"e"}}
+        _get_call(ast.parse("f(a,b,c,d,qux=e)")),
+        f(a, b, c, d, qux=e),
+        callsite_frame_id=CALLER_F,
+        callee_frame_id=CALLEE_F,
+    ) == {
+        ID("foo", CALLEE_F): {ID("a", CALLER_F)},
+        ID("bar", CALLEE_F): {ID("b", CALLER_F)},
+        ID("baz", CALLEE_F): {ID("c", CALLER_F)},
+        ID("args", CALLEE_F): {ID("d", CALLER_F)},
+        ID("kwargs", CALLEE_F): {ID("e", CALLER_F)},
+    }
 
     # Tests binding multiple params to one argument.
     assert callsite.maps_arg_to_param(
-        _get_call(ast.parse("f(a,(b,c),c,qux=(d, e))")), f(a, (b, c), c, qux=(d, e))
-    ) == {"foo": {"a"}, "bar": {"b", "c"}, "baz": {"c"}, "kwargs": {"d", "e"}}
+        _get_call(ast.parse("f(a,(b,c),c,qux=(d, e))")),
+        f(a, (b, c), c, qux=(d, e)),
+        callsite_frame_id=CALLER_F,
+        callee_frame_id=CALLEE_F,
+    ) == {
+        ID("foo", CALLEE_F): {ID("a", CALLER_F)},
+        ID("bar", CALLEE_F): {ID("b", CALLER_F), ID("c", CALLER_F)},
+        ID("baz", CALLEE_F): {ID("c", CALLER_F)},
+        ID("kwargs", CALLEE_F): {ID("d", CALLER_F), ID("e", CALLER_F)},
+    }
 
     # Tests using custom names for args and kwargs.
     def g(*foo, **bar):
         return inspect.getargvalues(inspect.currentframe())
 
     assert callsite.maps_arg_to_param(
-        _get_call(ast.parse("g(d,qux=e)")), g(d, qux=e)
-    ) == {"foo": {"d"}, "bar": {"e"}}
+        _get_call(ast.parse("g(d,qux=e)")),
+        g(d, qux=e),
+        callsite_frame_id=CALLER_F,
+        callee_frame_id=CALLEE_F,
+    ) == {
+        ID("foo", CALLEE_F): {ID("d", CALLER_F)},
+        ID("bar", CALLEE_F): {ID("e", CALLER_F)},
+    }
 
     # TODO: tests nested call.

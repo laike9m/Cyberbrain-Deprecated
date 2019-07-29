@@ -139,4 +139,6 @@ class Flow:
 
         # Finds the target identifier by checking argument passed to register().
         # Assuming argument is a single identifier.
-        self.target.update_tracking(ID(register_call_ast.body[0].value.args[0].id))
+        self.target.update_tracking(
+            ID(register_call_ast.body[0].value.args[0].id, self.target.frame_id)
+        )

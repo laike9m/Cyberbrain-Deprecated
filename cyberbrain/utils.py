@@ -182,7 +182,7 @@ class _NameVisitor(ast.NodeVisitor):
         super().__init__()
 
     def visit_Name(self, node):
-        self.names.add(ID(node.id))
+        self.names.add(node.id)
         self.generic_visit(node)
 
 

@@ -2,7 +2,7 @@
 
 import sys
 from collections import defaultdict
-from typing import Dict, Tuple, NamedTuple
+from typing import Dict, Tuple, NamedTuple, Union
 
 
 # "surrounding" is a 2-element tuple (start_lineno, end_lineno), representing a
@@ -93,8 +93,27 @@ class FrameID:
         return str(self._frame_id_tuple)
 
 
-class ID(str):
+class ID:
     """A class that represents an identifier.
 
-    TODO: Create a hash function so that ID can be differenciated with string.
+    Since the same identifer can exist in different scopes, we have to differenciate
+    them by saving their frame id.
     """
+
+    def __init__(self, name, frame_id_or_tuple: Union[FrameID, Tuple[int, ...]]):
+        """For simplicity, accepts both a FramdID and its tuple representation."""
+        self.name = name
+        if isinstance(frame_id_or_tuple, FrameID):
+            self.frame_id = frame_id_or_tuple
+        elif isinstance(frame_id_or_tuple, tuple):
+            self.frame_id = FrameID(frame_id_or_tuple)
+        self._key = (name, self.frame_id._frame_id_tuple)
+
+    def __eq__(self, other):
+        return self._key == other._key
+
+    def __hash__(self):
+        return hash(self._key)
+
+    def __repr__(self):
+        return str(self._key)
