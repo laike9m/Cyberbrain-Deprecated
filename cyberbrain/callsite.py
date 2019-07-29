@@ -8,13 +8,14 @@ import inspect
 import itertools
 from collections import namedtuple, defaultdict
 from functools import lru_cache
+from typing import Dict, Tuple, Set, Iterable
 
 import astpretty
 import bytecode as b
 import uncompyle6
 
 from . import utils
-from .basis import ID
+from .basis import ID, FrameID
 
 MARK = "__MARK__"
 
@@ -129,7 +130,9 @@ def get_callsite_ast(code, last_i) -> ast.AST:
     return visitor.callsite_ast, visitor.get_outer_call()
 
 
-def get_param_arg_pairs(callsite_ast: ast.Call, arg_info: inspect.ArgInfo):
+def get_param_arg_pairs(
+    callsite_ast: ast.Call, arg_info: inspect.ArgInfo
+) -> Iterable[Tuple[str, str]]:
     """Generates parameter, argument pairs.
 
     Example:
@@ -158,10 +161,16 @@ def get_param_arg_pairs(callsite_ast: ast.Call, arg_info: inspect.ArgInfo):
         + [_KWARGS] * len(arg_info.locals[_KWARGS])
     )
     for arg, param in zip(itertools.chain(pos_args, kw_args), parameters):
-        yield arg, ID(param)
+        yield arg, param
 
 
-def maps_arg_to_param(callsite_ast: ast.Call, arg_info: inspect.ArgInfo):
+def maps_arg_to_param(
+    callsite_ast: ast.Call,
+    arg_info: inspect.ArgInfo,
+    *,
+    callsite_frame_id: FrameID,
+    callee_frame_id: FrameID
+) -> Dict[FrameID, Set[FrameID]]:
     """Maps argument identifiers to parameter identifiers.
 
     For now we'll flatten parameter identifiers as long as they contribute to the same
@@ -173,11 +182,17 @@ def maps_arg_to_param(callsite_ast: ast.Call, arg_info: inspect.ArgInfo):
 
     Generates:
 
-    {ID(x): {ID(a), ID(b)}, ID(kwargs): {ID(y), ID(z)}}
+    {
+        ID('x', (1, 0)): {ID('a', (0, 0)), ID('b', (0, 0))},
+        ID('kwargs', (1, 0)): {ID('y', (0, 0)), ID('z', (0, 0))}
+    }
 
     In the future, we *might* record fine grained info.
     """
     param_to_args = defaultdict(set)
     for arg, param in get_param_arg_pairs(callsite_ast, arg_info):
-        param_to_args[param] |= utils.find_names(arg)
+        arg_names = utils.find_names(arg)
+        param_to_args[ID(param, callee_frame_id)] |= {
+            ID(arg, callsite_frame_id) for arg in arg_names
+        }
     return param_to_args
