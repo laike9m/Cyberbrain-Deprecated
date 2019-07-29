@@ -33,6 +33,7 @@ jobs:
       py36:
         image: [linux, windows, macOs]
       py37:
+        python.version: '3.7.3'
         image: [linux, macOs]
     before:
       - script: |
