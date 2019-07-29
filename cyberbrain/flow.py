@@ -1,8 +1,8 @@
 """Execution flow that represents a program's execution."""
 
 import ast
-import typing
 from dataclasses import dataclass
+from typing import Any, Dict, Set, Tuple, List
 
 import astor
 
@@ -11,71 +11,50 @@ from . import backtrace
 from .basis import FrameID
 
 
-@dataclass
-class VarAppear:
-    """Variable/Idenfier appears in current frame."""
-
-    id: ID
-    value: typing.Any
-
-
-@dataclass
-class VarChange:
-    """Variable/Idenfier changes in current frame."""
-
-    id: ID
-    old_value: typing.Any
-    old_value: typing.Any
-
-
-@dataclass
-class VarSwitch:
-    """Variable/Idenfier switches at callsite."""
-
-    old_id: ID
-    new_id: ID
-    value: typing.Any
-
-
-_PLACE_HOLDER = object()
-
-
 class TrackingMetadata:
     """Class that stores metadata during tracing."""
 
     def __init__(
         self,
-        data: typing.Dict,
+        data: Dict[ID, Any],
         code_str: str = None,
         code_ast: ast.AST = None,
-        arg_to_param: typing.Dict[ID, ID] = None,
+        arg_to_param: Dict[ID, ID] = None,
     ):
         if not any([code_str, code_ast]):
             raise ValueError("Should provide code_str or code_ast.")
         self.code_str = code_str or astor.to_source(code_ast)
         self.code_ast = code_ast or backtrace.parse_code_str(code_str)
-        self.var_changes = set()
         # It seems that tracking and data should all be flattened, aka they should
         # simply be a mapping of ID -> value. When backtracing, we don't really care
         # about where an identifer is defined in, we only care about whether its value
         # has changed during execution.
-        self.tracking: typing.Set[ID] = set()
+        self.tracking: Set[ID] = set()
+        self.var_changes = set()
         self.data = data
 
-    def add_var_change(self, var_change):
-        self.var_changes.add(var_change)
+    def __repr__(self):
+        return "%s\ntracking:%s\nvar changes:%s" % (
+            code_str,
+            self.tracking,
+            self.var_changes,
+        )
 
-    def update_tracking_from_other(self, tracking: typing.Set[ID]):
-        self.update_tracking(*tracking)
+    def add_var_changes(self, *var_changes):
+        self.var_changes |= set(var_changes)
 
-    def update_tracking(self, *new_ids: ID):
+    def sync_tracking_with(self, other: "Node"):
+        self.add_tracking(*node.tracking)
+
+    def add_tracking(self, *new_ids: ID):
         """Updates identifiers being tracked.
 
-        When updating tracking, identifiers need to exist in data because we can't
-        tracking identifiers that don't exist.
+        Identifiers being tracked must exist in data because we can't track something
+        that don't exist in previous nodes.
         """
         for new_id in new_ids:
-            self.tracking.add(new_id)
+            if new_id in self.data:
+                self.tracking.add(new_id)
 
 
 class Node:
@@ -96,10 +75,13 @@ class Node:
         """
         return getattr(self.metadata, name)
 
+    def __repr__(self):
+        return str(self.metadata)
+
     def is_callsite(self):
         return self.step_into is not None
 
-    def build_relation(self, **relation_dict: typing.Dict[str, "Node"]):
+    def build_relation(self, **relation_dict: Dict[str, "Node"]):
         """A convenient function to add relations at once.
 
         Usage:
@@ -111,14 +93,53 @@ class Node:
             setattr(self, relation_name, node)
 
 
-def vars_changed(current: Node, next: Node):
-    """Checks whether variables being tracked have changed during executing current.
-    """
-    for identifier in next.tracking:
-        old_value = current.data.get(identifier, _PLACE_HOLDER)
-        new_value = next.data[identifier]
+_PLACE_HOLDER = object()
+
+
+@dataclass
+class VarAppear:
+    """Variable appears in current frame."""
+
+    id: ID
+    value: Any
+
+
+@dataclass
+class VarChange:
+    """Variable value changes in current frame."""
+
+    id: ID
+    old_value: Any
+    new_value: Any
+
+
+@dataclass
+class VarSwitch:
+    """Variable switches at callsite."""
+
+    old_id: ID
+    new_id: ID
+    value: Any
+
+
+def get_var_changes(
+    current: Node, next: Node
+) -> Tuple[List[VarChange], List[VarAppear]]:
+    """Gets changed variables in the same frame."""
+    var_changes = []
+    var_appears = []
+    for var_id in next.tracking:
+        old_value = current.data.get(var_id, _PLACE_HOLDER)
+        new_value = next.data[var_id]
         if old_value is _PLACE_HOLDER:
-            pass
+            var_appears.append(VarAppear(id=var_id, value=new_value))
+        elif utils.has_diff(new_value, old_value):
+            var_changes.append(VarChange(old_value, new_value, id=var_id))
+    return var_changes, var_appears
+
+
+def get_var_switch():
+    """Gets var changes at callsite."""
 
 
 class Flow:
@@ -139,6 +160,6 @@ class Flow:
 
         # Finds the target identifier by checking argument passed to register().
         # Assuming argument is a single identifier.
-        self.target.update_tracking(
+        self.target.add_tracking(
             ID(register_call_ast.body[0].value.args[0].id, self.target.frame_id)
         )

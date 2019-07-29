@@ -183,8 +183,8 @@ def maps_arg_to_param(
     Generates:
 
     {
-        ID('x', (1, 0)): {ID('a', (0, 0)), ID('b', (0, 0))},
-        ID('kwargs', (1, 0)): {ID('y', (0, 0)), ID('z', (0, 0))}
+        ID('x', (0, 0)): {ID('a', (0,)), ID('b', (0,))},
+        ID('kwargs', (0, 0)): {ID('y', (0,)), ID('z', (0,))}
     }
 
     In the future, we *might* record fine grained info.

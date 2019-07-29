@@ -149,4 +149,4 @@ def create_flow():
 
 def test_traverse_flow():
     flow = create_flow()
-    backtrace.trace_flow(flow)
+    # backtrace.trace_flow(flow)

@@ -56,29 +56,13 @@ def trace_flow(flow: Flow):
     next: Node
     current, next = flow.target.prev, flow.target
 
+    while current is not flow.start:
+        if not current.is_callsite():
+            current.sync_tracking_with(next.tracking)
+            var_changes, var_appears = flow.get_var_changes(current, next)
+            current.add_var_changes(*var_changes, *var_appears)
+            current.add_tracking(*(var_change.id for var_change in var_changes))
+            next, current = current, current.prev
+            continue
 
-# while current is not flow.start:
-#     if not current.is_callsite():
-#         current.update_tracking_from_other(next.tracking)
-#
-#     next, step_into, returned_from = (
-#         current.next,
-#         current.step_into,
-#         current.returned_from,
-#     )
-#     local_targets = targets.get(current.frame_id, set())
-#     if current.returned_from is None:  # is not call node
-#         for identifier in targets[current.frame_id]:
-#             if utils.has_diff(current.data[identifier], next.data[identifier]):
-#                 # Note that we add var change to current, because data contains the
-#                 # value before executing this node.
-#                 current.add_var_change(
-#                     VarChange(
-#                         id=identifier,
-#                         old_value=current.data[identifier],
-#                         new_value=next.data[identifier],
-#                     )
-#                 )
-#     else:
-#         # TODO: deal with callsite.
-#         pass
+        # TODO: current is callsite
