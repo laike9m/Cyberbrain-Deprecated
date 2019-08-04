@@ -30,7 +30,7 @@ def trace_flow(flow: Flow):
         # Case 1: non-callsite
         if not current.is_callsite():
             current.sync_tracking_with(next)
-            if any(flow.get_and_update_var_changes(current, next)):
+            if any(current.get_and_update_var_changes(next)):
                 # If any change happened, track all ids appeared in this node.
                 current.add_tracking(
                     *utils.find_names(current.code_ast, current.frame_id)
@@ -62,14 +62,14 @@ def trace_flow(flow: Flow):
         # ids on the left, like 'a', 'b' in 'a, b = f()'
         ids_assigned_to = utils.find_names(current.code_ast, current.frame_id) - args
         returned_from = current.returned_from
-        for var_change in flow.get_and_update_var_changes(current, next):
+        for var_change in current.get_and_update_var_changes(next):
             if var_change.id in args:
                 returned_from.add_tracking(current.arg_to_param[var_change.id])
             elif var_change.id in ids_assigned_to:
                 returned_from.add_tracking(
                     *utils.find_names(returned_from.code_ast, returned_from.frame_id)
                 )
-        # TODO: add var changes to returned_from
+        returned_from.update_var_changes_before_return()
 
         _print_node(current, next)
         next, current = returned_from, returned_from.prev

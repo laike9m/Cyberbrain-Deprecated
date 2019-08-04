@@ -93,6 +93,7 @@ def create_flow():
         FUNC_C_FRAME,
         code_str="baa.append('?')",
         data={ID("baa", FUNC_C_FRAME): [1, None], **functions},
+        data_before_return={ID("baa", FUNC_C_FRAME): [1, None, "?"], **functions},
     )
     node_f = Node(
         FUNC_A_FRAME,
@@ -113,6 +114,11 @@ def create_flow():
         FUNC_F_FRAME,
         code_str="return x",
         data={
+            ID("bar", FUNC_F_FRAME): [1, None, "?"],
+            ID("x", FUNC_F_FRAME): 3,
+            **functions,
+        },
+        data_before_return={
             ID("bar", FUNC_F_FRAME): [1, None, "?"],
             ID("x", FUNC_F_FRAME): 3,
             **functions,

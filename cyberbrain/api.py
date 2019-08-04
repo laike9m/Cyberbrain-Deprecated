@@ -27,11 +27,8 @@ def local_tracer(frame, event_type, arg):
         return
     print("\nlocal: ", frame, event_type, frame.f_code.co_filename, frame.f_lineno)
 
-    if event_type == "line":
+    if event_type in {"line", "return"}:
         computation_manager.add_computation(event_type, frame)
-    elif event_type == "return":
-        # At this point we don't need to record return but needs to update frame id.
-        FrameID.create(event_type)
 
     del frame
 
