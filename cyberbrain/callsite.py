@@ -164,7 +164,7 @@ def get_param_arg_pairs(
         yield arg, param
 
 
-def maps_arg_to_param(
+def map_param_to_arg(
     callsite_ast: ast.Call,
     arg_info: inspect.ArgInfo,
     *,
@@ -189,9 +189,7 @@ def maps_arg_to_param(
 
     In the future, we *might* record fine grained info.
     """
-    param_to_args = defaultdict(set)
-    for arg, param in get_param_arg_pairs(callsite_ast, arg_info):
-        param_to_args[ID(param, callee_frame_id)] |= {
-            ID(arg, callsite_frame_id) for arg in utils.find_names(arg)
-        }
-    return param_to_args
+    return {
+        ID(param, callee_frame_id): utils.find_names(arg, callsite_frame_id)
+        for arg, param in get_param_arg_pairs(callsite_ast, arg_info)
+    }

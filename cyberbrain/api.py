@@ -48,17 +48,18 @@ def init():
     global_frame.f_trace = local_tracer
 
 
-_dummy_obj = object()
+_dummy = object()
 
 
-def register(target=_dummy_obj):
+def register(target=_dummy):
     """Receives target variable and stops recording computation.
 
     If target is None, it means it is only called to terminate tracing and dump data.
     """
     sys.settrace(None)
     global_frame.f_trace = None
-    if target is not _dummy_obj:
-        backtrace.trace_var(computation_manager)
+    if target is not _dummy:
+        # TODO: Build flow.
+        pass
 
     dump_computations(computation_manager.computations)

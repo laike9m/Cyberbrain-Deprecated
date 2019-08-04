@@ -12,7 +12,9 @@ import typing
 from collections import defaultdict
 from functools import lru_cache
 
-from .basis import ID, Surrounding
+from deepdiff import DeepDiff
+
+from .basis import ID, Surrounding, FrameID
 
 try:
     from token import ENCODING as token_ENCODING
@@ -186,12 +188,25 @@ class _NameVisitor(ast.NodeVisitor):
         self.generic_visit(node)
 
 
-def find_names(code_ast: ast.AST) -> typing.Set[ID]:
+def find_names(code_ast: ast.AST, frame_id: FrameID) -> typing.Set[ID]:
     """Finds idenditifiers in given ast node."""
     visitor = _NameVisitor()
     visitor.visit(code_ast)
-    return visitor.names
+    return {ID(name, frame_id) for name in visitor.names}
 
 
 def has_diff(x, y):
     return DeepDiff(x, y) != {}
+
+
+def parse_code_str(code_str) -> ast.AST:
+    """Parses code string in a computation, which can be incomplete.
+
+    Once we found something that leads to error while parsing, we should handle it here.
+    """
+    if code_str.endswith(":"):
+        code_str += "pass"
+    try:
+        return ast.parse(code_str)
+    except IndentationError:
+        return ast.parse(code_str.strip())

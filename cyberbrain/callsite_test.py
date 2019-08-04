@@ -65,7 +65,7 @@ def _get_call(module_ast):
     return module_ast.body[0].value
 
 
-def test_maps_arg_to_param():
+def test_map_param_to_arg():
     def f(foo, bar, baz=1, *args, **kwargs):
         return inspect.getargvalues(inspect.currentframe())
 
@@ -73,7 +73,7 @@ def test_maps_arg_to_param():
     CALLEE_F = (0, 0)
 
     # Tests passing values directly.
-    assert callsite.maps_arg_to_param(
+    assert callsite.map_param_to_arg(
         _get_call(ast.parse("f(1,2)")),
         f(1, 2),
         callsite_frame_id=CALLER_F,
@@ -82,7 +82,7 @@ def test_maps_arg_to_param():
 
     # Tests passing variables.
     a, b, c = 1, 2, 3
-    assert callsite.maps_arg_to_param(
+    assert callsite.map_param_to_arg(
         _get_call(ast.parse("f(a,b,c)")),
         f(a, b, z=c),
         callsite_frame_id=CALLER_F,
@@ -95,7 +95,7 @@ def test_maps_arg_to_param():
 
     # Tests catching extra args.
     d, e = 4, 5
-    assert callsite.maps_arg_to_param(
+    assert callsite.map_param_to_arg(
         _get_call(ast.parse("f(a,b,c,d,qux=e)")),
         f(a, b, c, d, qux=e),
         callsite_frame_id=CALLER_F,
@@ -109,7 +109,7 @@ def test_maps_arg_to_param():
     }
 
     # Tests binding multiple params to one argument.
-    assert callsite.maps_arg_to_param(
+    assert callsite.map_param_to_arg(
         _get_call(ast.parse("f(a,(b,c),c,qux=(d, e))")),
         f(a, (b, c), c, qux=(d, e)),
         callsite_frame_id=CALLER_F,
@@ -125,7 +125,7 @@ def test_maps_arg_to_param():
     def g(*foo, **bar):
         return inspect.getargvalues(inspect.currentframe())
 
-    assert callsite.maps_arg_to_param(
+    assert callsite.map_param_to_arg(
         _get_call(ast.parse("g(d,qux=e)")),
         g(d, qux=e),
         callsite_frame_id=CALLER_F,
