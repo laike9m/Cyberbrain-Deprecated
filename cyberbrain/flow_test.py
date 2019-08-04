@@ -66,38 +66,38 @@ def create_flow():
     }
 
     # Creates nodes.
-    node_start = Node(FrameID.create("line"), code_str="fo = 1", data={**functions})
+    node_start = Node(GLOBAL_FRAME, code_str="fo = 1", data={**functions})
     node_a = Node(
-        FrameID.create("call"),
+        GLOBAL_FRAME,
         code_str="func_a(fo)",
-        arg_to_param={ID("fo", GLOBAL_FRAME): ID("foo", FUNC_A_FRAME)},
+        param_to_arg={ID("foo", FUNC_A_FRAME): {ID("fo", GLOBAL_FRAME)}},
         data={ID("fo", GLOBAL_FRAME): 1, **functions},
     )
     node_b = Node(
-        FrameID.create("line"),
+        FUNC_A_FRAME,
         code_str="ba = [foo]",
         data={ID("foo", FUNC_A_FRAME): 1, **functions},
     )
     node_c = Node(
-        FrameID.create("call"),
+        FUNC_A_FRAME,
         code_str="func_c(ba)",
-        arg_to_param={ID("ba", FUNC_A_FRAME): ID("baa", FUNC_C_FRAME)},
+        param_to_arg={ID("baa", FUNC_C_FRAME): {ID("ba", FUNC_A_FRAME)}},
         data={ID("foo", FUNC_A_FRAME): 1, ID("ba", FUNC_A_FRAME): [1], **functions},
     )
     node_d = Node(
-        FrameID.create("line"),
+        FUNC_C_FRAME,
         code_str="baa.append(None)",
         data={ID("baa", FUNC_C_FRAME): [1], **functions},
     )
     node_e = Node(
-        FrameID.create("line"),
+        FUNC_C_FRAME,
         code_str="baa.append('?')",
         data={ID("baa", FUNC_C_FRAME): [1, None], **functions},
     )
     node_f = Node(
-        FrameID.create("call"),
+        FUNC_A_FRAME,
         code_str="foo = func_f(ba)",
-        arg_to_param={ID("ba", FUNC_A_FRAME): ID("bar", FUNC_F_FRAME)},
+        param_to_arg={ID("bar", FUNC_F_FRAME): {ID("ba", FUNC_A_FRAME)}},
         data={
             ID("foo", FUNC_A_FRAME): 1,
             ID("ba", FUNC_A_FRAME): [1, None, "?"],
@@ -105,12 +105,12 @@ def create_flow():
         },
     )
     node_g = Node(
-        FrameID.create("line"),
+        FUNC_F_FRAME,
         code_str="x = len(bar)",
         data={ID("bar", FUNC_F_FRAME): [1, None, "?"], **functions},
     )
     node_h = Node(
-        FrameID.create("line"),
+        FUNC_F_FRAME,
         code_str="return x",
         data={
             ID("bar", FUNC_F_FRAME): [1, None, "?"],
@@ -119,7 +119,7 @@ def create_flow():
         },
     )
     node_target = Node(
-        FrameID.create("line"),
+        FUNC_A_FRAME,
         code_str="cyberbrain.register(foo)",
         data={
             ID("foo", FUNC_A_FRAME): 3,
@@ -138,7 +138,7 @@ def create_flow():
     node_d.build_relation(next=node_e, prev=node_c)
     node_e.build_relation(next=node_c, prev=node_d)
     node_f.build_relation(
-        next=node_target, prev=node_b, step_into=node_g, returned_from=node_h
+        next=node_target, prev=node_c, step_into=node_g, returned_from=node_h
     )
     node_g.build_relation(next=node_h, prev=node_f)
     node_h.build_relation(next=node_f, prev=node_g)
@@ -149,4 +149,4 @@ def create_flow():
 
 def test_traverse_flow():
     flow = create_flow()
-    # backtrace.trace_flow(flow)
+    backtrace.trace_flow(flow)
