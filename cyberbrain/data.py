@@ -22,7 +22,7 @@ class DataContainer:
 
     def _traverse_frames(self, frame):
         """Records variables from bottom to top."""
-        # TODO: use frame id to replace frame_level_up.
+        # TODO: use frame id to replace frame_level_up, and flatten frame_vars.
         self.frame_vars = defaultdict(dict)  # [frame_level_up][var_name]
         frame_level_up = 0
         while frame is not None:

@@ -49,6 +49,7 @@ class Line(Computation):
         self.event_type = event_type
         self.frame_id = frame_id
         self.surrounding = surrounding
+        self.data_before_return = None
 
 
 class Call(Computation):
@@ -73,6 +74,7 @@ class Call(Computation):
         self.event_type = event_type
         self.frame_id = frame_id
         self.code_str = ast.dump(self.callsite_ast).rstrip()
+        self.data_before_return = None
 
     @property
     def source_location(self):
@@ -143,7 +145,7 @@ class _ComputationManager:
             )
         elif event_type == "call":
             computation = Call.create(frame)
-            # When entering a new call, replaces previous line(aka func caller) with a
+            # When entering a new call, replaces previous line(aka caller) with a
             # call computation.
             if (
                 self._computations
@@ -154,6 +156,9 @@ class _ComputationManager:
             else:
                 # raise Exception()
                 self._computations.append(computation)
+        elif event_type == "return":
+            FrameID.create(event_type)
+            self.last_computation.data_before_return = DataContainer(frame)
 
 
 computation_manager = _ComputationManager()

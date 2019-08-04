@@ -47,6 +47,7 @@ class TrackingMetadata:
         code_str: str = None,
         code_ast: ast.AST = None,
         param_to_arg: Dict[ID, ID] = None,
+        data_before_return=None,
     ):
         if not any([code_str, code_ast]):
             raise ValueError("Should provide code_str or code_ast.")
@@ -72,6 +73,7 @@ class TrackingMetadata:
         # again in var_appearances.
         self.var_switches: Set[VarSwitch] = []
         self.data = data
+        self.data_before_return = data_before_return
 
     def __repr__(self):
         return (
@@ -145,6 +147,40 @@ class Node:
                 raise Exception("wrong relation_name: " + relation_name)
             setattr(self, relation_name, node)
 
+    def get_and_update_var_changes(
+        self, other: "Node"
+    ) -> Iterable[Union[VarModification, VarAppearance]]:
+        """Gets variable changes and stores them to current node.
+
+        current and next are guaranteed to be in the same frame.
+        """
+        assert self.frame_id == other.frame_id
+        for var_id in other.tracking:
+            old_value = self.data.get(var_id, _dummy)
+            new_value = other.data[var_id]
+            if old_value is _dummy:
+                var_appearance = VarAppearance(id=var_id, value=new_value)
+                self.add_var_appearances(var_appearance)
+                yield var_appearance
+            elif utils.has_diff(new_value, old_value):
+                var_modification = VarModification(var_id, old_value, new_value)
+                self.add_var_modifications(var_modification)
+                yield var_modification
+
+    def update_var_changes_before_return(self):
+        """Compares data with data_before_return, records changes."""
+        if self.data_before_return is None:
+            pass
+        for var_id in self.tracking:
+            old_value = self.data.get(var_id, _dummy)
+            new_value = self.data_before_return[var_id]
+            if old_value is _dummy:
+                var_appearance = VarAppearance(id=var_id, value=new_value)
+                self.add_var_appearances(var_appearance)
+            elif utils.has_diff(new_value, old_value):
+                var_modification = VarModification(var_id, old_value, new_value)
+                self.add_var_modifications(var_modification)
+
 
 _dummy = object()
 
@@ -162,31 +198,6 @@ class Flow:
         self.start.prev = self.ROOT
         self.target = target
         self._update_target_id()
-
-    @staticmethod
-    def get_and_update_var_changes(
-        current: Node, next: Node
-    ) -> Iterable[Union[VarModification, VarAppearance]]:
-        """Gets variable changes and stores them to current node.
-
-        There are two cases.
-        1. current and next are in the same frame.
-        2. current is the last line of a call, and next is callsite.
-
-        In case 2, we have to map identifiers in arg to param, so that current recognize
-        it.
-        """
-        for var_id in next.tracking:
-            old_value = current.data.get(var_id, _dummy)
-            new_value = next.data[var_id]
-            if old_value is _dummy:
-                var_appearance = VarAppearance(id=var_id, value=new_value)
-                current.add_var_appearances(var_appearance)
-                yield var_appearance
-            elif utils.has_diff(new_value, old_value):
-                var_modification = VarModification(var_id, old_value, new_value)
-                current.add_var_modifications(var_modification)
-                yield var_modification
 
     def _update_target_id(self) -> ID:
         """Gets ID('x') out of cyberbrain.register(x)."""
