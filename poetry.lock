@@ -95,6 +95,14 @@ version = "3.0.12"
 
 [[package]]
 category = "main"
+description = "Simple Python interface for Graphviz"
+name = "graphviz"
+optional = false
+python-versions = ">=2.7,!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*"
+version = "0.11.1"
+
+[[package]]
+category = "main"
 description = "Read metadata from Python packages"
 name = "importlib-metadata"
 optional = false
@@ -297,6 +305,7 @@ xdis = ">=4.0.3,<4.1.0"
 reference = "a781006ff12ebfee81b1d1e8027b4e9644635840"
 type = "git"
 url = "https://github.com/rocky/python-uncompyle6.git"
+
 [[package]]
 category = "dev"
 description = "Virtual Python Environment builder"
@@ -330,7 +339,7 @@ python-versions = ">=2.7"
 version = "0.5.2"
 
 [metadata]
-content-hash = "880317c751bd3001590b07ec24f63b2716367a41ff4ea2b944049cdae63d366a"
+content-hash = "f9f3b95d4c344257c3ce3868b7d9853a2ce8c2141c599fc28282a52e57dcbd2d"
 python-versions = "^3.6.7"
 
 [metadata.hashes]
@@ -345,6 +354,7 @@ crayons = ["41f0843815a8e3ac6fb445b7970d8b9c766e6f164092d84e7ea809b4c91418ec", "
 dataclasses = ["454a69d788c7fda44efd71e259be79577822f5e3f53f029a22d08004e951dc9f", "6988bd2b895eef432d562370bb707d540f32f7360ab13da45340101bc2307d84"]
 deepdiff = ["1123762580af0904621136d117c8397392a244d3ff0fa0a50de57a7939582476", "6ab13e0cbb627dadc312deaca9bef38de88a737a9bbdbfbe6e3857748219c127"]
 filelock = ["18d82244ee114f543149c66a6e0c14e9c4f8a1044b5cdaadd0f82159d6a6ff59", "929b7d63ec5b7d6b71b0fa5ac14e030b3f70b75747cef1b10da9b879fef15836"]
+graphviz = ["6d0f69c107cfdc9bd1df3763fad99569bbcba29d0c52ffcbc6f266621d8bf709", "914b8b124942d82e3e1dcef499c9fe77c10acd3d18a1cfeeb2b9de05f6d24805"]
 importlib-metadata = ["23d3d873e008a513952355379d93cbcab874c58f4f034ff657c7a87422fa64e8", "80d2de76188eabfbfcf27e6a37342c2827801e59c4cc14b0371c56fed43820e3"]
 jsonpickle = ["d0c5a4e6cb4e58f6d5406bdded44365c2bcf9c836c4f52910cc9ba7245a59dc2", "d3e922d781b1d0096df2dad89a2e1f47177d7969b596aea806a9d91b4626b29b"]
 more-itertools = ["409cd48d4db7052af495b09dec721011634af3753ae1ef92d2b32f73a745f832", "92b8c4b06dac4f0611c0729b2f2ede52b2e1bac1ab48f089c7ddc12e26bb60c4"]
