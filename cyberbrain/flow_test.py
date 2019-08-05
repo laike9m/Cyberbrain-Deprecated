@@ -1,6 +1,6 @@
 """Unit tests for flow."""
 
-from . import backtrace
+from . import backtrace, format
 from .flow import Node, Flow
 from .basis import ID
 from .basis import FrameID
@@ -25,10 +25,10 @@ def create_flow():
     b      { next: c, prev: a}
     c      { next: f, prev: b, step_into: d, returned_from: e}
     d      { next: e, prev: c}
-    e      { next: c, prev: d}
+    e      { prev: d}
     f      { next: target, prev: b, step_into: g, returned_from: h}
     g      { next: h, prev: f}
-    h      { next: f, prev: g}
+    h      { prev: g}
     target { next: None, prev: f}
 
     Assuming code live in a single module, like this:
@@ -142,12 +142,12 @@ def create_flow():
         next=node_f, prev=node_b, step_into=node_d, returned_from=node_e
     )
     node_d.build_relation(next=node_e, prev=node_c)
-    node_e.build_relation(next=node_c, prev=node_d)
+    node_e.build_relation(prev=node_d)
     node_f.build_relation(
         next=node_target, prev=node_c, step_into=node_g, returned_from=node_h
     )
     node_g.build_relation(next=node_h, prev=node_f)
-    node_h.build_relation(next=node_f, prev=node_g)
+    node_h.build_relation(prev=node_g)
     node_target.build_relation(prev=node_f)
 
     return Flow(start=node_start, target=node_target)
@@ -156,3 +156,4 @@ def create_flow():
 def test_traverse_flow():
     flow = create_flow()
     backtrace.trace_flow(flow)
+    format.generate_output(flow)

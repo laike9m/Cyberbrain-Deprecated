@@ -6,7 +6,6 @@ from dataclasses import dataclass
 from typing import Any, Dict, Set, Tuple, List, Iterable, Union
 
 import astor
-from crayons import green
 
 from .basis import ID, FrameID
 from . import utils
@@ -76,11 +75,13 @@ class TrackingMetadata:
         self.data_before_return = data_before_return
 
     def __repr__(self):
-        return (
-            green(f"{self.code_str} ") + f"tracking: {self.tracking} "
-            f"var_appearances: {self.var_appearances} "
-            f"var_modifications: {self.var_modifications} "
-            f"var_switches: {self.var_switches}"
+        return ", ".join(
+            [
+                f"tracking: {self.tracking}",
+                f"var_appearances: {self.var_appearances}",
+                f"var_modifications: {self.var_modifications}",
+                f"var_switches: {self.var_switches}",
+            ]
         )
 
     def get_args(self) -> Set[ID]:
@@ -112,6 +113,8 @@ class TrackingMetadata:
 class Node:
     """Basic unit of an execution flow."""
 
+    _name_gen = itertools.count()  # Incremental name used in building graphviz.
+
     def __init__(self, frame_id: Union[FrameID, Tuple[int, ...]], **kwargs):
         if isinstance(frame_id, FrameID):
             self.frame_id = frame_id
@@ -122,6 +125,8 @@ class Node:
         self.step_into = None
         self.returned_from = None
         self.metadata = TrackingMetadata(**kwargs)
+        self.name = str(next(self._name_gen))
+        # TODO: record function name for call node
 
     def __getattr__(self, name):
         """Redirects attributes and calls to metadata.
