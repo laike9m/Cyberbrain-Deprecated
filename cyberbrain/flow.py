@@ -74,6 +74,7 @@ class TrackingMetadata:
         self.data = data
         self.data_before_return = data_before_return
 
+    # TODO: remove this
     def __repr__(self):
         return ", ".join(
             [
@@ -113,8 +114,6 @@ class TrackingMetadata:
 class Node:
     """Basic unit of an execution flow."""
 
-    _name_gen = itertools.count()  # Incremental name used in building graphviz.
-
     def __init__(self, frame_id: Union[FrameID, Tuple[int, ...]], **kwargs):
         if isinstance(frame_id, FrameID):
             self.frame_id = frame_id
@@ -125,7 +124,6 @@ class Node:
         self.step_into = None
         self.returned_from = None
         self.metadata = TrackingMetadata(**kwargs)
-        self.name = str(next(self._name_gen))
         # TODO: record function name for call node
 
     def __getattr__(self, name):
