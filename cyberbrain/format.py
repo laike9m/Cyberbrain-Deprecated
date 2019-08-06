@@ -1,20 +1,91 @@
 """Formats trace result to user friendly output."""
 
+import itertools
+
 from graphviz import Digraph
 
 from .flow import Flow, Node
 
 # The global graph.
+# g = Digraph(
+#     name="Cyberbrain Output", graph_attr=[("forcelabels", "true")], format="canon"
+# )
 g = Digraph(name="Cyberbrain Output", graph_attr=[("forcelabels", "true")])
 
 
-def generate_subgraph(frame_start: Node):
+class NodeView:
+    """Class that wraps a node and deal with visualization."""
+
+    _name_cache = {}  # Maps node address to their node to avoid duplicates.
+    _incrementor = itertools.count()  # Generates 1, 2, 3, ...
+
+    def __init__(self, node: Node):
+        self._node = node
+        self._name = self._generate_name()
+
+    def __getattr__(self, name):
+        """Redirects attribute access to stored node."""
+        return getattr(self._node, name)
+
+    def _generate_name(self):
+        node_addr = id(self._node)
+        if node_addr not in self._name_cache:
+            self._name_cache[node_addr] = str(next(self._incrementor))
+        return self._name_cache[node_addr]
+
+    @property
+    def name(self):
+        return self._name
+
+    @property
+    def tracking(self):
+        """tracking does not necessarily need to be displayed."""
+        return str(self._node.tracking)
+
+    @property
+    def var_changes(self):
+        """Formats var changes."""
+        output = ""
+        for ap in self.var_appearances:
+            output += f"appear {ap.id.name}={ap.value}\n"
+
+        for mod in self.var_modifications:
+            output += f"modify {mod.id.name} {mod.old_value} -> {mod.new_value}\n"
+
+        # TODO: add var_switch to edge
+        return output
+
+    @property
+    def next(self):
+        return NodeView(self._node.next) if self._node.next else None
+
+    @property
+    def step_into(self):
+        return NodeView(self._node.step_into) if self._node.step_into else None
+
+    @property
+    def returned_from(self):
+        return NodeView(self._node.returned_from) if self._node.returned_from else None
+
+
+def generate_subgraph(frame_start: NodeView):
     current = frame_start
-    with g.subgraph(name="cluster_" + str(frame_start.frame_id)) as sub:
-        sub.attr(style="filled", color="lightgrey", label=str(frame_start.frame_id))
-        sub.node_attr.update(style="filled", color="white")
+    with g.subgraph(
+        name="cluster_" + str(frame_start.frame_id),
+        graph_attr=[
+            ("style", "filled"),
+            ("color", "lightgrey"),
+            ("label", str(frame_start.frame_id)),
+        ],
+        node_attr=[("style", "filled"), ("color", "white")],
+    ) as sub:
         while current is not None:
-            sub.node(current.name, label=current.code_str, xlabel=str(current))
+            sub.node(
+                current.name,
+                label=current.code_str,
+                tracking=current.tracking,
+                xlabel=current.var_changes,
+            )
             if current.next:
                 sub.edge(current.name, current.next.name)
             if current.is_callsite():
@@ -26,7 +97,7 @@ def generate_subgraph(frame_start: Node):
 
 
 def generate_output(flow: Flow):
-    generate_subgraph(flow.start)
+    generate_subgraph(NodeView(flow.start))
 
-    # print(graph.pipe().decode("utf-8"))
+    # print(g.pipe().decode("utf-8"))
     g.render("output.svg", view=True)
