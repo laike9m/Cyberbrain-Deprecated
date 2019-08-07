@@ -10,7 +10,6 @@ python = "^3.6.7"
 bytecode = "^0.8.0"
 uncompyle6 = { git = "https://github.com/rocky/python-uncompyle6.git", branch = "master" }
 crayons = "^0.2.0"
-pytest-parallel = "^0.0.9"
 astor = "^0.8.0"
 deepdiff = "^4.0"
 dataclasses = "^0.6.0"
@@ -23,6 +22,8 @@ tox-run-command = "^0.4.0"
 tox-pyenv = "^1.1"
 pyhamcrest = "^1.9"
 astpretty = "^1.6"
+pytest-parallel = "^0.0.9"
+pytype = "^2019.7"
 
 [build-system]
 requires = ["poetry>=0.12"]

@@ -109,3 +109,5 @@ legacy/
 # Graphviz output
 *.svg
 *.pdf
+
+.pytype/
