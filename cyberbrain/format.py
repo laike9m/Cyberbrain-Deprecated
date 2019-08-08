@@ -6,11 +6,10 @@ from graphviz import Digraph
 
 from .flow import Flow, Node
 
-# The global graph.
 # g = Digraph(
 #     name="Cyberbrain Output", graph_attr=[("forcelabels", "true")], format="canon"
 # )
-g = Digraph(name="Cyberbrain Output", graph_attr=[("forcelabels", "true")])
+g = Digraph(name="Cyberbrain Output")
 
 
 class NodeView:
@@ -76,6 +75,7 @@ def generate_subgraph(frame_start: NodeView):
             ("style", "filled"),
             ("color", "lightgrey"),
             ("label", str(frame_start.frame_id)),
+            ("overlap", "scale"),
         ],
         node_attr=[("style", "filled"), ("color", "white")],
     ) as sub:
@@ -83,9 +83,17 @@ def generate_subgraph(frame_start: NodeView):
             sub.node(
                 current.name,
                 label=current.code_str,
-                tracking=current.tracking,
-                xlabel=current.var_changes,
+                fillcolor="lightblue",
+                style="filled",
             )
+            if current.var_changes:
+                # Creates a subgraph so that node and metadata are on the same height.
+                with g.subgraph(name=current.name + "_meta_sub") as meta_sub:
+                    name_metadata = current.name + "_metadata"
+                    meta_sub.node(current.name)
+                    meta_sub.node(name_metadata, label=current.var_changes, shape="cds")
+                    meta_sub.attr(rank="same")
+                    meta_sub.edge(name_metadata, current.name, style="invis")
             if current.next:
                 sub.edge(current.name, current.next.name)
             if current.is_callsite():
@@ -100,4 +108,4 @@ def generate_output(flow: Flow):
     generate_subgraph(NodeView(flow.start))
 
     # print(g.pipe().decode("utf-8"))
-    g.render("output.svg", view=True)
+    g.render("output1.svg", view=True)
