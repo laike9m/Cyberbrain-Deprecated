@@ -5,7 +5,7 @@
     "code_str": "Call(func=Name(id='main', ctx=Load()), args=[], keywords=[])",
     "event": "call",
     "filepath": "simple_func.py",
-    "lineno": 6
+    "lineno": 17
   },
   {
     "code_str": "    def f(x, y):",
@@ -27,7 +27,7 @@
     "code_str": "Call(func=Name(id='f', ctx=Load()), args=[Num(n=1), Num(n=1)], keywords=[])",
     "event": "call",
     "filepath": "simple_func.py",
-    "lineno": 7
+    "lineno": 11
   },
   {
     "code_str": "        return x + y",
@@ -42,7 +42,7 @@
     "code_str": "Call(func=Name(id='f', ctx=Load()), args=[Name(id='x', ctx=Load()), Call(func=Name(id='f', ctx=Load()), args=[Num(n=1), Num(n=1)], keywords=[])], keywords=[])",
     "event": "call",
     "filepath": "simple_func.py",
-    "lineno": 7
+    "lineno": 11
   },
   {
     "code_str": "        return x + y",
