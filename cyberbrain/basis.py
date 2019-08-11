@@ -66,6 +66,10 @@ class FrameID:
     def tuple(self):
         return self._frame_id_tuple
 
+    @classmethod
+    def current(cls):
+        return FrameID(cls.current_)
+
     @property
     def parent(self):
         return FrameID(self._frame_id_tuple[:-1])
@@ -79,16 +83,16 @@ class FrameID:
     @classmethod
     def create(cls, event: str):
         if event == "line":
-            return FrameID(cls.current_)
+            return cls.current()
         elif event == "call":
-            frame_id = FrameID(cls.current_)
+            frame_id = cls.current()
             cls.current_ = cls.current_ + (cls.child_index[cls.current_],)
             return frame_id  # callsite is in caller frame.
         elif event == "return":
             cls.current_ = cls.current_[:-1]
             # After exiting call frame, increments call frame's child index.
             cls.child_index[cls.current_] += 1
-            return FrameID(cls.current_)
+            return cls.current()
         else:
             raise AttributeError("event type wrong: ", event)
 
