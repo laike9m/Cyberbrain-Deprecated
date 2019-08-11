@@ -135,4 +135,15 @@ def test_map_param_to_arg():
         ID("bar", CALLEE_F): {ID("e", CALLER_F)},
     }
 
+    # Tests signature without args or kwargs.
+    def h(x):
+        return inspect.getargvalues(inspect.currentframe())
+
+    assert callsite.map_param_to_arg(
+        _get_call(ast.parse("h(a)")),
+        h(a),
+        callsite_frame_id=CALLER_F,
+        callee_frame_id=CALLEE_F,
+    ) == {ID("x", CALLEE_F): {ID("a", CALLER_F)}}
+
     # TODO: tests nested call.

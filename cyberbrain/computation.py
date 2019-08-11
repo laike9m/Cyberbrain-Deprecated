@@ -17,13 +17,6 @@ class Computation(metaclass=abc.ABCMeta):
 
     def to_dict(self):
         """Serializes attrs to dict."""
-        return {
-            "filepath": PurePath(self.source_location.filepath).name,
-            "lineno": self.source_location.lineno,
-            "code_str": self.code_str,
-            "frame_id": str(self.frame_id),
-            "event": self.event_type,
-        }
 
     def __str__(self):
         return str(self.to_dict())
@@ -51,6 +44,15 @@ class Line(Computation):
         self.surrounding = surrounding
         self.data_before_return = None
 
+    def to_dict(self):
+        return {
+            "event": self.event_type,
+            "filepath": PurePath(self.source_location.filepath).name,
+            "lineno": self.source_location.lineno,
+            "code_str": self.code_str,
+            "frame_id": str(self.frame_id),
+        }
+
 
 class Call(Computation):
     """Class that represents a call site."""
@@ -59,12 +61,14 @@ class Call(Computation):
         self,
         *,
         callsite_ast: ast.AST,
+        outer_callsite_ast: Optional[ast.AST],
         callsite_source_location: SourceLocation,
         arg_values: inspect.ArgInfo,
         callee_source_location: SourceLocation,
         data,
         event_type: str,
         frame_id: FrameID,
+        callee_frame_id: FrameID,
     ):
         self.callsite_ast = callsite_ast
         self.callsite_source_location = callsite_source_location
@@ -73,8 +77,19 @@ class Call(Computation):
         self.data = data
         self.event_type = event_type
         self.frame_id = frame_id
+        self.callee_frame_id = callee_frame_id
         self.code_str = ast.dump(self.callsite_ast).rstrip()
         self.data_before_return = None
+
+    def to_dict(self):
+        return {
+            "event": self.event_type,
+            "filepath": PurePath(self.source_location.filepath).name,
+            "lineno": self.source_location.lineno,
+            "code_str": self.code_str,
+            "caller_frame_id": str(self.frame_id),
+            "callee_frame_id": str(self.callee_frame_id),
+        }
 
     @property
     def source_location(self):
@@ -88,6 +103,7 @@ class Call(Computation):
         )
         return Call(
             callsite_ast=callsite_ast,
+            outer_callsite_ast=outer_callsite_ast,
             callsite_source_location=SourceLocation(
                 filepath=caller_frame.f_code.co_filename, lineno=caller_frame.f_lineno
             ),
@@ -98,10 +114,11 @@ class Call(Computation):
             data=DataContainer(caller_frame),
             event_type="call",
             frame_id=FrameID.create("call"),
+            callee_frame_id=FrameID.current(),
         )
 
 
-class _ComputationManager:
+class ComputationManager:
     """Class that stores and manages all computations."""
 
     def __init__(self):
@@ -154,11 +171,10 @@ class _ComputationManager:
             ):
                 self.last_computation = computation
             else:
-                # raise Exception()
                 self._computations.append(computation)
         elif event_type == "return":
             FrameID.create(event_type)
             self.last_computation.data_before_return = DataContainer(frame)
 
 
-computation_manager = _ComputationManager()
+computation_manager = ComputationManager()

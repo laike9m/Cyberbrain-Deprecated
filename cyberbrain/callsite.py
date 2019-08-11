@@ -154,12 +154,16 @@ def get_param_arg_pairs(
 
     pos_args = callsite_ast.args
     kw_args = callsite_ast.keywords
-    # Builds a parameter list that expands *args and **kwargs
-    parameters = (
-        arg_info.args[:]
-        + [_ARGS] * len(arg_info.locals[_ARGS])
-        + [_KWARGS] * len(arg_info.locals[_KWARGS])
-    )
+    # Builds a parameter list that expands *args and **kwargs to their length, so that
+    # we can emit a 1-to-1 pair of (arg, param)
+    parameters = arg_info.args[:]
+
+    # There could be no *args or *kwargs in signature.
+    if _ARGS is not None:
+        parameters += [_ARGS] * len(arg_info.locals[_ARGS])
+    if _KWARGS is not None:
+        parameters += [_KWARGS] * len(arg_info.locals[_KWARGS])
+
     for arg, param in zip(itertools.chain(pos_args, kw_args), parameters):
         yield arg, param
 
@@ -169,7 +173,7 @@ def map_param_to_arg(
     arg_info: inspect.ArgInfo,
     *,
     callsite_frame_id: FrameID,
-    callee_frame_id: FrameID
+    callee_frame_id: FrameID,
 ) -> Dict[FrameID, Set[FrameID]]:
     """Maps argument identifiers to parameter identifiers.
 
