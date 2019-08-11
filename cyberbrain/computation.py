@@ -62,18 +62,18 @@ class Call(Computation):
         *,
         callsite_ast: ast.AST,
         outer_callsite_ast: Optional[ast.AST],
-        callsite_source_location: SourceLocation,
+        source_location: SourceLocation,
         arg_values: inspect.ArgInfo,
-        callee_source_location: SourceLocation,
+        func_name: str,
         data,
         event_type: str,
         frame_id: FrameID,
         callee_frame_id: FrameID,
     ):
         self.callsite_ast = callsite_ast
-        self.callsite_source_location = callsite_source_location
+        self.source_location = source_location
         self.arg_values = arg_values
-        self.callee_source_location = callee_source_location
+        self.func_name = func_name
         self.data = data
         self.event_type = event_type
         self.frame_id = frame_id
@@ -91,10 +91,6 @@ class Call(Computation):
             "callee_frame_id": str(self.callee_frame_id),
         }
 
-    @property
-    def source_location(self):
-        return self.callee_source_location
-
     @staticmethod
     def create(frame):
         caller_frame = frame.f_back
@@ -104,13 +100,11 @@ class Call(Computation):
         return Call(
             callsite_ast=callsite_ast,
             outer_callsite_ast=outer_callsite_ast,
-            callsite_source_location=SourceLocation(
+            source_location=SourceLocation(
                 filepath=caller_frame.f_code.co_filename, lineno=caller_frame.f_lineno
             ),
             arg_values=inspect.getargvalues(frame),
-            callee_source_location=SourceLocation(
-                filepath=frame.f_code.co_filename, lineno=frame.f_lineno
-            ),
+            func_name=frame.f_code.co_name,
             data=DataContainer(caller_frame),
             event_type="call",
             frame_id=FrameID.create("call"),
