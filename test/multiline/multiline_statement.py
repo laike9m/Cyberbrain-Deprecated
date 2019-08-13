@@ -12,4 +12,15 @@ y = {
     "longlonglonglonglonglonglonglonglonglong": 3,
 }
 
+
+def f(**kwargs):
+    pass
+
+
+x = f(
+    longlonglonglonglonglonglonglong=1,
+    longlonglonglonglonglonglonglonglong=2,
+    longlonglonglonglonglonglonglonglonglong=3,
+)
+
 cyberbrain.register(y)  # register has to be called after init
