@@ -6,6 +6,7 @@ from . import utils, backtrace
 from .computation import computation_manager
 from .debugging import dump_computations
 from .basis import FrameID
+from . import flow
 
 
 def global_tracer(frame, event_type, arg):
@@ -15,10 +16,11 @@ def global_tracer(frame, event_type, arg):
     print("\nglobal: ", frame, event_type, frame.f_code.co_filename, frame.f_lineno)
 
     if event_type == "call":
-        computation_manager.add_computation(event_type, frame)
-
-    del frame  # https://docs.python.org/3/library/inspect.html#the-interpreter-stack
-    return local_tracer
+        succeeded = computation_manager.add_computation(event_type, frame)
+        # https://docs.python.org/3/library/inspect.html#the-interpreter-stack
+        del frame
+        if succeeded:
+            return local_tracer
 
 
 def local_tracer(frame, event_type, arg):
@@ -51,12 +53,11 @@ _dummy = object()
 def register(target=_dummy):
     """Receives target variable and stops recording computation.
 
-    If target is None, it means it is only called to terminate tracing and dump data.
+    If target is not given, it is only called to terminate tracing and dump data.
     """
     sys.settrace(None)
     global_frame.f_trace = None
-    if target is not _dummy:
-        # TODO: Build flow.
-        pass
+    # if target is not _dummy:
+    #     flow.build_flow(computation_manager)
 
     dump_computations(computation_manager.computations)

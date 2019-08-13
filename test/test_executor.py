@@ -13,9 +13,7 @@ def run_scripts_and_compare():
     def runner(directory, filename):
         test_dir = os.path.join("test", directory)
         expected_output = os.path.join(test_dir, filename.strip("py") + "json")
-        out, _ = Popen(
-            ["python", os.path.join(test_dir, filename)], stdout=PIPE
-        ).communicate()
+        out, _ = Popen(["python", os.path.join(test_dir, filename)]).communicate()
 
         previous, json_text = out.decode("utf-8").split("__SEPERATOR__")
         print(previous)  # Shows scripts output.
@@ -50,3 +48,7 @@ def test_modules(run_scripts_and_compare):
 
 def test_loop(run_scripts_and_compare):
     run_scripts_and_compare("loop", "loop.py")
+
+
+def test_list_comp(run_scripts_and_compare):
+    run_scripts_and_compare("list_comp", "list_comp.py")

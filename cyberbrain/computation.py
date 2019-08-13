@@ -97,6 +97,9 @@ class Call(Computation):
         callsite_ast, outer_callsite_ast = callsite.get_callsite_ast(
             caller_frame.f_code, caller_frame.f_lasti
         )
+        # If it's not ast.Call, like ast.ListComp, ignore for now.
+        if not isinstance(callsite_ast, ast.Call):
+            return None
         return Call(
             callsite_ast=callsite_ast,
             outer_callsite_ast=outer_callsite_ast,
@@ -130,7 +133,12 @@ class ComputationManager:
     def last_computation(self, c: Computation):
         self._computations[-1] = c
 
-    def add_computation(self, event_type, frame):
+    def add_computation(self, event_type, frame) -> bool:
+        """Adds a computation to manager.
+
+        Returns:
+            Whether a new computation has been created and added.
+        """
         if event_type == "line":
             code_str, surrounding = utils.get_code_str_and_surrounding(frame)
             frame_id = FrameID.create(event_type)
@@ -154,8 +162,11 @@ class ComputationManager:
                     surrounding=surrounding,
                 )
             )
+            return True
         elif event_type == "call":
             computation = Call.create(frame)
+            if not computation:
+                return False
             # When entering a new call, replaces previous line(aka caller) with a
             # call computation.
             if (
@@ -163,12 +174,18 @@ class ComputationManager:
                 and self.last_computation.event_type == "line"
                 and computation.frame_id == self.last_computation.frame_id
             ):
+                # TODO: how to preserve code_str?
+                # For nested call, should be equal to call ast
+                # For outermost call, should be full line(or multiline)
+                print(self.last_computation.code_str)
                 self.last_computation = computation
             else:
                 self._computations.append(computation)
+            return True
         elif event_type == "return":
             FrameID.create(event_type)
             self.last_computation.data_before_return = DataContainer(frame)
+            return True
 
 
 computation_manager = ComputationManager()
