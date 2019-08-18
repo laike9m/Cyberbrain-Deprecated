@@ -1,16 +1,18 @@
-[
-  {
-    "code_str": "x = [1 for i in range(3)]",
-    "event": "line",
-    "filepath": "list_comp.py",
-    "frame_id": "(0,)",
-    "lineno": 18
-  },
-  {
-    "code_str": "cyberbrain.register()",
-    "event": "line",
-    "filepath": "list_comp.py",
-    "frame_id": "(0,)",
-    "lineno": 20
-  }
-]
+{
+  "(0,)": [
+    {
+      "event": "line",
+      "filepath": "list_comp.py",
+      "lineno": 18,
+      "code_str": "x = [1 for i in range(3)]",
+      "frame_id": "(0,)"
+    },
+    {
+      "event": "line",
+      "filepath": "list_comp.py",
+      "lineno": 20,
+      "code_str": "cyberbrain.register()",
+      "frame_id": "(0,)"
+    }
+  ]
+}

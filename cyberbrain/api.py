@@ -16,7 +16,7 @@ def global_tracer(frame, event_type, arg):
     print("\nglobal: ", frame, event_type, frame.f_code.co_filename, frame.f_lineno)
 
     if event_type == "call":
-        succeeded = computation_manager.add_computation(event_type, frame)
+        succeeded = computation_manager.add_computation(event_type, frame, arg)
         # https://docs.python.org/3/library/inspect.html#the-interpreter-stack
         del frame
         if succeeded:
@@ -30,7 +30,7 @@ def local_tracer(frame, event_type, arg):
     print("\nlocal: ", frame, event_type, frame.f_code.co_filename, frame.f_lineno)
 
     if event_type in {"line", "return"}:
-        computation_manager.add_computation(event_type, frame)
+        computation_manager.add_computation(event_type, frame, arg)
 
     del frame
 
@@ -60,4 +60,4 @@ def register(target=_dummy):
     # if target is not _dummy:
     #     flow.build_flow(computation_manager)
 
-    dump_computations(computation_manager.computations)
+    dump_computations(computation_manager)
