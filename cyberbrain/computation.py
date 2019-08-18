@@ -3,6 +3,7 @@
 import abc
 import ast
 import inspect
+from collections import defaultdict
 from pathlib import PurePath
 from typing import Optional
 
@@ -34,7 +35,7 @@ class Line(Computation):
         data,
         frame_id: FrameID,
         event_type: str,
-        surrounding: Optional[Surrounding],
+        surrounding: Surrounding,
     ):
         self.code_str = code_str
         self.source_location = SourceLocation(filepath=filepath, lineno=lineno)
@@ -69,6 +70,7 @@ class Call(Computation):
         event_type: str,
         frame_id: FrameID,
         callee_frame_id: FrameID,
+        surrounding: Surrounding,
     ):
         self.callsite_ast = callsite_ast
         self.source_location = source_location
@@ -80,6 +82,7 @@ class Call(Computation):
         self.callee_frame_id = callee_frame_id
         self.code_str = ast.dump(self.callsite_ast).rstrip()
         self.data_before_return = None
+        self.surrounding = surrounding
 
     def to_dict(self):
         return {
@@ -94,6 +97,7 @@ class Call(Computation):
     @staticmethod
     def create(frame):
         caller_frame = frame.f_back
+        _, surrounding = utils.get_code_str_and_surrounding(caller_frame)
         callsite_ast, outer_callsite_ast = callsite.get_callsite_ast(
             caller_frame.f_code, caller_frame.f_lasti
         )
@@ -112,6 +116,7 @@ class Call(Computation):
             event_type="call",
             frame_id=FrameID.create("call"),
             callee_frame_id=FrameID.current(),
+            surrounding=surrounding,
         )
 
 
@@ -119,21 +124,9 @@ class ComputationManager:
     """Class that stores and manages all computations."""
 
     def __init__(self):
-        self._computations = []
+        self.frame_groups: Dict[FrameID, List[Node]] = defaultdict(list)
 
-    @property
-    def computations(self):
-        return self._computations
-
-    @property
-    def last_computation(self):
-        return self._computations[-1]
-
-    @last_computation.setter
-    def last_computation(self, c: Computation):
-        self._computations[-1] = c
-
-    def add_computation(self, event_type, frame) -> bool:
+    def add_computation(self, event_type, frame, arg) -> bool:
         """Adds a computation to manager.
 
         Returns:
@@ -142,16 +135,14 @@ class ComputationManager:
         if event_type == "line":
             code_str, surrounding = utils.get_code_str_and_surrounding(frame)
             frame_id = FrameID.create(event_type)
-            # For multiline statement, skips if the logical line has been added.
+            # Skips if the same logical line has been added.
             if (
-                self.computations
-                and self.last_computation.event_type == "line"
-                and self.last_computation.frame_id == frame_id
-                and self.last_computation.surrounding == surrounding
+                self.frame_groups[frame_id]
+                and self.frame_groups[frame_id][-1].surrounding == surrounding
             ):
-                return
+                return False
             # Records location, computation, data
-            self._computations.append(
+            self.frame_groups[frame_id].append(
                 Line(
                     code_str=code_str.rstrip(),
                     filepath=frame.f_code.co_filename,
@@ -167,24 +158,25 @@ class ComputationManager:
             computation = Call.create(frame)
             if not computation:
                 return False
+            frame_id = computation.frame_id
             # When entering a new call, replaces previous line(aka caller) with a
             # call computation.
             if (
-                self._computations
-                and self.last_computation.event_type == "line"
-                and computation.frame_id == self.last_computation.frame_id
+                self.frame_groups[frame_id]
+                and self.frame_groups[frame_id][-1].event_type == "line"
             ):
-                # TODO: how to preserve code_str?
-                # For nested call, should be equal to call ast
-                # For outermost call, should be full line(or multiline)
-                print(self.last_computation.code_str)
-                self.last_computation = computation
+                # Always keeps Line computation at the end.
+                self.frame_groups[frame_id].insert(
+                    len(self.frame_groups[frame_id]) - 1, computation
+                )
             else:
-                self._computations.append(computation)
+                self.frame_groups[frame_id].append(computation)
             return True
         elif event_type == "return":
-            FrameID.create(event_type)
-            self.last_computation.data_before_return = DataContainer(frame)
+            frame_id = FrameID.create(event_type)
+            assert self.frame_groups[frame_id][-1].event_type == "line"
+            self.frame_groups[frame_id][-1].return_value = arg
+            self.frame_groups[frame_id][-1].data_before_return = DataContainer(frame)
             return True
 
 

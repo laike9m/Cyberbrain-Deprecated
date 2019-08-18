@@ -1,38 +1,49 @@
-[
-  {
-    "code_str": "y = {\n    \"longlonglonglonglonglonglonglong\": 1,\n    \"longlonglonglonglonglonglonglonglong\": 2,\n    \"longlonglonglonglonglonglonglonglonglong\": 3,\n}",
-    "event": "line",
-    "filepath": "multiline_statement.py",
-    "frame_id": "(0,)",
-    "lineno": 10
-  },
-  {
-    "code_str": "def f(**kwargs):",
-    "event": "line",
-    "filepath": "multiline_statement.py",
-    "frame_id": "(0,)",
-    "lineno": 16
-  },
-  {
-    "callee_frame_id": "(0, 0)",
-    "caller_frame_id": "(0,)",
-    "code_str": "Call(func=Name(id='f', ctx=Load()), args=[], keywords=[keyword(arg='longlonglonglonglonglonglonglong', value=Num(n=1)), keyword(arg='longlonglonglonglonglonglonglonglong', value=Num(n=2)), keyword(arg='longlonglonglonglonglonglonglonglonglong', value=Num(n=3))])",
-    "event": "call",
-    "filepath": "multiline_statement.py",
-    "lineno": 23
-  },
-  {
-    "code_str": "    pass",
-    "event": "line",
-    "filepath": "multiline_statement.py",
-    "frame_id": "(0, 0)",
-    "lineno": 17
-  },
-  {
-    "code_str": "cyberbrain.register(y)  # register has to be called after init",
-    "event": "line",
-    "filepath": "multiline_statement.py",
-    "frame_id": "(0,)",
-    "lineno": 26
-  }
-]
+{
+  "(0,)": [
+    {
+      "event": "line",
+      "filepath": "multiline_statement.py",
+      "lineno": 10,
+      "code_str": "y = {\n    \"longlonglonglonglonglonglonglong\": 1,\n    \"longlonglonglonglonglonglonglonglong\": 2,\n    \"longlonglonglonglonglonglonglonglonglong\": 3,\n}",
+      "frame_id": "(0,)"
+    },
+    {
+      "event": "line",
+      "filepath": "multiline_statement.py",
+      "lineno": 16,
+      "code_str": "def f(**kwargs):",
+      "frame_id": "(0,)"
+    },
+    {
+      "event": "call",
+      "filepath": "multiline_statement.py",
+      "lineno": 23,
+      "code_str": "Call(func=Name(id='f', ctx=Load()), args=[], keywords=[keyword(arg='longlonglonglonglonglonglonglong', value=Num(n=1)), keyword(arg='longlonglonglonglonglonglonglonglong', value=Num(n=2)), keyword(arg='longlonglonglonglonglonglonglonglonglong', value=Num(n=3))])",
+      "caller_frame_id": "(0,)",
+      "callee_frame_id": "(0, 0)"
+    },
+    {
+      "event": "line",
+      "filepath": "multiline_statement.py",
+      "lineno": 20,
+      "code_str": "x = f(\n    longlonglonglonglonglonglonglong=1,\n    longlonglonglonglonglonglonglonglong=2,\n    longlonglonglonglonglonglonglonglonglong=3,\n)",
+      "frame_id": "(0,)"
+    },
+    {
+      "event": "line",
+      "filepath": "multiline_statement.py",
+      "lineno": 26,
+      "code_str": "cyberbrain.register(y)  # register has to be called after init",
+      "frame_id": "(0,)"
+    }
+  ],
+  "(0, 0)": [
+    {
+      "event": "line",
+      "filepath": "multiline_statement.py",
+      "lineno": 17,
+      "code_str": "    pass",
+      "frame_id": "(0, 0)"
+    }
+  ]
+}

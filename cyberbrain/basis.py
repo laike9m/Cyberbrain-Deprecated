@@ -62,6 +62,9 @@ class FrameID:
     def __eq__(self, other):
         return self._frame_id_tuple == other._frame_id_tuple
 
+    def __hash__(self):
+        return hash(self._frame_id_tuple)
+
     @property
     def tuple(self):
         return self._frame_id_tuple
@@ -89,10 +92,11 @@ class FrameID:
             cls.current_ = cls.current_ + (cls.child_index[cls.current_],)
             return frame_id  # callsite is in caller frame.
         elif event == "return":
+            call_frame = cls.current()
             cls.current_ = cls.current_[:-1]
             # After exiting call frame, increments call frame's child index.
             cls.child_index[cls.current_] += 1
-            return cls.current()
+            return call_frame
         else:
             raise AttributeError("event type wrong: ", event)
 
