@@ -33,7 +33,7 @@ jobs:
       py36:
         image: [linux, windows, macOs]
       py37:
-        image: [linux, macOs]
+        image: [linux, windows, macOs]
     before:
       - script: |
           python -m pip install --upgrade pip poetry
