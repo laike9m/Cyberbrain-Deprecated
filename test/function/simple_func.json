@@ -58,7 +58,7 @@
       "event": "line",
       "filepath": "simple_func.py",
       "lineno": 12,
-      "code_str": "    cyberbrain.register()  # register has to be called after init",
+      "code_str": "    cyberbrain.register(y)  # register has to be called after init",
       "frame_id": "(0, 0)"
     }
   ],

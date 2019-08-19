@@ -17,4 +17,4 @@ cyberbrain.init()
 
 x = [1 for i in range(3)]
 
-cyberbrain.register()
+cyberbrain.register(x)

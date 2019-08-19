@@ -2,6 +2,7 @@
 
 import ast
 import itertools
+from collections import defaultdict
 from dataclasses import dataclass
 from typing import Any, Dict, Set, Tuple, List, Iterable, Union
 
@@ -9,6 +10,7 @@ import astor
 
 from .basis import ID, FrameID
 from . import utils
+from .computation import ComputationManager, Computation
 
 
 @dataclass()
@@ -78,12 +80,20 @@ class TrackingMetadata:
     def __repr__(self):
         return ", ".join(
             [
+                f"code: {self.code_str}",
                 f"tracking: {self.tracking}",
                 f"var_appearances: {self.var_appearances}",
                 f"var_modifications: {self.var_modifications}",
                 f"var_switches: {self.var_switches}",
             ]
         )
+
+    def set_param_to_arg(self, param_to_arg: Dict[ID, ID]):
+        self.param_to_arg = param_to_arg
+        self.arg_to_param = {}
+        for param, args in param_to_arg.items():
+            for arg in args:
+                self.arg_to_param[arg] = param
 
     def get_args(self) -> Set[ID]:
         return set(itertools.chain.from_iterable(self.param_to_arg.values()))
@@ -212,3 +222,37 @@ class Flow:
         self.target.add_tracking(
             ID(register_call_ast.body[0].value.args[0].id, self.target.frame_id)
         )
+
+
+def build_flow(cm: ComputationManager):
+    """Builds flow using computations.
+
+    1. Traverse through computations, create node, group nodes by frame id.
+    2. For each frame group, flatten nested calls, computes param_to_arg.
+    3. Add step_into and returned_from edges.
+
+    call node should pass full code str to node, callsite_ast is only needed to
+    generate param_to_arg
+    """
+    start: Node
+    target: Node
+    frame_groups: Dict[FrameID, List[Node]] = defaultdict(list)
+
+    for frame_id, comps in cm.frame_groups.items():
+        for comp in comps:
+            if comp.event_type == "line":
+                node = Node(
+                    frame_id=frame_id,
+                    data=comp.data,
+                    code_str=comp.code_str,
+                    data_before_return=comp.data_before_return,
+                )
+            elif comp.event_type == "call":
+                node = Node(
+                    frame_id=frame_id, data=comp.data, code_ast=comp.callsite_ast
+                )
+            frame_groups[frame_id].append(node)
+            if comp is cm.target:
+                target = node
+
+    start = frame_groups[(0,)][0]

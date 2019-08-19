@@ -34,7 +34,7 @@
       "event": "line",
       "filepath": "multicall.py",
       "lineno": 15,
-      "code_str": "cyberbrain.register()",
+      "code_str": "cyberbrain.register(x)",
       "frame_id": "(0,)"
     }
   ],

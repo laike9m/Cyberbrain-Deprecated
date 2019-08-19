@@ -59,8 +59,11 @@ class FrameID:
     def __init__(self, frame_id_tuple):
         self._frame_id_tuple = frame_id_tuple
 
-    def __eq__(self, other):
-        return self._frame_id_tuple == other._frame_id_tuple
+    def __eq__(self, other: Union["FrameID", Tuple[int, ...]]):
+        if isinstance(other, FrameID):
+            return self._frame_id_tuple == other._frame_id_tuple
+        elif isinstance(other, Tuple):
+            return self._frame_id_tuple == other
 
     def __hash__(self):
         return hash(self._frame_id_tuple)

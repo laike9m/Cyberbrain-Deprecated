@@ -56,5 +56,5 @@ def test_list_comp(run_scripts_and_compare):
     run_scripts_and_compare("list_comp", "list_comp.py")
 
 
-def test_list_comp(run_scripts_and_compare):
+def test_multicall(run_scripts_and_compare):
     run_scripts_and_compare("multicall", "multicall.py")
