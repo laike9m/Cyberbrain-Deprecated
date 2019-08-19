@@ -9,7 +9,7 @@ def main():
 
     x = 1
     y = f(x, f(1, 1))  # y is our target.
-    cyberbrain.register()  # register has to be called after init
+    cyberbrain.register(y)  # register has to be called after init
 
 
 if __name__ == "__main__":

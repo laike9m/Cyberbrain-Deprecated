@@ -12,4 +12,4 @@ def f(*args, **kwargs):
 x = {f(x=1), f(y=2)}
 
 
-cyberbrain.register()
+cyberbrain.register(x)

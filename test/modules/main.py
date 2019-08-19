@@ -4,5 +4,5 @@ import cyberbrain
 import foo
 
 cyberbrain.init()
-foo.func_in_foo()
-cyberbrain.register()
+x = foo.func_in_foo()
+cyberbrain.register(x)

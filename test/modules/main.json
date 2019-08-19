@@ -12,14 +12,14 @@
       "event": "line",
       "filepath": "main.py",
       "lineno": 7,
-      "code_str": "foo.func_in_foo()",
+      "code_str": "x = foo.func_in_foo()",
       "frame_id": "(0,)"
     },
     {
       "event": "line",
       "filepath": "main.py",
       "lineno": 8,
-      "code_str": "cyberbrain.register()",
+      "code_str": "cyberbrain.register(x)",
       "frame_id": "(0,)"
     }
   ],

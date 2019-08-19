@@ -125,6 +125,10 @@ class ComputationManager:
 
     def __init__(self):
         self.frame_groups: Dict[FrameID, List[Node]] = defaultdict(list)
+        self.target = None
+
+    def set_target(self, target_frame_id: FrameID):
+        self.target = self.frame_groups[target_frame_id][-1]
 
     def add_computation(self, event_type, frame, arg) -> bool:
         """Adds a computation to manager.

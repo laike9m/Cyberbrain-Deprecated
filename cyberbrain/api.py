@@ -13,7 +13,7 @@ def global_tracer(frame, event_type, arg):
     """Global trace function."""
     if utils.should_exclude(frame.f_code.co_filename):
         return
-    print("\nglobal: ", frame, event_type, frame.f_code.co_filename, frame.f_lineno)
+    # print("\nglobal: ", frame, event_type, frame.f_code.co_filename, frame.f_lineno)
 
     if event_type == "call":
         succeeded = computation_manager.add_computation(event_type, frame, arg)
@@ -27,7 +27,7 @@ def local_tracer(frame, event_type, arg):
     """Local trace function."""
     if utils.should_exclude(frame.f_code.co_filename):
         return
-    print("\nlocal: ", frame, event_type, frame.f_code.co_filename, frame.f_lineno)
+    # print("\nlocal: ", frame, event_type, frame.f_code.co_filename, frame.f_lineno)
 
     if event_type in {"line", "return"}:
         computation_manager.add_computation(event_type, frame, arg)
@@ -55,9 +55,11 @@ def register(target=_dummy):
 
     If target is not given, it is only called to terminate tracing and dump data.
     """
+    print(target is _dummy)
     sys.settrace(None)
     global_frame.f_trace = None
-    # if target is not _dummy:
-    #     flow.build_flow(computation_manager)
+    computation_manager.set_target(FrameID.current())
+    if target is not _dummy:
+        flow.build_flow(computation_manager)
 
     dump_computations(computation_manager)
