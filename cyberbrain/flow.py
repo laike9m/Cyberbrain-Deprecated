@@ -2,13 +2,13 @@
 
 import ast
 import itertools
-from collections import defaultdict
+from collections import defaultdict, namedtuple
 from dataclasses import dataclass
-from typing import Any, Dict, Set, Tuple, List, Iterable, Union
+from typing import Any, Dict, Set, Tuple, List, Iterable, Union, Optional
 
 import astor
 
-from .basis import ID, FrameID
+from .basis import ID, FrameID, NodeType, _dummy
 from . import utils
 from .computation import ComputationManager, Computation
 
@@ -52,7 +52,7 @@ class TrackingMetadata:
     ):
         if not any([code_str, code_ast]):
             raise ValueError("Should provide code_str or code_ast.")
-        self.code_str = code_str or astor.to_source(code_ast)
+        self.code_str = code_str or astor.to_source(code_ast).strip()
         self.code_ast = code_ast or utils.parse_code_str(code_str)
         self.param_to_arg = param_to_arg
         if param_to_arg:
@@ -75,6 +75,7 @@ class TrackingMetadata:
         self.var_switches: Set[VarSwitch] = []
         self.data = data
         self.data_before_return = data_before_return
+        self.return_value = _dummy
 
     # TODO: remove this
     def __repr__(self):
@@ -124,7 +125,13 @@ class TrackingMetadata:
 class Node:
     """Basic unit of an execution flow."""
 
-    def __init__(self, frame_id: Union[FrameID, Tuple[int, ...]], **kwargs):
+    def __init__(
+        self,
+        frame_id: Union[FrameID, Tuple[int, ...]],
+        type: Optional[NodeType] = None,
+        **kwargs,
+    ):
+        self.type = type
         if isinstance(frame_id, FrameID):
             self.frame_id = frame_id
         elif isinstance(frame_id, tuple):
@@ -195,9 +202,6 @@ class Node:
                 self.add_var_modifications(var_modification)
 
 
-_dummy = object()
-
-
 class Flow:
     """Class that represents program's execution.
 
@@ -225,7 +229,7 @@ class Flow:
 
 
 def build_flow(cm: ComputationManager):
-    """Builds flow using computations.
+    """Builds flow from computations.
 
     1. Traverse through computations, create node, group nodes by frame id.
     2. For each frame group, flatten nested calls, computes param_to_arg.
@@ -236,23 +240,59 @@ def build_flow(cm: ComputationManager):
     """
     start: Node
     target: Node
-    frame_groups: Dict[FrameID, List[Node]] = defaultdict(list)
+    NodeWithSurrounding = namedtuple("NodeWithSurrounding", ["node", "surrounding"])
+    frame_groups: Dict[FrameID, List[NodeWithSurrounding]] = defaultdict(list)
 
     for frame_id, comps in cm.frame_groups.items():
         for comp in comps:
             if comp.event_type == "line":
                 node = Node(
+                    type=NodeType.LINE,
                     frame_id=frame_id,
                     data=comp.data,
                     code_str=comp.code_str,
                     data_before_return=comp.data_before_return,
                 )
+                if hasattr(comp, "return_value"):
+                    node.return_value = comp.return_value
             elif comp.event_type == "call":
                 node = Node(
-                    frame_id=frame_id, data=comp.data, code_ast=comp.callsite_ast
+                    type=NodeType.CALL,
+                    frame_id=frame_id,
+                    data=comp.data,
+                    code_ast=comp.callsite_ast,
                 )
-            frame_groups[frame_id].append(node)
+            if frame_groups[frame_id]:
+                frame_groups[frame_id][-1].node.next = node
+            frame_groups[frame_id].append(NodeWithSurrounding(node, comp.surrounding))
             if comp is cm.target:
                 target = node
 
     start = frame_groups[(0,)][0]
+
+    for frame_id, frame in frame_groups.items():
+        i = 0  # call index in this frame.
+        for surrounding, group in itertools.groupby(frame, lambda x: x.surrounding):
+            ast_to_intermediate: Dict[str, str] = {}
+            for node, _ in group:
+                if node.type is NodeType.CALL:
+                    for inner_call, intermediate in ast_to_intermediate.items():
+                        node.code_str = node.code_str.replace(
+                            inner_call, intermediate, 1
+                        )
+                    # There should be a better way writing node.metadata.code_str.
+                    ast_to_intermediate[node.code_str] = f"r{i}_"
+                    node.metadata.code_str = f"r{i}_ = " + node.code_str
+                    node.metadata.code_ast = utils.parse_code_str(node.code_str)
+                    node.step_into = frame_groups[node.frame_id + (i,)][0].node
+                    node.returned_from = frame_groups[node.frame_id + (i,)][-1].node
+                    # Binds ri_ to next line, becasue it appears after this line runs.
+                    node.next.data.add(f"r{i}_", node.returned_from.return_value)
+                    i += 1
+                elif node.type is NodeType.LINE:
+                    for inner_call, intermediate in ast_to_intermediate.items():
+                        node.metadata.code_str = node.code_str.replace(
+                            inner_call, intermediate, 1
+                        )
+                    node.metadata.code_ast = utils.parse_code_str(node.code_str)
+                print(node)
