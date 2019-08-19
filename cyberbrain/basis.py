@@ -2,6 +2,7 @@
 
 import sys
 from collections import defaultdict
+from enum import Enum
 from typing import Dict, Tuple, NamedTuple, Union
 
 
@@ -27,6 +28,13 @@ from typing import Dict, Tuple, NamedTuple, Union
 Surrounding = NamedTuple("Surrounding", [("start_lineno", int), ("end_lineno", int)])
 
 SourceLocation = NamedTuple("SourceLocation", [("filepath", str), ("lineno", int)])
+
+_dummy = object()
+
+
+class NodeType(Enum):
+    LINE = 1
+    CALL = 2
 
 
 class FrameID:
@@ -67,6 +75,9 @@ class FrameID:
 
     def __hash__(self):
         return hash(self._frame_id_tuple)
+
+    def __add__(self, other: Tuple):
+        return FrameID(self._frame_id_tuple + other)
 
     @property
     def tuple(self):

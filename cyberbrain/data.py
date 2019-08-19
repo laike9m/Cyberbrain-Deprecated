@@ -17,6 +17,9 @@ class DataContainer:
     def __getitem__(self, index):
         return self.frame_vars[index]
 
+    def add(self, name, value):
+        print(f"Adding {name}: {value}")
+
     def compare(self, other):
         """Compares with another data container and finds diffs."""
 

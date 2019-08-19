@@ -5,7 +5,7 @@ import sys
 from . import utils, backtrace
 from .computation import computation_manager
 from .debugging import dump_computations
-from .basis import FrameID
+from .basis import FrameID, _dummy
 from . import flow
 
 
@@ -45,9 +45,6 @@ def init():
     global_frame = sys._getframe(1)
     sys.settrace(global_tracer)
     global_frame.f_trace = local_tracer
-
-
-_dummy = object()
 
 
 def register(target=_dummy):
