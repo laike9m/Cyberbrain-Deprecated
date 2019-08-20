@@ -125,6 +125,10 @@ class TrackingMetadata:
 class Node:
     """Basic unit of an execution flow."""
 
+    __slots__ = frozenset(
+        ["type", "frame_id", "prev", "next", "step_into", "returned_from", "metadata"]
+    )
+
     def __init__(
         self,
         frame_id: Union[FrameID, Tuple[int, ...]],
@@ -141,14 +145,15 @@ class Node:
         self.step_into = None
         self.returned_from = None
         self.metadata = TrackingMetadata(**kwargs)
-        # TODO: record function name for call node
 
     def __getattr__(self, name):
-        """Redirects attributes and calls to metadata.
-
-        __getattr__ is only called when name is not in node's __dict__.
-        """
         return getattr(self.metadata, name)
+
+    def __setattr__(self, name, value):
+        if name in self.__slots__:
+            super().__setattr__(name, value)
+        else:
+            setattr(self.metadata, name, value)
 
     def __repr__(self):
         return str(self.metadata)
@@ -272,27 +277,18 @@ def build_flow(cm: ComputationManager):
 
     for frame_id, frame in frame_groups.items():
         i = 0  # call index in this frame.
-        for surrounding, group in itertools.groupby(frame, lambda x: x.surrounding):
+        for _, group in itertools.groupby(frame, lambda x: x.surrounding):
             ast_to_intermediate: Dict[str, str] = {}
             for node, _ in group:
+                for inner_call, intermediate in ast_to_intermediate.items():
+                    node.code_str = node.code_str.replace(inner_call, intermediate, 1)
                 if node.type is NodeType.CALL:
-                    for inner_call, intermediate in ast_to_intermediate.items():
-                        node.code_str = node.code_str.replace(
-                            inner_call, intermediate, 1
-                        )
-                    # There should be a better way writing node.metadata.code_str.
                     ast_to_intermediate[node.code_str] = f"r{i}_"
-                    node.metadata.code_str = f"r{i}_ = " + node.code_str
-                    node.metadata.code_ast = utils.parse_code_str(node.code_str)
+                    node.code_str = f"r{i}_ = " + node.code_str
                     node.step_into = frame_groups[node.frame_id + (i,)][0].node
                     node.returned_from = frame_groups[node.frame_id + (i,)][-1].node
-                    # Binds ri_ to next line, becasue it appears after this line runs.
+                    # Binds ri_ to next line, becasue it appears during this line.
                     node.next.data.add(f"r{i}_", node.returned_from.return_value)
                     i += 1
-                elif node.type is NodeType.LINE:
-                    for inner_call, intermediate in ast_to_intermediate.items():
-                        node.metadata.code_str = node.code_str.replace(
-                            inner_call, intermediate, 1
-                        )
-                    node.metadata.code_ast = utils.parse_code_str(node.code_str)
+                node.code_ast = utils.parse_code_str(node.code_str)
                 print(node)
