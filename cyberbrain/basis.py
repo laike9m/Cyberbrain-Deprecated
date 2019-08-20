@@ -57,6 +57,8 @@ class FrameID:
 
     We also maintain the frame id of current code location. New frame ids are generated
     based on event type and current frame id.
+
+    TODO: record function name.
     """
 
     current_ = (0,)
