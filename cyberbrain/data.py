@@ -24,6 +24,6 @@ class Data(UserDict):
             [frame.f_locals.items(), frame.f_globals.items()]
         ):
             # TODO: exclude other stuff we don't need.
-            if inspect.ismodule(value):
+            if inspect.ismodule(value) or inspect.isbuiltin(value):
                 continue
             self.data[name] = value

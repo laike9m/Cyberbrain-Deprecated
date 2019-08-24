@@ -121,27 +121,9 @@ class FrameID:
         return str(self._frame_id_tuple)
 
 
-class ID:
+class ID(str):
     """A class that represents an identifier.
 
-    Since the same identifer can exist in different scopes, we have to differenciate
-    them by saving their frame id.
+    There's no need to save frame info, because at a ceratain time, a computation or
+    node only sees one value for one identifier, and we can omit others.
     """
-
-    def __init__(self, name, frame_id_or_tuple: Union[FrameID, Tuple[int, ...]] = None):
-        """For simplicity, accepts both a FramdID and its tuple representation."""
-        self.name = name
-        if isinstance(frame_id_or_tuple, FrameID):
-            self.frame_id = frame_id_or_tuple
-        elif isinstance(frame_id_or_tuple, tuple):
-            self.frame_id = FrameID(frame_id_or_tuple)
-        self._key = (name, self.frame_id.tuple)
-
-    def __eq__(self, other):
-        return self._key == other._key
-
-    def __hash__(self):
-        return hash(self._key)
-
-    def __repr__(self):
-        return str(self._key)

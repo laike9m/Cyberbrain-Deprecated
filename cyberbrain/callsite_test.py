@@ -78,7 +78,7 @@ def test_map_param_to_arg():
         f(1, 2),
         callsite_frame_id=CALLER_F,
         callee_frame_id=CALLEE_F,
-    ) == {ID("foo", CALLEE_F): set(), ID("bar", CALLEE_F): set()}
+    ) == {ID("foo"): set(), ID("bar"): set()}
 
     # Tests passing variables.
     a, b, c = 1, 2, 3
@@ -87,11 +87,7 @@ def test_map_param_to_arg():
         f(a, b, z=c),
         callsite_frame_id=CALLER_F,
         callee_frame_id=CALLEE_F,
-    ) == {
-        ID("foo", CALLEE_F): {ID("a", CALLER_F)},
-        ID("bar", CALLEE_F): {ID("b", CALLER_F)},
-        ID("baz", CALLEE_F): {ID("c", CALLER_F)},
-    }
+    ) == {ID("foo"): {ID("a")}, ID("bar"): {ID("b")}, ID("baz"): {ID("c")}}
 
     # Tests catching extra args.
     d, e = 4, 5
@@ -101,11 +97,11 @@ def test_map_param_to_arg():
         callsite_frame_id=CALLER_F,
         callee_frame_id=CALLEE_F,
     ) == {
-        ID("foo", CALLEE_F): {ID("a", CALLER_F)},
-        ID("bar", CALLEE_F): {ID("b", CALLER_F)},
-        ID("baz", CALLEE_F): {ID("c", CALLER_F)},
-        ID("args", CALLEE_F): {ID("d", CALLER_F)},
-        ID("kwargs", CALLEE_F): {ID("e", CALLER_F)},
+        ID("foo"): {ID("a")},
+        ID("bar"): {ID("b")},
+        ID("baz"): {ID("c")},
+        ID("args"): {ID("d")},
+        ID("kwargs"): {ID("e")},
     }
 
     # Tests binding multiple params to one argument.
@@ -115,10 +111,10 @@ def test_map_param_to_arg():
         callsite_frame_id=CALLER_F,
         callee_frame_id=CALLEE_F,
     ) == {
-        ID("foo", CALLEE_F): {ID("a", CALLER_F)},
-        ID("bar", CALLEE_F): {ID("b", CALLER_F), ID("c", CALLER_F)},
-        ID("baz", CALLEE_F): {ID("c", CALLER_F)},
-        ID("kwargs", CALLEE_F): {ID("d", CALLER_F), ID("e", CALLER_F)},
+        ID("foo"): {ID("a")},
+        ID("bar"): {ID("b"), ID("c")},
+        ID("baz"): {ID("c")},
+        ID("kwargs"): {ID("d"), ID("e")},
     }
 
     # Tests using custom names for args and kwargs.
@@ -130,10 +126,7 @@ def test_map_param_to_arg():
         g(d, qux=e),
         callsite_frame_id=CALLER_F,
         callee_frame_id=CALLEE_F,
-    ) == {
-        ID("foo", CALLEE_F): {ID("d", CALLER_F)},
-        ID("bar", CALLEE_F): {ID("e", CALLER_F)},
-    }
+    ) == {ID("foo"): {ID("d")}, ID("bar"): {ID("e")}}
 
     # Tests signature without args or kwargs.
     def h(x):
@@ -144,6 +137,6 @@ def test_map_param_to_arg():
         h(a),
         callsite_frame_id=CALLER_F,
         callee_frame_id=CALLEE_F,
-    ) == {ID("x", CALLEE_F): {ID("a", CALLER_F)}}
+    ) == {ID("x"): {ID("a")}}
 
     # TODO: tests nested call.
