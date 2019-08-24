@@ -65,50 +65,50 @@ def create_flow():
     }
 
     # Creates nodes.
-    node_start = Node(GLOBAL_FRAME, code_str="fo = 1", data={**functions})
+    node_start = Node(GLOBAL_FRAME, code_str="fo = 1", vars={**functions})
     node_a = Node(
         GLOBAL_FRAME,
         code_str="func_a(fo)",
         param_to_arg={ID("foo"): {ID("fo")}},
-        data={ID("fo"): 1, **functions},
+        vars={ID("fo"): 1, **functions},
     )
-    node_b = Node(FUNC_A_FRAME, code_str="ba = [foo]", data={ID("foo"): 1, **functions})
+    node_b = Node(FUNC_A_FRAME, code_str="ba = [foo]", vars={ID("foo"): 1, **functions})
     node_c = Node(
         FUNC_A_FRAME,
         code_str="func_c(ba)",
         param_to_arg={ID("baa"): {ID("ba")}},
-        data={ID("foo"): 1, ID("ba"): [1], **functions},
+        vars={ID("foo"): 1, ID("ba"): [1], **functions},
     )
     node_d = Node(
-        FUNC_C_FRAME, code_str="baa.append(None)", data={ID("baa"): [1], **functions}
+        FUNC_C_FRAME, code_str="baa.append(None)", vars={ID("baa"): [1], **functions}
     )
     node_e = Node(
         FUNC_C_FRAME,
         code_str="baa.append('?')",
-        data={ID("baa"): [1, None], **functions},
-        data_before_return={ID("baa"): [1, None, "?"], **functions},
+        vars={ID("baa"): [1, None], **functions},
+        vars_before_return={ID("baa"): [1, None, "?"], **functions},
     )
     node_f = Node(
         FUNC_A_FRAME,
         code_str="foo = func_f(ba)",
         param_to_arg={ID("bar"): {ID("ba")}},
-        data={ID("foo"): 1, ID("ba"): [1, None, "?"], **functions},
+        vars={ID("foo"): 1, ID("ba"): [1, None, "?"], **functions},
     )
     node_g = Node(
         FUNC_F_FRAME,
         code_str="x = len(bar)",
-        data={ID("bar"): [1, None, "?"], **functions},
+        vars={ID("bar"): [1, None, "?"], **functions},
     )
     node_h = Node(
         FUNC_F_FRAME,
         code_str="return x",
-        data={ID("bar"): [1, None, "?"], ID("x"): 3, **functions},
-        data_before_return={ID("bar"): [1, None, "?"], ID("x"): 3, **functions},
+        vars={ID("bar"): [1, None, "?"], ID("x"): 3, **functions},
+        vars_before_return={ID("bar"): [1, None, "?"], ID("x"): 3, **functions},
     )
     node_target = Node(
         FUNC_A_FRAME,
         code_str="cyberbrain.register(foo)",
-        data={ID("foo"): 3, ID("ba"): [1, None, "?"], **functions},
+        vars={ID("foo"): 3, ID("ba"): [1, None, "?"], **functions},
     )
 
     # Builds relation.

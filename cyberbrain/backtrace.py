@@ -47,7 +47,7 @@ def trace_flow(flow: Flow):
                         VarSwitch(
                             arg_id=arg_id,
                             param_id=identifier,
-                            value=current.data[arg_id],
+                            value=current.vars[arg_id],
                         )
                     )
             _print_node(current, next)
