@@ -7,7 +7,7 @@ import itertools
 from collections import defaultdict, UserDict
 
 
-class Data(UserDict):
+class Vars(UserDict):
     """A class that holds variable values in a trace event."""
 
     def __init__(self, frame):
