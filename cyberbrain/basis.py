@@ -128,7 +128,7 @@ class ID:
     them by saving their frame id.
     """
 
-    def __init__(self, name, frame_id_or_tuple: Union[FrameID, Tuple[int, ...]]):
+    def __init__(self, name, frame_id_or_tuple: Union[FrameID, Tuple[int, ...]] = None):
         """For simplicity, accepts both a FramdID and its tuple representation."""
         self.name = name
         if isinstance(frame_id_or_tuple, FrameID):

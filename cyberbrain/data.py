@@ -1,41 +1,29 @@
 """Variable managing utilities."""
 
 import copy
-from collections import defaultdict
+import inspect
+import itertools
+
+from collections import defaultdict, UserDict
 
 
-class DataContainer:
+class Data(UserDict):
     """A class that holds variable values in a trace event."""
 
-    # TODO: Should we flatten variables in different frames? Is there still a need to
-    # keep the data - frame binding here?
-
     def __init__(self, frame):
-        self._traverse_frames(frame)
+        super().__init__()
+        self._scan_namespaces(frame)
         del frame
 
-    def __getitem__(self, index):
-        return self.frame_vars[index]
+    def __getitem__(self, name):
+        return self.data[name]
 
-    def add(self, name, value):
-        print(f"Adding {name}: {value}")
-
-    def compare(self, other):
-        """Compares with another data container and finds diffs."""
-
-    def _traverse_frames(self, frame):
+    def _scan_namespaces(self, frame):
         """Records variables from bottom to top."""
-        # TODO: use frame id to replace frame_level_up, and flatten frame_vars.
-        self.frame_vars = defaultdict(dict)  # [frame_level_up][var_name]
-        frame_level_up = 0
-        while frame is not None:
-            for var_name, var_value in frame.f_locals.items():
-                try:
-                    self.frame_vars[frame_level_up][var_name] = copy.deepcopy(var_value)
-                except TypeError:
-                    try:
-                        self.frame_vars[frame_level_up][var_name] = copy.copy(var_value)
-                    except TypeError:
-                        self.frame_vars[frame_level_up][var_name] = var_value
-            frame = frame.f_back
-            frame_level_up += 1
+        for name, value in itertools.chain.from_iterable(
+            [frame.f_locals.items(), frame.f_globals.items()]
+        ):
+            # TODO: exclude other stuff we don't need.
+            if inspect.ismodule(value):
+                continue
+            self.data[name] = value
