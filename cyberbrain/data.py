@@ -26,4 +26,11 @@ class Vars(UserDict):
             # TODO: exclude other stuff we don't need.
             if inspect.ismodule(value) or inspect.isbuiltin(value):
                 continue
-            self.data[name] = value
+            # Tries copy as deep as possible so that changes won't affect stored value.
+            try:
+                self.data[name] = copy.deepcopy(value)
+            except TypeError:
+                try:
+                    self.data[name] = copy.copy(value)
+                except TypeError:
+                    self.data[name] = value
