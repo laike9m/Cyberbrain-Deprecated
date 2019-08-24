@@ -194,6 +194,6 @@ def map_param_to_arg(
     In the future, we *might* record fine grained info.
     """
     return {
-        ID(param, callee_frame_id): utils.find_names(arg, callsite_frame_id)
+        ID(param): utils.find_names(arg)
         for arg, param in get_param_arg_pairs(callsite_ast, arg_info)
     }

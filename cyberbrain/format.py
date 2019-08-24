@@ -46,10 +46,10 @@ class NodeView:
         """Formats var changes."""
         output = ""
         for ap in self.var_appearances:
-            output += f"appear {ap.id.name}={ap.value}\n"
+            output += f"appear {ap.id}={ap.value}\n"
 
         for mod in self.var_modifications:
-            output += f"modify {mod.id.name} {mod.old_value} -> {mod.new_value}\n"
+            output += f"modify {mod.id} {mod.old_value} -> {mod.new_value}\n"
 
         # TODO: add var_switch to edge
         return output

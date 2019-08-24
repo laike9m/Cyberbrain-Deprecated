@@ -59,10 +59,9 @@ def create_flow():
 
     # Common data
     functions = {
-        ID("func_f", GLOBAL_FRAME): "<function func_f at 0x01>",
-        ID("func_c", GLOBAL_FRAME): "<function func_c at 0x02>",
-        ID("func_a", GLOBAL_FRAME): "<function func_a at 0x03>",
-        ID("len", GLOBAL_FRAME): "<built-in function len>",
+        ID("func_f"): "<function func_f at 0x01>",
+        ID("func_c"): "<function func_c at 0x02>",
+        ID("func_a"): "<function func_a at 0x03>",
     }
 
     # Creates nodes.
@@ -70,68 +69,46 @@ def create_flow():
     node_a = Node(
         GLOBAL_FRAME,
         code_str="func_a(fo)",
-        param_to_arg={ID("foo", FUNC_A_FRAME): {ID("fo", GLOBAL_FRAME)}},
-        data={ID("fo", GLOBAL_FRAME): 1, **functions},
+        param_to_arg={ID("foo"): {ID("fo")}},
+        data={ID("fo"): 1, **functions},
     )
-    node_b = Node(
-        FUNC_A_FRAME,
-        code_str="ba = [foo]",
-        data={ID("foo", FUNC_A_FRAME): 1, **functions},
-    )
+    node_b = Node(FUNC_A_FRAME, code_str="ba = [foo]", data={ID("foo"): 1, **functions})
     node_c = Node(
         FUNC_A_FRAME,
         code_str="func_c(ba)",
-        param_to_arg={ID("baa", FUNC_C_FRAME): {ID("ba", FUNC_A_FRAME)}},
-        data={ID("foo", FUNC_A_FRAME): 1, ID("ba", FUNC_A_FRAME): [1], **functions},
+        param_to_arg={ID("baa"): {ID("ba")}},
+        data={ID("foo"): 1, ID("ba"): [1], **functions},
     )
     node_d = Node(
-        FUNC_C_FRAME,
-        code_str="baa.append(None)",
-        data={ID("baa", FUNC_C_FRAME): [1], **functions},
+        FUNC_C_FRAME, code_str="baa.append(None)", data={ID("baa"): [1], **functions}
     )
     node_e = Node(
         FUNC_C_FRAME,
         code_str="baa.append('?')",
-        data={ID("baa", FUNC_C_FRAME): [1, None], **functions},
-        data_before_return={ID("baa", FUNC_C_FRAME): [1, None, "?"], **functions},
+        data={ID("baa"): [1, None], **functions},
+        data_before_return={ID("baa"): [1, None, "?"], **functions},
     )
     node_f = Node(
         FUNC_A_FRAME,
         code_str="foo = func_f(ba)",
-        param_to_arg={ID("bar", FUNC_F_FRAME): {ID("ba", FUNC_A_FRAME)}},
-        data={
-            ID("foo", FUNC_A_FRAME): 1,
-            ID("ba", FUNC_A_FRAME): [1, None, "?"],
-            **functions,
-        },
+        param_to_arg={ID("bar"): {ID("ba")}},
+        data={ID("foo"): 1, ID("ba"): [1, None, "?"], **functions},
     )
     node_g = Node(
         FUNC_F_FRAME,
         code_str="x = len(bar)",
-        data={ID("bar", FUNC_F_FRAME): [1, None, "?"], **functions},
+        data={ID("bar"): [1, None, "?"], **functions},
     )
     node_h = Node(
         FUNC_F_FRAME,
         code_str="return x",
-        data={
-            ID("bar", FUNC_F_FRAME): [1, None, "?"],
-            ID("x", FUNC_F_FRAME): 3,
-            **functions,
-        },
-        data_before_return={
-            ID("bar", FUNC_F_FRAME): [1, None, "?"],
-            ID("x", FUNC_F_FRAME): 3,
-            **functions,
-        },
+        data={ID("bar"): [1, None, "?"], ID("x"): 3, **functions},
+        data_before_return={ID("bar"): [1, None, "?"], ID("x"): 3, **functions},
     )
     node_target = Node(
         FUNC_A_FRAME,
         code_str="cyberbrain.register(foo)",
-        data={
-            ID("foo", FUNC_A_FRAME): 3,
-            ID("ba", FUNC_A_FRAME): [1, None, "?"],
-            **functions,
-        },
+        data={ID("foo"): 3, ID("ba"): [1, None, "?"], **functions},
     )
 
     # Builds relation.

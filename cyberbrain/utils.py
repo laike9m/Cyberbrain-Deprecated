@@ -188,11 +188,11 @@ class _NameVisitor(ast.NodeVisitor):
         self.generic_visit(node)
 
 
-def find_names(code_ast: ast.AST, frame_id: FrameID) -> typing.Set[ID]:
+def find_names(code_ast: ast.AST) -> typing.Set[ID]:
     """Finds idenditifiers in given ast node."""
     visitor = _NameVisitor()
     visitor.visit(code_ast)
-    return {ID(name, frame_id) for name in visitor.names}
+    return {ID(name) for name in visitor.names}
 
 
 def has_diff(x, y):
