@@ -288,7 +288,7 @@ def build_flow(cm: ComputationManager):
                     node.step_into = frame_groups[node.frame_id + (i,)][0].node
                     node.returned_from = frame_groups[node.frame_id + (i,)][-1].node
                     # Binds ri_ to next line, becasue it appears during this line.
-                    node.next.data.add(f"r{i}_", node.returned_from.return_value)
+                    node.next.data[f"r{i}_"] = node.returned_from.return_value
                     i += 1
                 node.code_ast = utils.parse_code_str(node.code_str)
                 print(node)

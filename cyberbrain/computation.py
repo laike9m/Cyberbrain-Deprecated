@@ -10,7 +10,7 @@ from typing import Optional
 from . import callsite, utils
 from .basis import FrameID
 from .basis import SourceLocation, Surrounding
-from .data import DataContainer
+from .data import Data
 
 
 class Computation(metaclass=abc.ABCMeta):
@@ -112,7 +112,7 @@ class Call(Computation):
             ),
             arg_values=inspect.getargvalues(frame),
             func_name=frame.f_code.co_name,
-            data=DataContainer(caller_frame),
+            data=Data(caller_frame),
             event_type="call",
             frame_id=FrameID.create("call"),
             callee_frame_id=FrameID.current(),
@@ -151,7 +151,7 @@ class ComputationManager:
                     code_str=code_str.rstrip(),
                     filepath=frame.f_code.co_filename,
                     lineno=frame.f_lineno,
-                    data=DataContainer(frame),
+                    data=Data(frame),
                     event_type=event_type,
                     frame_id=frame_id,
                     surrounding=surrounding,
@@ -180,7 +180,7 @@ class ComputationManager:
             frame_id = FrameID.create(event_type)
             assert self.frame_groups[frame_id][-1].event_type == "line"
             self.frame_groups[frame_id][-1].return_value = arg
-            self.frame_groups[frame_id][-1].data_before_return = DataContainer(frame)
+            self.frame_groups[frame_id][-1].data_before_return = Data(frame)
             return True
 
 
