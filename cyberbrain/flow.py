@@ -44,11 +44,11 @@ class TrackingMetadata:
 
     def __init__(
         self,
-        data: Dict[ID, Any],
+        vars: Dict[ID, Any],
         code_str: str = None,
         code_ast: ast.AST = None,
         param_to_arg: Dict[ID, ID] = None,
-        data_before_return=None,
+        vars_before_return=None,
     ):
         if not any([code_str, code_ast]):
             raise ValueError("Should provide code_str or code_ast.")
@@ -73,8 +73,8 @@ class TrackingMetadata:
         # var_switches are set on call node. When some id is switched, it is not counted
         # again in var_appearances.
         self.var_switches: Set[VarSwitch] = []
-        self.data = data
-        self.data_before_return = data_before_return
+        self.vars = vars
+        self.vars_before_return = vars_before_return
         self.return_value = _dummy
 
     # TODO: remove this
@@ -118,7 +118,7 @@ class TrackingMetadata:
         that don't exist in previous nodes.
         """
         for new_id in new_ids:
-            if new_id in self.data:
+            if new_id in self.vars:
                 self.tracking.add(new_id)
 
 
@@ -181,8 +181,8 @@ class Node:
         """
         assert self.frame_id == other.frame_id
         for var_id in other.tracking:
-            old_value = self.data.get(var_id, _dummy)
-            new_value = other.data[var_id]
+            old_value = self.vars.get(var_id, _dummy)
+            new_value = other.vars[var_id]
             if old_value is _dummy:
                 var_appearance = VarAppearance(id=var_id, value=new_value)
                 self.add_var_appearances(var_appearance)
@@ -193,12 +193,12 @@ class Node:
                 yield var_modification
 
     def update_var_changes_before_return(self):
-        """Compares data with data_before_return, records changes."""
-        if self.data_before_return is None:
+        """Compares data with vars_before_return, records changes."""
+        if self.vars_before_return is None:
             pass
         for var_id in self.tracking:
-            old_value = self.data.get(var_id, _dummy)
-            new_value = self.data_before_return[var_id]
+            old_value = self.vars.get(var_id, _dummy)
+            new_value = self.vars_before_return[var_id]
             if old_value is _dummy:
                 var_appearance = VarAppearance(id=var_id, value=new_value)
                 self.add_var_appearances(var_appearance)
@@ -252,9 +252,9 @@ def build_flow(cm: ComputationManager):
                 node = Node(
                     type=NodeType.LINE,
                     frame_id=frame_id,
-                    data=comp.data,
+                    vars=comp.vars,
                     code_str=comp.code_str,
-                    data_before_return=comp.data_before_return,
+                    vars_before_return=comp.vars_before_return,
                 )
                 if hasattr(comp, "return_value"):
                     node.return_value = comp.return_value
@@ -262,7 +262,7 @@ def build_flow(cm: ComputationManager):
                 node = Node(
                     type=NodeType.CALL,
                     frame_id=frame_id,
-                    data=comp.data,
+                    vars=comp.vars,
                     code_ast=comp.callsite_ast,
                 )
             if frame_groups[frame_id]:
@@ -286,7 +286,7 @@ def build_flow(cm: ComputationManager):
                     node.step_into = frame_groups[node.frame_id + (i,)][0].node
                     node.returned_from = frame_groups[node.frame_id + (i,)][-1].node
                     # Binds ri_ to next line, becasue it appears during this line.
-                    node.next.data[f"r{i}_"] = node.returned_from.return_value
+                    node.next.vars[f"r{i}_"] = node.returned_from.return_value
                     i += 1
                 node.code_ast = utils.parse_code_str(node.code_str)
                 print(node)

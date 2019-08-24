@@ -10,7 +10,7 @@ from typing import Optional
 from . import callsite, utils
 from .basis import FrameID
 from .basis import SourceLocation, Surrounding
-from .data import Vars
+from .vars import Vars
 
 
 class Computation(metaclass=abc.ABCMeta):
@@ -32,18 +32,18 @@ class Line(Computation):
         code_str: ast.AST,
         filepath: str,
         lineno: int,
-        data,
+        vars,
         frame_id: FrameID,
         event_type: str,
         surrounding: Surrounding,
     ):
         self.code_str = code_str
         self.source_location = SourceLocation(filepath=filepath, lineno=lineno)
-        self.data = data
+        self.vars = vars
         self.event_type = event_type
         self.frame_id = frame_id
         self.surrounding = surrounding
-        self.data_before_return = None
+        self.vars_before_return = None
 
     def to_dict(self):
         return {
@@ -66,7 +66,7 @@ class Call(Computation):
         source_location: SourceLocation,
         arg_values: inspect.ArgInfo,
         func_name: str,
-        data,
+        vars,
         event_type: str,
         frame_id: FrameID,
         callee_frame_id: FrameID,
@@ -76,12 +76,12 @@ class Call(Computation):
         self.source_location = source_location
         self.arg_values = arg_values
         self.func_name = func_name
-        self.data = data
+        self.vars = vars
         self.event_type = event_type
         self.frame_id = frame_id
         self.callee_frame_id = callee_frame_id
         self.code_str = ast.dump(self.callsite_ast).rstrip()
-        self.data_before_return = None
+        self.vars_before_return = None
         self.surrounding = surrounding
 
     def to_dict(self):
@@ -112,7 +112,7 @@ class Call(Computation):
             ),
             arg_values=inspect.getargvalues(frame),
             func_name=frame.f_code.co_name,
-            data=Vars(caller_frame),
+            vars=Vars(caller_frame),
             event_type="call",
             frame_id=FrameID.create("call"),
             callee_frame_id=FrameID.current(),
@@ -145,13 +145,13 @@ class ComputationManager:
                 and self.frame_groups[frame_id][-1].surrounding == surrounding
             ):
                 return False
-            # Records location, computation, data
+            # Records location, computation, vars
             self.frame_groups[frame_id].append(
                 Line(
                     code_str=code_str.rstrip(),
                     filepath=frame.f_code.co_filename,
                     lineno=frame.f_lineno,
-                    data=Vars(frame),
+                    vars=Vars(frame),
                     event_type=event_type,
                     frame_id=frame_id,
                     surrounding=surrounding,
@@ -180,7 +180,7 @@ class ComputationManager:
             frame_id = FrameID.create(event_type)
             assert self.frame_groups[frame_id][-1].event_type == "line"
             self.frame_groups[frame_id][-1].return_value = arg
-            self.frame_groups[frame_id][-1].data_before_return = Vars(frame)
+            self.frame_groups[frame_id][-1].vars_before_return = Vars(frame)
             return True
 
 

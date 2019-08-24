@@ -16,7 +16,7 @@ class Vars(UserDict):
         del frame
 
     def __getitem__(self, name):
-        return self.data[name]
+        return self.vars[name]
 
     def _scan_namespaces(self, frame):
         """Records variables from bottom to top."""
