@@ -12,7 +12,7 @@
       "event": "line",
       "filepath": "simple_func.py",
       "lineno": 17,
-      "code_str": "    main()",
+      "code_str": "main()",
       "frame_id": "(0,)"
     }
   ],
@@ -21,14 +21,14 @@
       "event": "line",
       "filepath": "simple_func.py",
       "lineno": 7,
-      "code_str": "    def f(x, y):",
+      "code_str": "def f(x, y):",
       "frame_id": "(0, 0)"
     },
     {
       "event": "line",
       "filepath": "simple_func.py",
       "lineno": 10,
-      "code_str": "    x = 1",
+      "code_str": "x = 1",
       "frame_id": "(0, 0)"
     },
     {
@@ -51,14 +51,14 @@
       "event": "line",
       "filepath": "simple_func.py",
       "lineno": 11,
-      "code_str": "    y = f(x, f(1, 1))  # y is our target.",
+      "code_str": "y = f(x, f(1, 1))  # y is our target.",
       "frame_id": "(0, 0)"
     },
     {
       "event": "line",
       "filepath": "simple_func.py",
       "lineno": 12,
-      "code_str": "    cyberbrain.register(y)  # register has to be called after init",
+      "code_str": "cyberbrain.register(y)  # register has to be called after init",
       "frame_id": "(0, 0)"
     }
   ],
@@ -67,7 +67,7 @@
       "event": "line",
       "filepath": "simple_func.py",
       "lineno": 8,
-      "code_str": "        return x + y",
+      "code_str": "return x + y",
       "frame_id": "(0, 0, 0)"
     }
   ],
@@ -76,7 +76,7 @@
       "event": "line",
       "filepath": "simple_func.py",
       "lineno": 8,
-      "code_str": "        return x + y",
+      "code_str": "return x + y",
       "frame_id": "(0, 0, 1)"
     }
   ]

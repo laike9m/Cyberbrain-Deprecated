@@ -11,7 +11,7 @@
       "event": "line",
       "filepath": "loop.py",
       "lineno": 8,
-      "code_str": "    print(i)",
+      "code_str": "print(i)",
       "frame_id": "(0,)"
     },
     {
@@ -25,7 +25,7 @@
       "event": "line",
       "filepath": "loop.py",
       "lineno": 8,
-      "code_str": "    print(i)",
+      "code_str": "print(i)",
       "frame_id": "(0,)"
     },
     {
@@ -39,7 +39,7 @@
       "event": "line",
       "filepath": "loop.py",
       "lineno": 8,
-      "code_str": "    print(i)",
+      "code_str": "print(i)",
       "frame_id": "(0,)"
     },
     {
@@ -53,7 +53,7 @@
       "event": "line",
       "filepath": "loop.py",
       "lineno": 10,
-      "code_str": "    print(\"in else\")",
+      "code_str": "print(\"in else\")",
       "frame_id": "(0,)"
     },
     {
@@ -67,21 +67,21 @@
       "event": "line",
       "filepath": "loop.py",
       "lineno": 13,
-      "code_str": "    i -= 1",
+      "code_str": "i -= 1",
       "frame_id": "(0,)"
     },
     {
       "event": "line",
       "filepath": "loop.py",
       "lineno": 14,
-      "code_str": "    if i == 1:",
+      "code_str": "if i == 1:",
       "frame_id": "(0,)"
     },
     {
       "event": "line",
       "filepath": "loop.py",
       "lineno": 15,
-      "code_str": "        break",
+      "code_str": "break",
       "frame_id": "(0,)"
     },
     {
