@@ -1,12 +1,17 @@
-"""Cyberbrain API."""
+"""Cyberbrain public API and tracer setup."""
 
 import sys
 
-from . import utils, backtrace
+from absl import flags
+
+from . import backtrace, flow, testing, utils
 from .computation import computation_manager
-from .debugging import dump_computations
 from .basis import FrameID, _dummy
-from . import flow
+
+FLAGS = flags.FLAGS
+
+flags.DEFINE_enum("mode", "run", ["run", "test"], "The mode which Cyberbrain runs in.")
+flags.DEFINE_string("test_dir", None, "Directory to save test output to.")
 
 
 def global_tracer(frame, event_type, arg):
@@ -52,11 +57,13 @@ def register(target=_dummy):
 
     If target is not given, it is only called to terminate tracing and dump data.
     """
-    print(target is _dummy)
+    FLAGS(sys.argv)  # See https://github.com/chris-chris/pysc2-examples/issues/5.
     sys.settrace(None)
     global_frame.f_trace = None
     computation_manager.set_target(FrameID.current())
     if target is not _dummy:
-        flow.build_flow(computation_manager)
+        execution_flow = flow.build_flow(computation_manager)
 
-    dump_computations(computation_manager)
+    if FLAGS.mode == "test":
+        testing.dump_computation(computation_manager)
+        # testing.dump_flow(execution_flow)
