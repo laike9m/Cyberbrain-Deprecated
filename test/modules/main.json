@@ -36,14 +36,14 @@
       "event": "line",
       "filepath": "foo.py",
       "lineno": 5,
-      "code_str": "    a = bar.func_in_bar()",
+      "code_str": "a = bar.func_in_bar()",
       "frame_id": "(0, 0)"
     },
     {
       "event": "line",
       "filepath": "foo.py",
       "lineno": 6,
-      "code_str": "    return a",
+      "code_str": "return a",
       "frame_id": "(0, 0)"
     }
   ],
@@ -52,7 +52,7 @@
       "event": "line",
       "filepath": "bar.py",
       "lineno": 2,
-      "code_str": "    return 1",
+      "code_str": "return 1",
       "frame_id": "(0, 0, 0)"
     }
   ]

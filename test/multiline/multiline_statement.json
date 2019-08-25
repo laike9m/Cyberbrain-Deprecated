@@ -42,7 +42,7 @@
       "event": "line",
       "filepath": "multiline_statement.py",
       "lineno": 17,
-      "code_str": "    pass",
+      "code_str": "pass",
       "frame_id": "(0, 0)"
     }
   ]

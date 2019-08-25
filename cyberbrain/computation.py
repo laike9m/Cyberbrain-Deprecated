@@ -80,7 +80,7 @@ class Call(Computation):
         self.event_type = event_type
         self.frame_id = frame_id
         self.callee_frame_id = callee_frame_id
-        self.code_str = ast.dump(self.callsite_ast).rstrip()
+        self.code_str = ast.dump(self.callsite_ast).strip()
         self.vars_before_return = None
         self.surrounding = surrounding
 
@@ -148,7 +148,7 @@ class ComputationManager:
             # Records location, computation, vars
             self.frame_groups[frame_id].append(
                 Line(
-                    code_str=code_str.rstrip(),
+                    code_str=code_str.strip(),
                     filepath=frame.f_code.co_filename,
                     lineno=frame.f_lineno,
                     vars=Vars(frame),

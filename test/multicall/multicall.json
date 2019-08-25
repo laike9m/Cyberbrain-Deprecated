@@ -43,7 +43,7 @@
       "event": "line",
       "filepath": "multicall.py",
       "lineno": 9,
-      "code_str": "    pass",
+      "code_str": "pass",
       "frame_id": "(0, 0)"
     }
   ],
@@ -52,7 +52,7 @@
       "event": "line",
       "filepath": "multicall.py",
       "lineno": 9,
-      "code_str": "    pass",
+      "code_str": "pass",
       "frame_id": "(0, 1)"
     }
   ]
