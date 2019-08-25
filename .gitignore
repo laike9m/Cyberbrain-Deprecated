@@ -111,3 +111,6 @@ legacy/
 *.pdf
 
 .pytype/
+
+# Test temp output.
+computation.json

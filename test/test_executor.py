@@ -11,19 +11,28 @@ os.environ["CYBERBRAIN_DEV_PC"] = "true"
 @pytest.fixture
 def run_scripts_and_compare():
     def runner(directory, filename):
-        test_dir = os.path.join("test", directory)
-        expected_output = os.path.join(test_dir, filename.strip("py") + "json")
+        test_dir = os.path.abspath(os.path.join("test", directory))
+        golden = os.path.join(test_dir, filename.strip("py") + "json")
+        output_computation = os.path.join(test_dir, "computation.json")
         out, _ = Popen(
-            ["python", os.path.join(test_dir, filename)], stdout=PIPE
+            [
+                "python",
+                os.path.join(test_dir, filename),
+                "--mode=test",
+                f"--test_dir={test_dir}",
+            ],
+            stdout=PIPE,
         ).communicate()
 
-        previous, json_text = out.decode("utf-8").split("__SEPERATOR__")
-        print(previous)  # Shows scripts output.
+        if out:
+            print(out)  # Shows scripts output.
 
-        with open(expected_output, "r") as f:
-            assert json_text.replace("\r\n", "\n").replace(
+        with open(output_computation, "r") as f1, open(golden, "r") as f2:
+            assert f1.read().replace("\r\n", "\n").replace(
                 r"\r\n", r"\n"
-            ) == f.read().strip("\r\n")
+            ) == f2.read().strip("\r\n")
+
+        os.remove(output_computation)
 
     return runner
 
