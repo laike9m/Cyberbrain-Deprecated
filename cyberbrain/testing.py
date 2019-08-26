@@ -3,6 +3,7 @@
 import json
 import os
 import sys
+from typing import Dict
 
 from absl import flags
 
@@ -29,11 +30,25 @@ def dump_computation(cm: ComputationManager):
 
 
 def dump_flow(flow: Flow):
+    output = []
+
+    def dump_node(node: Node) -> Dict:
+        return {
+            "code": node.code_str,
+            "next": getattr(node.next, "code_str", ""),
+            "prev": getattr(node.prev, "code_str", ""),
+            "step_into": getattr(node.step_into, "code_str", ""),
+            "returned_from": getattr(node.returned_from, "code_str", ""),
+        }
+
     def traverse_node(node: Node):
         while node is not None:
-            # print(node)
+            output.append(dump_node(node))
             if node.is_callsite():
                 traverse_node(node.step_into)
             node = node.next
 
     traverse_node(flow.start)
+
+    with open(os.path.join(FLAGS.test_dir, "flow.json"), "w") as f:
+        json.dump(obj=output, fp=f, indent=2)

@@ -1,0 +1,93 @@
+[
+  {
+    "code": "for i in range(3):",
+    "next": "print(i)",
+    "prev": "",
+    "step_into": "",
+    "returned_from": ""
+  },
+  {
+    "code": "print(i)",
+    "next": "for i in range(3):",
+    "prev": "for i in range(3):",
+    "step_into": "",
+    "returned_from": ""
+  },
+  {
+    "code": "for i in range(3):",
+    "next": "print(i)",
+    "prev": "print(i)",
+    "step_into": "",
+    "returned_from": ""
+  },
+  {
+    "code": "print(i)",
+    "next": "for i in range(3):",
+    "prev": "for i in range(3):",
+    "step_into": "",
+    "returned_from": ""
+  },
+  {
+    "code": "for i in range(3):",
+    "next": "print(i)",
+    "prev": "print(i)",
+    "step_into": "",
+    "returned_from": ""
+  },
+  {
+    "code": "print(i)",
+    "next": "for i in range(3):",
+    "prev": "for i in range(3):",
+    "step_into": "",
+    "returned_from": ""
+  },
+  {
+    "code": "for i in range(3):",
+    "next": "print(\"in else\")",
+    "prev": "print(i)",
+    "step_into": "",
+    "returned_from": ""
+  },
+  {
+    "code": "print(\"in else\")",
+    "next": "while i > 0:",
+    "prev": "for i in range(3):",
+    "step_into": "",
+    "returned_from": ""
+  },
+  {
+    "code": "while i > 0:",
+    "next": "i -= 1",
+    "prev": "print(\"in else\")",
+    "step_into": "",
+    "returned_from": ""
+  },
+  {
+    "code": "i -= 1",
+    "next": "if i == 1:",
+    "prev": "while i > 0:",
+    "step_into": "",
+    "returned_from": ""
+  },
+  {
+    "code": "if i == 1:",
+    "next": "break",
+    "prev": "i -= 1",
+    "step_into": "",
+    "returned_from": ""
+  },
+  {
+    "code": "break",
+    "next": "cyberbrain.register(i)",
+    "prev": "if i == 1:",
+    "step_into": "",
+    "returned_from": ""
+  },
+  {
+    "code": "cyberbrain.register(i)",
+    "next": "",
+    "prev": "break",
+    "step_into": "",
+    "returned_from": ""
+  }
+]

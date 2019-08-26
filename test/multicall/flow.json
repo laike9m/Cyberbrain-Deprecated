@@ -1,0 +1,51 @@
+[
+  {
+    "code": "def f(*args, **kwargs):",
+    "next": "r0_ = f(x=1)",
+    "prev": "",
+    "step_into": "",
+    "returned_from": ""
+  },
+  {
+    "code": "r0_ = f(x=1)",
+    "next": "r1_ = f(y=2)",
+    "prev": "def f(*args, **kwargs):",
+    "step_into": "pass",
+    "returned_from": "pass"
+  },
+  {
+    "code": "pass",
+    "next": "",
+    "prev": "r0_ = f(x=1)",
+    "step_into": "",
+    "returned_from": ""
+  },
+  {
+    "code": "r1_ = f(y=2)",
+    "next": "x = {r0_, r1_}",
+    "prev": "r0_ = f(x=1)",
+    "step_into": "pass",
+    "returned_from": "pass"
+  },
+  {
+    "code": "pass",
+    "next": "",
+    "prev": "r1_ = f(y=2)",
+    "step_into": "",
+    "returned_from": ""
+  },
+  {
+    "code": "x = {r0_, r1_}",
+    "next": "cyberbrain.register(x)",
+    "prev": "r1_ = f(y=2)",
+    "step_into": "",
+    "returned_from": ""
+  },
+  {
+    "code": "cyberbrain.register(x)",
+    "next": "",
+    "prev": "x = {r0_, r1_}",
+    "step_into": "",
+    "returned_from": ""
+  }
+]
