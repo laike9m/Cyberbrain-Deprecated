@@ -1,9 +1,11 @@
 """Collects and run all test scripts."""
 
 import os
-from subprocess import PIPE, Popen
+from subprocess import Popen
 
 import pytest
+from cyberbrain.testing import (COMPUTATION_GOLDEN, COMPUTATION_TEST_OUTPUT,
+                                FLOW_GOLDEN, FLOW_TEST_OUTPUT)
 
 os.environ["CYBERBRAIN_DEV_PC"] = "true"
 
@@ -12,27 +14,37 @@ os.environ["CYBERBRAIN_DEV_PC"] = "true"
 def run_scripts_and_compare():
     def runner(directory, filename):
         test_dir = os.path.abspath(os.path.join("test", directory))
-        golden = os.path.join(test_dir, filename.strip("py") + "json")
-        output_computation = os.path.join(test_dir, "computation.json")
-        out, _ = Popen(
+
+        Popen(
             [
                 "python",
                 os.path.join(test_dir, filename),
                 "--mode=test",
                 f"--test_dir={test_dir}",
-            ],
-            stdout=PIPE,
-        ).communicate()
+            ]
+        ).wait()
 
-        if out:
-            print(out)  # Shows scripts output.
-
-        with open(output_computation, "r") as f1, open(golden, "r") as f2:
-            assert f1.read().replace("\r\n", "\n").replace(
+        # Checks computation is equal.
+        output_path = os.path.join(test_dir, COMPUTATION_TEST_OUTPUT)
+        with open(output_path, "r") as test_out, open(
+            os.path.join(test_dir, COMPUTATION_GOLDEN), "r"
+        ) as golden:
+            assert test_out.read().replace("\r\n", "\n").replace(
                 r"\r\n", r"\n"
-            ) == f2.read().strip("\r\n")
+            ) == golden.read().strip("\r\n")
 
-        os.remove(output_computation)
+        os.remove(output_path)
+
+        # Checks flow is equal.
+        output_path = os.path.join(test_dir, FLOW_TEST_OUTPUT)
+        with open(output_path, "r") as test_out, open(
+            os.path.join(test_dir, FLOW_GOLDEN), "r"
+        ) as golden:
+            assert test_out.read().replace("\r\n", "\n").replace(
+                r"\r\n", r"\n"
+            ) == golden.read().strip("\r\n")
+
+        os.remove(output_path)
 
     return runner
 

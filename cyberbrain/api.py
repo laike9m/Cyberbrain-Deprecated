@@ -4,13 +4,15 @@ import sys
 
 from absl import flags
 
-from . import backtrace, flow, testing, utils
-from .computation import computation_manager
+from . import flow, testing, utils
 from .basis import FrameID, _dummy
+from .computation import computation_manager
 
 FLAGS = flags.FLAGS
 
-flags.DEFINE_enum("mode", "run", ["run", "test"], "The mode which Cyberbrain runs in.")
+flags.DEFINE_enum(
+    "mode", "run", ["run", "test", "golden"], "The mode which Cyberbrain runs in."
+)
 flags.DEFINE_string("test_dir", None, "Directory to save test output to.")
 
 
@@ -64,6 +66,6 @@ def register(target=_dummy):
     if target is not _dummy:
         execution_flow = flow.build_flow(computation_manager)
 
-    if FLAGS.mode == "test":
+    if FLAGS.mode in {"test", "golden"}:
         testing.dump_computation(computation_manager)
         testing.dump_flow(execution_flow)
