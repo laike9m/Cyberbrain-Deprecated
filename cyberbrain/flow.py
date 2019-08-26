@@ -2,6 +2,7 @@
 
 import ast
 import itertools
+import re
 from collections import defaultdict, namedtuple
 from dataclasses import dataclass
 from typing import Any, Dict, Set, Tuple, List, Iterable, Union, Optional
@@ -52,6 +53,7 @@ class TrackingMetadata:
     ):
         if not any([code_str, code_ast]):
             raise ValueError("Should provide code_str or code_ast.")
+        # breakpoint()
         self.code_str = code_str or astor.to_source(code_ast).strip()
         self.code_ast = code_ast or utils.parse_code_str(code_str)
         self.param_to_arg = param_to_arg
@@ -76,18 +78,6 @@ class TrackingMetadata:
         self.vars = vars
         self.vars_before_return = vars_before_return
         self.return_value = _dummy
-
-    # TODO: remove this
-    def __repr__(self):
-        return ", ".join(
-            [
-                f"code: {self.code_str}",
-                f"tracking: {self.tracking}",
-                f"var_appearances: {self.var_appearances}",
-                f"var_modifications: {self.var_modifications}",
-                f"var_switches: {self.var_switches}",
-            ]
-        )
 
     def set_param_to_arg(self, param_to_arg: Dict[ID, ID]):
         self.param_to_arg = param_to_arg
@@ -154,9 +144,6 @@ class Node:
             super().__setattr__(name, value)
         else:
             setattr(self.metadata, name, value)
-
-    def __repr__(self):
-        return str(self.metadata)
 
     def is_callsite(self):
         return self.step_into is not None
@@ -231,7 +218,7 @@ class Flow:
         self.target.add_tracking(ID(register_call_ast.body[0].value.args[0].id))
 
 
-def build_flow(cm: ComputationManager):
+def build_flow(cm: ComputationManager) -> Flow:
     """Builds flow from computations.
 
     1. Traverse through computations, create node, group nodes by frame id.
@@ -241,8 +228,8 @@ def build_flow(cm: ComputationManager):
     call node should pass full code str to node, callsite_ast is only needed to
     generate param_to_arg
     """
-    start: Node
-    target: Node
+    start_node: Node
+    target_node: Node
     NodeWithSurrounding = namedtuple("NodeWithSurrounding", ["node", "surrounding"])
     frame_groups: Dict[FrameID, List[NodeWithSurrounding]] = defaultdict(list)
 
@@ -267,26 +254,75 @@ def build_flow(cm: ComputationManager):
                 )
             if frame_groups[frame_id]:
                 frame_groups[frame_id][-1].node.next = node
+                node.prev = frame_groups[frame_id][-1].node
             frame_groups[frame_id].append(NodeWithSurrounding(node, comp.surrounding))
             if comp is cm.target:
-                target = node
+                target_node = node
 
-    start = frame_groups[(0,)][0]
+    # Assuming init is called at program start. This may change in the future.
+    start_node = frame_groups[(0,)][0].node
 
     for frame_id, frame in frame_groups.items():
         i = 0  # call index in this frame.
         for _, group in itertools.groupby(frame, lambda x: x.surrounding):
             ast_to_intermediate: Dict[str, str] = {}
-            for node, _ in group:
+            nodes = [g.node for g in group]
+            for node in nodes:
                 for inner_call, intermediate in ast_to_intermediate.items():
                     node.code_str = node.code_str.replace(inner_call, intermediate, 1)
                 if node.type is NodeType.CALL:
                     ast_to_intermediate[node.code_str] = f"r{i}_"
                     node.code_str = f"r{i}_ = " + node.code_str
                     node.step_into = frame_groups[node.frame_id + (i,)][0].node
+                    node.step_into.prev = node
                     node.returned_from = frame_groups[node.frame_id + (i,)][-1].node
                     # Binds ri_ to next line, becasue it appears during this line.
+                    # TODO: There's no return_value yet cause it's only in computation.
                     node.next.vars[f"r{i}_"] = node.returned_from.return_value
                     i += 1
                 node.code_ast = utils.parse_code_str(node.code_str)
-                print(node)
+
+            if len(node.code_ast.body) != 1:
+                continue
+            stmt = node.code_ast.body[0]
+
+            if (
+                isinstance(stmt, ast.Expr)
+                and isinstance(stmt.value, ast.Name)
+                and re.match(r"r[\d]+_", stmt.value.id)
+                and node.prev
+            ):
+                # Last line is "r0_", removes this node.
+                # This happens when "f()" was replaced by "r0_".
+                assert node.type is NodeType.LINE
+                prev = node.prev
+                assert prev.type is NodeType.CALL and prev.code_str.startswith(
+                    f"{stmt.value.id}"
+                )
+                prev.next = node.next
+                if node.next:
+                    node.next.prev = prev
+                prev.code_str = prev.code_str.split("=", 1)[1].lstrip()
+                prev.code_ast = utils.parse_code_str(node.code_str)
+            elif (
+                isinstance(stmt, ast.Assign)
+                and isinstance(stmt.value, ast.Name)
+                and re.match(r"r[\d]+_", stmt.value.id)
+                and node.prev
+            ):
+                # Current node represents "a = r0_", previous node is "r0_ = f()"
+                # Changes previous to 'a = f()', discards current node.
+                # We don't need to modify frame_groups, it's not used in tracing.
+                target = stmt.targets[0]
+                value = stmt.value
+                prev = node.prev
+                assert prev.type is NodeType.CALL and prev.code_str.startswith(
+                    f"{value.id} ="
+                )
+                prev.next = node.next
+                if node.next:
+                    node.next.prev = prev
+                prev.code_ast.body[0].targets = stmt.targets
+                prev.code_str = astor.to_source(prev.code_ast).strip()
+
+    return Flow(start_node, target_node)

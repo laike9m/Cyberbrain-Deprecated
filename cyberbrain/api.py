@@ -66,4 +66,4 @@ def register(target=_dummy):
 
     if FLAGS.mode == "test":
         testing.dump_computation(computation_manager)
-        # testing.dump_flow(execution_flow)
+        testing.dump_flow(execution_flow)

@@ -1,0 +1,51 @@
+[
+  {
+    "code": "c = Counter()",
+    "next": "c[\"red\"] += 1",
+    "prev": "",
+    "step_into": "",
+    "returned_from": ""
+  },
+  {
+    "code": "c[\"red\"] += 1",
+    "next": "c[\"blue\"] += 1",
+    "prev": "c = Counter()",
+    "step_into": "",
+    "returned_from": ""
+  },
+  {
+    "code": "c[\"blue\"] += 1",
+    "next": "c[\"red\"] += 1",
+    "prev": "c[\"red\"] += 1",
+    "step_into": "",
+    "returned_from": ""
+  },
+  {
+    "code": "c[\"red\"] += 1",
+    "next": "c.most_common(10)",
+    "prev": "c[\"blue\"] += 1",
+    "step_into": "",
+    "returned_from": ""
+  },
+  {
+    "code": "c.most_common(10)",
+    "next": "crayons.blue(\"blue\")",
+    "prev": "c[\"red\"] += 1",
+    "step_into": "",
+    "returned_from": ""
+  },
+  {
+    "code": "crayons.blue(\"blue\")",
+    "next": "cyberbrain.register(c)",
+    "prev": "c.most_common(10)",
+    "step_into": "",
+    "returned_from": ""
+  },
+  {
+    "code": "cyberbrain.register(c)",
+    "next": "",
+    "prev": "crayons.blue(\"blue\")",
+    "step_into": "",
+    "returned_from": ""
+  }
+]

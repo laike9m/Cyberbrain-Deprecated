@@ -1,0 +1,16 @@
+[
+  {
+    "code": "x = [1 for i in range(3)]",
+    "next": "cyberbrain.register(x)",
+    "prev": "",
+    "step_into": "",
+    "returned_from": ""
+  },
+  {
+    "code": "cyberbrain.register(x)",
+    "next": "",
+    "prev": "x = [1 for i in range(3)]",
+    "step_into": "",
+    "returned_from": ""
+  }
+]
