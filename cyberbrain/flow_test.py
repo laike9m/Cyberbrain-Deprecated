@@ -3,7 +3,6 @@
 from . import backtrace, format
 from .flow import Node, Flow
 from .basis import ID
-from .basis import FrameID
 
 
 def create_flow():
@@ -51,7 +50,6 @@ def create_flow():
     fo = 1                        # start
     func_a(fo)                    # a
     """
-
     GLOBAL_FRAME = (0,)
     FUNC_A_FRAME = (0, 0)
     FUNC_C_FRAME = (0, 0, 0)

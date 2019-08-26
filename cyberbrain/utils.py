@@ -1,7 +1,6 @@
 """Utility functions."""
 
 import ast
-import copy
 import inspect
 import io
 import os
@@ -9,12 +8,11 @@ import sysconfig
 import token
 import tokenize
 import typing
-from collections import defaultdict
 from functools import lru_cache
 
 from deepdiff import DeepDiff
 
-from .basis import ID, Surrounding, FrameID
+from .basis import ID, Surrounding
 
 try:
     from token import ENCODING as token_ENCODING

@@ -38,7 +38,7 @@ class NodeView:
 
     @property
     def tracking(self):
-        """tracking does not necessarily need to be displayed."""
+        """Tracking does not necessarily need to be displayed."""
         return str(self._node.tracking)
 
     @property
