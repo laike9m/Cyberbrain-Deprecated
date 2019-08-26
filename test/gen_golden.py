@@ -1,11 +1,12 @@
-# Collect and run all test scripts.
+"""Run all test scripts and generates golden data."""
 
 import argparse
 import glob
 import os
-from subprocess import PIPE, Popen
+from subprocess import Popen
 
-from crayons import cyan, green, yellow
+from crayons import cyan, green
+from cyberbrain.testing import COMPUTATION_GOLDEN, FLOW_GOLDEN
 
 parser = argparse.ArgumentParser(description="Process some integers.")
 parser.add_argument(
@@ -16,22 +17,17 @@ parser.add_argument(
 def generate_test_data(test_dir, filename):
     override = parser.parse_args().override
 
-    expected_output = os.path.join(test_dir, filename.strip("py") + "json")
-    if not override and os.path.exists(expected_output):
-        print(green("Test data already exists, skips " + expected_output))
+    if (
+        os.path.exists(os.path.join(test_dir, COMPUTATION_GOLDEN))
+        and os.path.exists(os.path.join(test_dir, FLOW_GOLDEN))
+        and not override
+    ):
+        print(green("Test data already exists, skips " + test_dir))
         return
 
     test_filepath = os.path.join(test_dir, filename)
     print(cyan("Running test: " + test_filepath))
-    out, _ = Popen(["python", test_filepath], stdout=PIPE).communicate()
-
-    previous, json_text = out.decode("utf-8").split("__SEPERATOR__")
-    print(previous)
-
-    print(yellow("Generating test data: " + expected_output))
-    with open(expected_output, "w") as f:
-        f.write(json_text)
-        f.write("\n")
+    Popen(["python", test_filepath, "--mode=golden", f"--test_dir={test_dir}"]).wait()
 
 
 def collect_and_run_test_files():

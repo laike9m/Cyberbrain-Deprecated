@@ -2,15 +2,20 @@
 
 import json
 import os
-import sys
 from typing import Dict
 
 from absl import flags
+from crayons import yellow
 
 from .computation import ComputationManager
 from .flow import Flow, Node
 
 FLAGS = flags.FLAGS
+
+COMPUTATION_TEST_OUTPUT = "computation.json"
+COMPUTATION_GOLDEN = "computation.golden.json"
+FLOW_TEST_OUTPUT = "flow.json"
+FLOW_GOLDEN = "flow.golden.json"
 
 
 def dump_computation(cm: ComputationManager):
@@ -18,7 +23,13 @@ def dump_computation(cm: ComputationManager):
 
     Caller should receive and handle output.
     """
-    with open(os.path.join(FLAGS.test_dir, "computation.json"), "w") as f:
+    if FLAGS.mode == "test":
+        filepath = os.path.join(FLAGS.test_dir, COMPUTATION_TEST_OUTPUT)
+    elif FLAGS.mode == "golden":
+        filepath = os.path.join(FLAGS.test_dir, COMPUTATION_GOLDEN)
+        print(yellow("Generating test data: " + filepath))
+
+    with open(filepath, "w") as f:
         json.dump(
             obj={
                 str(fid): [c.to_dict() for c in comps]
@@ -50,5 +61,11 @@ def dump_flow(flow: Flow):
 
     traverse_node(flow.start)
 
-    with open(os.path.join(FLAGS.test_dir, "flow.json"), "w") as f:
+    if FLAGS.mode == "test":
+        filepath = os.path.join(FLAGS.test_dir, FLOW_TEST_OUTPUT)
+    elif FLAGS.mode == "golden":
+        filepath = os.path.join(FLAGS.test_dir, FLOW_GOLDEN)
+        print(yellow("Generating test data: " + filepath))
+
+    with open(filepath, "w") as f:
         json.dump(obj=output, fp=f, indent=2)
