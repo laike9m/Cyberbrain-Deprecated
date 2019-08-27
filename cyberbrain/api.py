@@ -10,8 +10,15 @@ from .computation import computation_manager
 
 FLAGS = flags.FLAGS
 
+# run: Invoked by users.
+# test: Verifies cyberbrain's internal state is the same as golden.
+# golden: Generates golden file.
+# debug: Prints cyberbrain's internal state, but don't do assertion.
 flags.DEFINE_enum(
-    "mode", "run", ["run", "test", "golden"], "The mode which Cyberbrain runs in."
+    "mode",
+    "run",
+    ["run", "test", "golden", "debug"],
+    "The mode which Cyberbrain runs in.",
 )
 flags.DEFINE_string("test_dir", None, "Directory to save test output to.")
 
@@ -66,6 +73,6 @@ def register(target=_dummy):
     if target is not _dummy:
         execution_flow = flow.build_flow(computation_manager)
 
-    if FLAGS.mode in {"test", "golden"}:
+    if FLAGS.mode in {"test", "golden", "debug"}:
         testing.dump_computation(computation_manager)
         testing.dump_flow(execution_flow)

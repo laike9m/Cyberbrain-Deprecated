@@ -15,7 +15,7 @@ deepdiff = "^4.0"
 dataclasses = "^0.6.0"
 graphviz = "^0.11.1"
 absl-py = "^0.7.1"
-black = {version = "*", allows-prereleases = true}
+black = { git="https://github.com/psf/black.git", branch = "master"}
 
 [tool.poetry.dev-dependencies]
 pytest = "^4.6"

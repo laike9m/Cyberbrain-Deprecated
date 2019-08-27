@@ -4,7 +4,7 @@
       "event": "call",
       "filepath": "main.py",
       "lineno": 7,
-      "code_str": "Call(func=Attribute(value=Name(id='foo', ctx=Load()), attr='func_in_foo', ctx=Load()), args=[], keywords=[])",
+      "code_str": "foo.func_in_foo()",
       "caller_frame_id": "(0,)",
       "callee_frame_id": "(0, 0)"
     },
@@ -28,7 +28,7 @@
       "event": "call",
       "filepath": "foo.py",
       "lineno": 5,
-      "code_str": "Call(func=Attribute(value=Name(id='bar', ctx=Load()), attr='func_in_bar', ctx=Load()), args=[], keywords=[])",
+      "code_str": "bar.func_in_bar()",
       "caller_frame_id": "(0, 0)",
       "callee_frame_id": "(0, 0, 0)"
     },

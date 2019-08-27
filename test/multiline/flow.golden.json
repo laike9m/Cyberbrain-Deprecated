@@ -8,14 +8,14 @@
   },
   {
     "code": "def f(**kwargs):",
-    "next": "r0_ = f(longlonglonglonglonglonglonglong=1, longlonglonglonglonglonglonglonglong=\n    2, longlonglonglonglonglonglonglonglonglong=3)",
+    "next": "x = f(longlonglonglonglonglonglonglong=1,\n    longlonglonglonglonglonglonglonglong=2,\n    longlonglonglonglonglonglonglonglonglong=3)",
     "prev": "y = {\n    \"longlonglonglonglonglonglonglong\": 1,\n    \"longlonglonglonglonglonglonglonglong\": 2,\n    \"longlonglonglonglonglonglonglonglonglong\": 3,\n}",
     "step_into": "",
     "returned_from": ""
   },
   {
-    "code": "r0_ = f(longlonglonglonglonglonglonglong=1, longlonglonglonglonglonglonglonglong=\n    2, longlonglonglonglonglonglonglonglonglong=3)",
-    "next": "x = f(\n    longlonglonglonglonglonglonglong=1,\n    longlonglonglonglonglonglonglonglong=2,\n    longlonglonglonglonglonglonglonglonglong=3,\n)",
+    "code": "x = f(longlonglonglonglonglonglonglong=1,\n    longlonglonglonglonglonglonglonglong=2,\n    longlonglonglonglonglonglonglonglonglong=3)",
+    "next": "cyberbrain.register(y)  # register has to be called after init",
     "prev": "def f(**kwargs):",
     "step_into": "pass",
     "returned_from": "pass"
@@ -23,21 +23,14 @@
   {
     "code": "pass",
     "next": "",
-    "prev": "r0_ = f(longlonglonglonglonglonglonglong=1, longlonglonglonglonglonglonglonglong=\n    2, longlonglonglonglonglonglonglonglonglong=3)",
-    "step_into": "",
-    "returned_from": ""
-  },
-  {
-    "code": "x = f(\n    longlonglonglonglonglonglonglong=1,\n    longlonglonglonglonglonglonglonglong=2,\n    longlonglonglonglonglonglonglonglonglong=3,\n)",
-    "next": "cyberbrain.register(y)  # register has to be called after init",
-    "prev": "r0_ = f(longlonglonglonglonglonglonglong=1, longlonglonglonglonglonglonglonglong=\n    2, longlonglonglonglonglonglonglonglonglong=3)",
+    "prev": "x = f(longlonglonglonglonglonglonglong=1,\n    longlonglonglonglonglonglonglonglong=2,\n    longlonglonglonglonglonglonglonglonglong=3)",
     "step_into": "",
     "returned_from": ""
   },
   {
     "code": "cyberbrain.register(y)  # register has to be called after init",
     "next": "",
-    "prev": "x = f(\n    longlonglonglonglonglonglonglong=1,\n    longlonglonglonglonglonglonglonglong=2,\n    longlonglonglonglonglonglonglonglonglong=3,\n)",
+    "prev": "x = f(longlonglonglonglonglonglonglong=1,\n    longlonglonglonglonglonglonglonglong=2,\n    longlonglonglonglonglonglonglonglonglong=3)",
     "step_into": "",
     "returned_from": ""
   }

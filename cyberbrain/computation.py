@@ -5,11 +5,12 @@ import ast
 import inspect
 from collections import defaultdict
 from pathlib import PurePath
-from typing import Optional
+from typing import Dict, List, Optional, Union
+
+import black
 
 from . import callsite, utils
-from .basis import FrameID
-from .basis import SourceLocation, Surrounding
+from .basis import FrameID, SourceLocation, Surrounding
 from .vars import Vars
 
 
@@ -38,6 +39,12 @@ class Line(Computation):
         surrounding: Surrounding,
     ):
         self.code_str = code_str
+        try:
+            self.code_str = black.format_str(
+                self.code_str, mode=black.FileMode()
+            ).strip()
+        except black.InvalidInput:
+            pass
         self.source_location = SourceLocation(filepath=filepath, lineno=lineno)
         self.vars = vars
         self.event_type = event_type
@@ -80,7 +87,7 @@ class Call(Computation):
         self.event_type = event_type
         self.frame_id = frame_id
         self.callee_frame_id = callee_frame_id
-        self.code_str = ast.dump(self.callsite_ast).strip()
+        self.code_str = utils.ast_to_str(self.callsite_ast)
         self.vars_before_return = None
         self.surrounding = surrounding
 
@@ -124,7 +131,7 @@ class ComputationManager:
     """Class that stores and manages all computations."""
 
     def __init__(self):
-        self.frame_groups: Dict[FrameID, List[Node]] = defaultdict(list)
+        self.frame_groups: Dict[FrameID, List[Union[Line, Call]]] = defaultdict(list)
         self.target = None
 
     def set_target(self, target_frame_id: FrameID):
@@ -133,8 +140,7 @@ class ComputationManager:
     def add_computation(self, event_type, frame, arg) -> bool:
         """Adds a computation to manager.
 
-        Returns:
-            Whether a new computation has been created and added.
+        Returns Whether a new computation has been created and added.
         """
         if event_type == "line":
             code_str, surrounding = utils.get_code_str_and_surrounding(frame)

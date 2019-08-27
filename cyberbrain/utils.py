@@ -10,6 +10,8 @@ import tokenize
 import typing
 from functools import lru_cache
 
+import astor
+import black
 from deepdiff import DeepDiff
 
 from .basis import ID, Surrounding
@@ -208,3 +210,8 @@ def parse_code_str(code_str) -> ast.AST:
         return ast.parse(code_str)
     except IndentationError:
         return ast.parse(code_str.strip())
+
+
+def ast_to_str(code_ast: ast.AST) -> str:
+    # Makes sure code is always in the same format.
+    return black.format_str(astor.to_source(code_ast), mode=black.FileMode()).strip()

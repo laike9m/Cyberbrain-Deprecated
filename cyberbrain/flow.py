@@ -5,13 +5,13 @@ import itertools
 import re
 from collections import defaultdict, namedtuple
 from dataclasses import dataclass
-from typing import Any, Dict, Set, Tuple, List, Iterable, Union, Optional
+from typing import Any, Dict, Iterable, List, Optional, Set, Tuple, Union
 
 import astor
 
-from .basis import ID, FrameID, NodeType, _dummy
 from . import utils
-from .computation import ComputationManager, Computation
+from .basis import ID, FrameID, NodeType, _dummy
+from .computation import ComputationManager
 
 
 @dataclass()
@@ -51,11 +51,8 @@ class TrackingMetadata:
         param_to_arg: Dict[ID, ID] = None,
         vars_before_return=None,
     ):
-        if not any([code_str, code_ast]):
-            raise ValueError("Should provide code_str or code_ast.")
-        # breakpoint()
-        self.code_str = code_str or astor.to_source(code_ast).strip()
-        self.code_ast = code_ast or utils.parse_code_str(code_str)
+        self.code_str = code_str
+        self.code_ast = utils.parse_code_str(code_str)
         self.param_to_arg = param_to_arg
         if param_to_arg:
             self.arg_to_param = {}
@@ -210,6 +207,7 @@ class Flow:
 
     def _update_target_id(self) -> ID:
         """Gets ID('x') out of cyberbrain.register(x)."""
+        print(self.target.code_str)
         register_call_ast = ast.parse(self.target.code_str.strip())
         assert register_call_ast.body[0].value.func.value.id == "cyberbrain"
 
@@ -250,7 +248,7 @@ def build_flow(cm: ComputationManager) -> Flow:
                     type=NodeType.CALL,
                     frame_id=frame_id,
                     vars=comp.vars,
-                    code_ast=comp.callsite_ast,
+                    code_str=comp.code_str,
                 )
             if frame_groups[frame_id]:
                 frame_groups[frame_id][-1].node.next = node
@@ -268,7 +266,10 @@ def build_flow(cm: ComputationManager) -> Flow:
             ast_to_intermediate: Dict[str, str] = {}
             nodes = [g.node for g in group]
             for node in nodes:
+                # Replaces nested calls with intermediate vars.
+                print("ast_to_intermediate", ast_to_intermediate)
                 for inner_call, intermediate in ast_to_intermediate.items():
+                    print("node.code_str", node.code_str)
                     node.code_str = node.code_str.replace(inner_call, intermediate, 1)
                 if node.type is NodeType.CALL:
                     ast_to_intermediate[node.code_str] = f"r{i}_"
@@ -313,7 +314,6 @@ def build_flow(cm: ComputationManager) -> Flow:
                 # Current node represents "a = r0_", previous node is "r0_ = f()"
                 # Changes previous to 'a = f()', discards current node.
                 # We don't need to modify frame_groups, it's not used in tracing.
-                target = stmt.targets[0]
                 value = stmt.value
                 prev = node.prev
                 assert prev.type is NodeType.CALL and prev.code_str.startswith(

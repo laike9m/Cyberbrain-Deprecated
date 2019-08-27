@@ -11,7 +11,7 @@
       "event": "call",
       "filepath": "multicall.py",
       "lineno": 12,
-      "code_str": "Call(func=Name(id='f', ctx=Load()), args=[], keywords=[keyword(arg='x', value=Num(n=1))])",
+      "code_str": "f(x=1)",
       "caller_frame_id": "(0,)",
       "callee_frame_id": "(0, 0)"
     },
@@ -19,7 +19,7 @@
       "event": "call",
       "filepath": "multicall.py",
       "lineno": 12,
-      "code_str": "Call(func=Name(id='f', ctx=Load()), args=[], keywords=[keyword(arg='y', value=Num(n=2))])",
+      "code_str": "f(y=2)",
       "caller_frame_id": "(0,)",
       "callee_frame_id": "(0, 1)"
     },
