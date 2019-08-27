@@ -29,15 +29,15 @@ def dump_computation(cm: ComputationManager):
         filepath = os.path.join(FLAGS.test_dir, COMPUTATION_GOLDEN)
         print(yellow("Generating test data: " + filepath))
 
+    output = {
+        str(fid): [c.to_dict() for c in comps] for fid, comps in cm.frame_groups.items()
+    }
+    if FLAGS.mode == "debug":
+        print(f"Computation is:\n{output}")
+        return
+
     with open(filepath, "w") as f:
-        json.dump(
-            obj={
-                str(fid): [c.to_dict() for c in comps]
-                for fid, comps in cm.frame_groups.items()
-            },
-            fp=f,
-            indent=2,
-        )
+        json.dump(obj=output, fp=f, indent=2)
 
 
 def dump_flow(flow: Flow):
@@ -66,6 +66,10 @@ def dump_flow(flow: Flow):
     elif FLAGS.mode == "golden":
         filepath = os.path.join(FLAGS.test_dir, FLOW_GOLDEN)
         print(yellow("Generating test data: " + filepath))
+
+    if FLAGS.mode == "debug":
+        print(f"Flow is:\n{output}")
+        return
 
     with open(filepath, "w") as f:
         json.dump(obj=output, fp=f, indent=2)

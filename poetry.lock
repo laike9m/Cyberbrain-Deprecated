@@ -46,23 +46,27 @@ category = "main"
 description = "Classes Without Boilerplate"
 name = "attrs"
 optional = false
-python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
-version = "19.1.0"
+python-versions = "*"
+version = "18.2.0"
 
 [[package]]
 category = "main"
-description = "The uncompromising code formatter."
+description = ""
 name = "black"
 optional = false
-python-versions = ">=3.6"
+python-versions = "^3.6"
 version = "19.3b0"
 
 [package.dependencies]
-appdirs = "*"
-attrs = ">=18.1.0"
-click = ">=6.5"
-toml = ">=0.9.4"
+appdirs = "^1.4"
+attrs = "^18.1"
+click = "^6.5"
+toml = "^0.9.4"
 
+[package.source]
+reference = "3dc461a41a13cc36303aff80d079786ef210ddae"
+type = "git"
+url = "https://github.com/psf/black.git"
 [[package]]
 category = "main"
 description = "Python module to generate and modify bytecode"
@@ -73,11 +77,11 @@ version = "0.8.0"
 
 [[package]]
 category = "main"
-description = "Composable command line interface toolkit"
+description = "A simple wrapper around optparse for powerful command line utilities."
 name = "click"
 optional = false
-python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
-version = "7.0"
+python-versions = "*"
+version = "6.7"
 
 [[package]]
 category = "main"
@@ -342,7 +346,7 @@ description = "Python Library for Tom's Obvious, Minimal Language"
 name = "toml"
 optional = false
 python-versions = "*"
-version = "0.10.0"
+version = "0.9.6"
 
 [[package]]
 category = "dev"
@@ -444,7 +448,7 @@ version = "0.6.0"
 more-itertools = "*"
 
 [metadata]
-content-hash = "fdb70ba180f017eaa9b8376f1d5cf291257e26f1a616d41d1f4eea0b6acfd2d0"
+content-hash = "44f330babf1fd98a7eb0b39953c1745fb046f426e1eb6a7f3ee07428312f8c0b"
 python-versions = "^3.6.7"
 
 [metadata.hashes]
@@ -453,10 +457,10 @@ appdirs = ["9e5896d1372858f8dd3344faf4e5014d21849c756c8d5701f78f8a103b372d92", "
 astor = ["0e41295809baf43ae8303350e031aff81ae52189b6f881f36d623fa8b2f1960e", "37a6eed8b371f1228db08234ed7f6cfdc7817a3ed3824797e20cbb11dc2a7862"]
 astpretty = ["d45c06d07cbd4387aaa696cbb955d809fd6977fea8d00c9c409c1524d358cd54", "f9769a73381a9095581435d9477811b2cdd9cd4c721e2650db564624183191a1"]
 atomicwrites = ["03472c30eb2c5d1ba9227e4c2ca66ab8287fbfbbda3888aa93dc2e28fc6811b4", "75a9445bac02d8d058d5e1fe689654ba5a6556a1dfd8ce6ec55a0ed79866cfa6"]
-attrs = ["69c0dbf2ed392de1cb5ec704444b08a5ef81680a61cb899dc08127123af36a79", "f0b870f674851ecbfbbbd364d6b5cbdff9dcedbc7f3f5e18a6891057f21fe399"]
-black = ["09a9dcb7c46ed496a9850b76e4e825d6049ecd38b611f1224857a79bd985a8cf", "68950ffd4d9169716bcb8719a56c07a2f4485354fec061cdd5910aa07369731c"]
+attrs = ["10cbf6e27dbce8c30807caf056c8eb50917e0eaafe86347671b57254006c3e69", "ca4be454458f9dec299268d472aaa5a11f67a4ff70093396e1ceae9c76cf4bbb"]
+black = []
 bytecode = ["68b1d591c7af0e5c5273e028d3cc0299fbe374dff0cf9149ec7e569be0c573e7", "c43d5052cbff076bfdf5b0b93ff6c76e461aab628ce47d30637bb200b6b7bb2c"]
-click = ["2335065e6395b9e67ca716de5f7526736bfa6ceead690adf616d925bdc622b13", "5b94b49521f6456670fdb30cd82a4eca9412788a93fa6dd6df72c94d5a8ff2d7"]
+click = ["29f99fc6125fbc931b758dc053b3114e55c77a6e4c6c3a2674a2dc986016381d", "f15516df478d5a56180fbf80e68f206010e6d160fc39fa508b65e035fd75130b"]
 colorama = ["05eed71e2e327246ad6b38c540c4a3117230b19679b875190486ddd2d721422d", "f8ac84de7840f5b9c4e3347b3c1eaa50f7e49c2b07596221daec5edaabbd7c48"]
 crayons = ["41f0843815a8e3ac6fb445b7970d8b9c766e6f164092d84e7ea809b4c91418ec", "8edcadb7f197e25f2cc094aec5bf7f1b6001d3f76c82d56f8d46f6fb1405554f"]
 dataclasses = ["454a69d788c7fda44efd71e259be79577822f5e3f53f029a22d08004e951dc9f", "6988bd2b895eef432d562370bb707d540f32f7360ab13da45340101bc2307d84"]
@@ -482,7 +486,7 @@ pytype = ["e7a63081c7237cc7143ab3ef69699e8c69f79a51e4737b958117f538a9b32b5c"]
 pyyaml = ["0113bc0ec2ad727182326b61326afa3d1d8280ae1122493553fd6f4397f33df9", "01adf0b6c6f61bd11af6e10ca52b7d4057dd0be0343eb9283c878cf3af56aee4", "5124373960b0b3f4aa7df1707e63e9f109b5263eca5976c66e08b1c552d4eaf8", "5ca4f10adbddae56d824b2c09668e91219bb178a1eee1faa56af6f99f11bf696", "7907be34ffa3c5a32b60b95f4d95ea25361c951383a894fec31be7252b2b6f34", "7ec9b2a4ed5cad025c2278a1e6a19c011c80a3caaac804fd2d329e9cc2c287c9", "87ae4c829bb25b9fe99cf71fbb2140c448f534e24c998cc60f39ae4f94396a73", "9de9919becc9cc2ff03637872a440195ac4241c80536632fffeb6a1e25a74299", "a5a85b10e450c66b49f98846937e8cfca1db3127a9d5d1e31ca45c3d0bef4c5b", "b0997827b4f6a7c286c01c5f60384d218dca4ed7d9efa945c3e1aa623d5709ae", "b631ef96d3222e62861443cc89d6563ba3eeb816eeb96b2629345ab795e53681", "bf47c0607522fdbca6c9e817a6e81b08491de50f3766a7a0e6a5be7905961b41", "f81025eddd0327c7d4cfe9b62cf33190e1e736cc6e97502b3ec425f574b3e7a8"]
 six = ["3350809f0555b11f552448330d0b52d5f24c91a322ea4a15ef22629740f3761c", "d16a0141ec1a18405cd4ce8b4613101da75da0e9a7aec5bdd4fa804d0e0eba73"]
 spark-parser = ["a7bb97b97953fb8bf0cd8158d820b6467ef1e7f747738e82248ae4c824f1e25a", "e4d366116268010100f054ebda99b3b880c64e4b0aa3d58629ec79e6d033b077", "ea9c25fa79206f23b2b4c233edf5ce9c17edc97b4f39a70056b31f50a2166cce"]
-toml = ["229f81c57791a41d65e399fc06bf0848bab550a9dfd5ed66df18ce5f05e73d5c", "235682dd292d5899d361a811df37e04a8828a5b1da3115886b73cf81ebc9100e", "f1db651f9657708513243e61e6cc67d101a39bad662eaa9b5546f789338e07a3"]
+toml = ["380178cde50a6a79f9d2cf6f42a62a5174febe5eea4126fe4038785f1d888d42", "a7901919d3e4f92ffba7ff40a9d697e35bbbc8a8049fe8da742f34c83606d957"]
 tox = ["dab0b0160dd187b654fc33d690ee1d7bf328bd5b8dc6ef3bb3cc468969c659ba", "ee35ffce74933a6c6ac10c9a0182e41763140a5a5070e21b114feca56eaccdcd"]
 tox-pyenv = ["916c2213577aec0b3b5452c5bfb32fd077f3a3196f50a81ad57d7ef3fc2599e4", "e470c18af115fe52eeff95e7e3cdd0793613eca19709966fc2724b79d55246cb"]
 tox-run-command = ["5c5fe892f732d20276c8b2d29ce079bbbcadc153d696b31cdd8fb3edf5c29ec6"]

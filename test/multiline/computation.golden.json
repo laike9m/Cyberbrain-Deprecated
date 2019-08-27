@@ -18,7 +18,7 @@
       "event": "call",
       "filepath": "multiline_statement.py",
       "lineno": 23,
-      "code_str": "Call(func=Name(id='f', ctx=Load()), args=[], keywords=[keyword(arg='longlonglonglonglonglonglonglong', value=Num(n=1)), keyword(arg='longlonglonglonglonglonglonglonglong', value=Num(n=2)), keyword(arg='longlonglonglonglonglonglonglonglonglong', value=Num(n=3))])",
+      "code_str": "f(\n    longlonglonglonglonglonglonglong=1,\n    longlonglonglonglonglonglonglonglong=2,\n    longlonglonglonglonglonglonglonglonglong=3,\n)",
       "caller_frame_id": "(0,)",
       "callee_frame_id": "(0, 0)"
     },

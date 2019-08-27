@@ -2,15 +2,14 @@
 
 import ast
 import dis
-import io
-import sys
 import inspect
+import io
 import itertools
-from collections import namedtuple, defaultdict
+import sys
+from collections import namedtuple
 from functools import lru_cache
-from typing import Dict, Tuple, Set, Iterable
+from typing import Dict, Iterable, Set, Tuple
 
-import astpretty
 import bytecode as b
 import uncompyle6
 

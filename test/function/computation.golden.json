@@ -4,7 +4,7 @@
       "event": "call",
       "filepath": "simple_func.py",
       "lineno": 17,
-      "code_str": "Call(func=Name(id='main', ctx=Load()), args=[], keywords=[])",
+      "code_str": "main()",
       "caller_frame_id": "(0,)",
       "callee_frame_id": "(0, 0)"
     },
@@ -35,7 +35,7 @@
       "event": "call",
       "filepath": "simple_func.py",
       "lineno": 11,
-      "code_str": "Call(func=Name(id='f', ctx=Load()), args=[Num(n=1), Num(n=1)], keywords=[])",
+      "code_str": "f(1, 1)",
       "caller_frame_id": "(0, 0)",
       "callee_frame_id": "(0, 0, 0)"
     },
@@ -43,7 +43,7 @@
       "event": "call",
       "filepath": "simple_func.py",
       "lineno": 11,
-      "code_str": "Call(func=Name(id='f', ctx=Load()), args=[Name(id='x', ctx=Load()), Call(func=Name(id='f', ctx=Load()), args=[Num(n=1), Num(n=1)], keywords=[])], keywords=[])",
+      "code_str": "f(x, f(1, 1))",
       "caller_frame_id": "(0, 0)",
       "callee_frame_id": "(0, 0, 1)"
     },
