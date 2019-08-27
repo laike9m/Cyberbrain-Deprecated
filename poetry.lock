@@ -11,6 +11,14 @@ six = "*"
 
 [[package]]
 category = "main"
+description = "A small Python module for determining appropriate platform-specific dirs, e.g. a \"user data dir\"."
+name = "appdirs"
+optional = false
+python-versions = "*"
+version = "1.4.3"
+
+[[package]]
+category = "main"
 description = "Read/rewrite/write Python ASTs"
 name = "astor"
 optional = false
@@ -34,12 +42,26 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 version = "1.3.0"
 
 [[package]]
-category = "dev"
+category = "main"
 description = "Classes Without Boilerplate"
 name = "attrs"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 version = "19.1.0"
+
+[[package]]
+category = "main"
+description = "The uncompromising code formatter."
+name = "black"
+optional = false
+python-versions = ">=3.6"
+version = "19.3b0"
+
+[package.dependencies]
+appdirs = "*"
+attrs = ">=18.1.0"
+click = ">=6.5"
+toml = ">=0.9.4"
 
 [[package]]
 category = "main"
@@ -154,7 +176,6 @@ version = "1.2"
 [[package]]
 category = "dev"
 description = "More routines for operating on iterables, beyond itertools"
-marker = "python_version > \"2.7\""
 name = "more-itertools"
 optional = false
 python-versions = ">=3.4"
@@ -316,7 +337,7 @@ version = "1.8.9"
 click = "*"
 
 [[package]]
-category = "dev"
+category = "main"
 description = "Python Library for Tom's Obvious, Minimal Language"
 name = "toml"
 optional = false
@@ -377,24 +398,23 @@ description = "Python cross-version byte-code decompiler"
 name = "uncompyle6"
 optional = false
 python-versions = "*"
-version = "3.3.5"
+version = "3.4.0"
 
 [package.dependencies]
 spark-parser = ">=1.8.9,<1.9.0"
 xdis = ">=4.0.3,<4.1.0"
 
 [package.source]
-reference = "4a4a20995ece4aa55207d1d6534f02e6ee1b4da1"
+reference = "c6e3168c31d51f4f10dad006555f1102a52c8bc1"
 type = "git"
 url = "https://github.com/rocky/python-uncompyle6.git"
-
 [[package]]
 category = "dev"
 description = "Virtual Python Environment builder"
 name = "virtualenv"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
-version = "16.7.3"
+version = "16.7.4"
 
 [[package]]
 category = "dev"
@@ -418,18 +438,23 @@ description = "Backport of pathlib-compatible object wrapper for zip files"
 name = "zipp"
 optional = false
 python-versions = ">=2.7"
-version = "0.5.2"
+version = "0.6.0"
+
+[package.dependencies]
+more-itertools = "*"
 
 [metadata]
-content-hash = "2aa3f030f459f7cea8338625bc93d1e7814cb1a432c77ec5faf24cb4f982aff1"
+content-hash = "fdb70ba180f017eaa9b8376f1d5cf291257e26f1a616d41d1f4eea0b6acfd2d0"
 python-versions = "^3.6.7"
 
 [metadata.hashes]
 absl-py = ["b943d1c567743ed0455878fcd60bc28ac9fae38d129d1ccfad58079da00b8951"]
+appdirs = ["9e5896d1372858f8dd3344faf4e5014d21849c756c8d5701f78f8a103b372d92", "d8b24664561d0d34ddfaec54636d502d7cea6e29c3eaf68f3df6180863e2166e"]
 astor = ["0e41295809baf43ae8303350e031aff81ae52189b6f881f36d623fa8b2f1960e", "37a6eed8b371f1228db08234ed7f6cfdc7817a3ed3824797e20cbb11dc2a7862"]
 astpretty = ["d45c06d07cbd4387aaa696cbb955d809fd6977fea8d00c9c409c1524d358cd54", "f9769a73381a9095581435d9477811b2cdd9cd4c721e2650db564624183191a1"]
 atomicwrites = ["03472c30eb2c5d1ba9227e4c2ca66ab8287fbfbbda3888aa93dc2e28fc6811b4", "75a9445bac02d8d058d5e1fe689654ba5a6556a1dfd8ce6ec55a0ed79866cfa6"]
 attrs = ["69c0dbf2ed392de1cb5ec704444b08a5ef81680a61cb899dc08127123af36a79", "f0b870f674851ecbfbbbd364d6b5cbdff9dcedbc7f3f5e18a6891057f21fe399"]
+black = ["09a9dcb7c46ed496a9850b76e4e825d6049ecd38b611f1224857a79bd985a8cf", "68950ffd4d9169716bcb8719a56c07a2f4485354fec061cdd5910aa07369731c"]
 bytecode = ["68b1d591c7af0e5c5273e028d3cc0299fbe374dff0cf9149ec7e569be0c573e7", "c43d5052cbff076bfdf5b0b93ff6c76e461aab628ce47d30637bb200b6b7bb2c"]
 click = ["2335065e6395b9e67ca716de5f7526736bfa6ceead690adf616d925bdc622b13", "5b94b49521f6456670fdb30cd82a4eca9412788a93fa6dd6df72c94d5a8ff2d7"]
 colorama = ["05eed71e2e327246ad6b38c540c4a3117230b19679b875190486ddd2d721422d", "f8ac84de7840f5b9c4e3347b3c1eaa50f7e49c2b07596221daec5edaabbd7c48"]
@@ -463,7 +488,7 @@ tox-pyenv = ["916c2213577aec0b3b5452c5bfb32fd077f3a3196f50a81ad57d7ef3fc2599e4",
 tox-run-command = ["5c5fe892f732d20276c8b2d29ce079bbbcadc153d696b31cdd8fb3edf5c29ec6"]
 typed-ast = ["18511a0b3e7922276346bcb47e2ef9f38fb90fd31cb9223eed42c85d1312344e", "262c247a82d005e43b5b7f69aff746370538e176131c32dda9cb0f324d27141e", "2b907eb046d049bcd9892e3076c7a6456c93a25bebfe554e931620c90e6a25b0", "354c16e5babd09f5cb0ee000d54cfa38401d8b8891eefa878ac772f827181a3c", "4e0b70c6fc4d010f8107726af5fd37921b666f5b31d9331f0bd24ad9a088e631", "630968c5cdee51a11c05a30453f8cd65e0cc1d2ad0d9192819df9978984529f4", "66480f95b8167c9c5c5c87f32cf437d585937970f3fc24386f313a4c97b44e34", "71211d26ffd12d63a83e079ff258ac9d56a1376a25bc80b1cdcdf601b855b90b", "95bd11af7eafc16e829af2d3df510cecfd4387f6453355188342c3e79a2ec87a", "bc6c7d3fa1325a0c6613512a093bc2a2a15aeec350451cbdf9e1d4bffe3e3233", "cc34a6f5b426748a507dd5d1de4c1978f2eb5626d51326e43280941206c209e1", "d755f03c1e4a51e9b24d899561fec4ccaf51f210d52abdf8c07ee2849b212a36", "d7c45933b1bdfaf9f36c579671fec15d25b06c8398f113dab64c18ed1adda01d", "d896919306dd0aa22d0132f62a1b78d11aaf4c9fc5b3410d3c666b818191630a", "ffde2fbfad571af120fcbfbbc61c72469e72f550d676c3342492a9dfdefb8f12"]
 uncompyle6 = []
-virtualenv = ["5e4d92f9a36359a745ddb113cabb662e6100e71072a1e566eb6ddfcc95fdb7ed", "b6711690882013bc79e0eac55889d901596f0967165d80adfa338c5729db1c71"]
+virtualenv = ["94a6898293d07f84a98add34c4df900f8ec64a570292279f6d91c781d37fd305", "f6fc312c031f2d2344f885de114f1cb029dfcffd26aa6e57d2ee2296935c4e7d"]
 wcwidth = ["3df37372226d6e63e1b1e1eda15c594bca98a22d33a23832a90998faa96bc65e", "f4ebe71925af7b40a864553f761ed559b43544f8f71746c2d756c7fe788ade7c"]
 xdis = ["2276f3adf5db3ea17a9ad3159495f8c67cf8e8ec47d525d146f0ef086c5d48b4", "461aa48dc16ffd611838e8c9ff8748c472310b21eb7817ed9b17c542811b234e", "60d2f5df8f0f81f466b21085624a88e0924e204b7ddeb4dfd0cb5225e0deda25", "923c03aa6d2afea386cb701b6270b7994769ba8ba164a16fa63dc9865199d35b", "b1e40297e9aee734b116c6f6bdbdb585be14d3b3b078b857770966d6589f0910", "b9d699a8ae803ad33842edd9fe08cbffd93e818e0fab1201eb84d0362dfe8517", "ca98e63b86c938cf5d03b5ae2a4126faacaceecf08caf913808c0aeaeed7a6b1", "e44f2f3dea8d8a38eb4e1788f8ddb0b7aafc39c0dad5bbf20afdef4729d7ac06"]
-zipp = ["4970c3758f4e89a7857a973b1e2a5d75bcdc47794442f2e2dd4fe8e0466e809a", "8a5712cfd3bb4248015eb3b0b3c54a5f6ee3f2425963ef2a0125b8bc40aafaec"]
+zipp = ["3718b1cbcd963c7d4c5511a8240812904164b7f381b647143a89d3b98f9bcd8e", "f06903e9f1f43b12d371004b4ac7b06ab39a44adc747266928ae6debfa7b3335"]
