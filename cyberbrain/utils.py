@@ -29,11 +29,6 @@ _INSTALLATION_PATHS = list(sysconfig.get_paths().values())
 
 
 @lru_cache()
-def _on_dev_pc():
-    return os.environ.get("CYBERBRAIN_DEV_PC") == "true"
-
-
-@lru_cache()
 def should_exclude(filename):
     """Determines whether we should log events from file.
 
@@ -55,8 +50,7 @@ def should_exclude(filename):
     ):
         return True
 
-    # Exclude tracking Cyberbrain's own execution on dev PC to enable pytest.
-    return _on_dev_pc() and "cyberbrain" in filename
+    return False
 
 
 def grouped(iterable, n):

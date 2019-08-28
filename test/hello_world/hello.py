@@ -2,7 +2,6 @@
 
 import cyberbrain
 
-
 cyberbrain.init()
 x = "hello world"
 y = x
