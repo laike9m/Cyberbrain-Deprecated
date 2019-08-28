@@ -133,6 +133,9 @@ class Node:
         self.returned_from = None
         self.metadata = TrackingMetadata(**kwargs)
 
+    def __repr__(self):
+        return f"<Node {self.code_str}>"
+
     def __getattr__(self, name):
         return getattr(self.metadata, name)
 
@@ -207,7 +210,6 @@ class Flow:
 
     def _update_target_id(self) -> ID:
         """Gets ID('x') out of cyberbrain.register(x)."""
-        print(self.target.code_str)
         register_call_ast = ast.parse(self.target.code_str.strip())
         assert register_call_ast.body[0].value.func.value.id == "cyberbrain"
 
@@ -267,18 +269,16 @@ def build_flow(cm: ComputationManager) -> Flow:
             nodes = [g.node for g in group]
             for node in nodes:
                 # Replaces nested calls with intermediate vars.
-                print("ast_to_intermediate", ast_to_intermediate)
                 for inner_call, intermediate in ast_to_intermediate.items():
-                    print("node.code_str", node.code_str)
                     node.code_str = node.code_str.replace(inner_call, intermediate, 1)
                 if node.type is NodeType.CALL:
+                    # TODO: computes param_to_arg
                     ast_to_intermediate[node.code_str] = f"r{i}_"
                     node.code_str = f"r{i}_ = " + node.code_str
                     node.step_into = frame_groups[node.frame_id + (i,)][0].node
                     node.step_into.prev = node
                     node.returned_from = frame_groups[node.frame_id + (i,)][-1].node
                     # Binds ri_ to next line, becasue it appears during this line.
-                    # TODO: There's no return_value yet cause it's only in computation.
                     node.next.vars[f"r{i}_"] = node.returned_from.return_value
                     i += 1
                 node.code_ast = utils.parse_code_str(node.code_str)

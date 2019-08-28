@@ -4,7 +4,7 @@ import sys
 
 from absl import flags
 
-from . import flow, testing, utils
+from . import backtrace, flow, testing, utils
 from .basis import FrameID, _dummy
 from .computation import computation_manager
 
@@ -69,9 +69,9 @@ def register(target=_dummy):
     FLAGS(sys.argv)  # See https://github.com/chris-chris/pysc2-examples/issues/5.
     sys.settrace(None)
     global_frame.f_trace = None
-    computation_manager.set_target(FrameID.current())
     if target is not _dummy:
         execution_flow = flow.build_flow(computation_manager)
+        # backtrace.trace_flow(execution_flow)
 
     if FLAGS.mode in {"test", "golden", "debug"}:
         testing.dump_computation(computation_manager)

@@ -20,6 +20,9 @@ class Computation(metaclass=abc.ABCMeta):
     def to_dict(self):
         """Serializes attrs to dict."""
 
+    def __repr__(self):
+        return self.code_str
+
     def __str__(self):
         return str(self.to_dict())
 
@@ -130,12 +133,11 @@ class Call(Computation):
 class ComputationManager:
     """Class that stores and manages all computations."""
 
+    REGISTER_CALL = "cyberbrain.register"
+
     def __init__(self):
         self.frame_groups: Dict[FrameID, List[Union[Line, Call]]] = defaultdict(list)
         self.target = None
-
-    def set_target(self, target_frame_id: FrameID):
-        self.target = self.frame_groups[target_frame_id][-1]
 
     def add_computation(self, event_type, frame, arg) -> bool:
         """Adds a computation to manager.
@@ -152,21 +154,23 @@ class ComputationManager:
             ):
                 return False
             # Records location, computation, vars
-            self.frame_groups[frame_id].append(
-                Line(
-                    code_str=code_str.strip(),
-                    filepath=frame.f_code.co_filename,
-                    lineno=frame.f_lineno,
-                    vars=Vars(frame),
-                    event_type=event_type,
-                    frame_id=frame_id,
-                    surrounding=surrounding,
-                )
+            comp = Line(
+                code_str=code_str.strip(),
+                filepath=frame.f_code.co_filename,
+                lineno=frame.f_lineno,
+                vars=Vars(frame),
+                event_type=event_type,
+                frame_id=frame_id,
+                surrounding=surrounding,
             )
+            if comp.code_str.startswith(self.REGISTER_CALL):
+                self.target = comp
+            self.frame_groups[frame_id].append(comp)
             return True
         elif event_type == "call":
             computation = Call.create(frame)
-            if not computation:
+            # Don't trace cyberbrain.register.
+            if not computation or computation.code_str.startswith(self.REGISTER_CALL):
                 return False
             frame_id = computation.frame_id
             # When entering a new call, replaces previous line(aka caller) with a
@@ -181,6 +185,7 @@ class ComputationManager:
                 )
             else:
                 self.frame_groups[frame_id].append(computation)
+
             return True
         elif event_type == "return":
             frame_id = FrameID.create(event_type)

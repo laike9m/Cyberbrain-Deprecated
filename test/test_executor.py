@@ -7,8 +7,6 @@ import pytest
 from cyberbrain.testing import (COMPUTATION_GOLDEN, COMPUTATION_TEST_OUTPUT,
                                 FLOW_GOLDEN, FLOW_TEST_OUTPUT)
 
-os.environ["CYBERBRAIN_DEV_PC"] = "true"
-
 
 @pytest.fixture
 def run_scripts_and_compare():
