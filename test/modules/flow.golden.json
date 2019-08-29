@@ -4,14 +4,16 @@
     "next": "cyberbrain.register(x)",
     "prev": "",
     "step_into": "a = bar.func_in_bar()",
-    "returned_from": "return a"
+    "returned_from": "return a",
+    "param_to_arg": {}
   },
   {
     "code": "a = bar.func_in_bar()",
     "next": "return a",
     "prev": "x = foo.func_in_foo()",
     "step_into": "return 1",
-    "returned_from": "return 1"
+    "returned_from": "return 1",
+    "param_to_arg": {}
   },
   {
     "code": "return 1",

@@ -3,7 +3,6 @@
 import ast
 import inspect
 import io
-import os
 import sysconfig
 import token
 import tokenize

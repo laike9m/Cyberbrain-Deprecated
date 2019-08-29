@@ -9,7 +9,7 @@ from typing import Any, Dict, Iterable, List, Optional, Set, Tuple, Union
 
 import astor
 
-from . import utils
+from . import callsite, utils
 from .basis import ID, FrameID, NodeType, _dummy
 from .computation import ComputationManager
 
@@ -53,12 +53,8 @@ class TrackingMetadata:
     ):
         self.code_str = code_str
         self.code_ast = utils.parse_code_str(code_str)
-        self.param_to_arg = param_to_arg
         if param_to_arg:
-            self.arg_to_param = {}
-            for param, args in param_to_arg.items():
-                for arg in args:
-                    self.arg_to_param[arg] = param
+            self.set_param_arg_mapping(param_to_arg)
 
         # It seems that tracking and data should all be flattened, aka they should
         # simply be a mapping of ID -> value. When backtracing, we don't really care
@@ -76,7 +72,7 @@ class TrackingMetadata:
         self.vars_before_return = vars_before_return
         self.return_value = _dummy
 
-    def set_param_to_arg(self, param_to_arg: Dict[ID, ID]):
+    def set_param_arg_mapping(self, param_to_arg: Dict[ID, ID]):
         self.param_to_arg = param_to_arg
         self.arg_to_param = {}
         for param, args in param_to_arg.items():
@@ -230,8 +226,8 @@ def build_flow(cm: ComputationManager) -> Flow:
     """
     start_node: Node
     target_node: Node
-    NodeWithSurrounding = namedtuple("NodeWithSurrounding", ["node", "surrounding"])
-    frame_groups: Dict[FrameID, List[NodeWithSurrounding]] = defaultdict(list)
+    NodeInfo = namedtuple("NodeInfo", ["node", "surrounding", "arg_values"])
+    frame_groups: Dict[FrameID, List[NodeInfo]] = defaultdict(list)
 
     for frame_id, comps in cm.frame_groups.items():
         for comp in comps:
@@ -255,7 +251,9 @@ def build_flow(cm: ComputationManager) -> Flow:
             if frame_groups[frame_id]:
                 frame_groups[frame_id][-1].node.next = node
                 node.prev = frame_groups[frame_id][-1].node
-            frame_groups[frame_id].append(NodeWithSurrounding(node, comp.surrounding))
+            frame_groups[frame_id].append(
+                NodeInfo(node, comp.surrounding, getattr(comp, "arg_values", None))
+            )
             if comp is cm.target:
                 target_node = node
 
@@ -266,13 +264,11 @@ def build_flow(cm: ComputationManager) -> Flow:
         i = 0  # call index in this frame.
         for _, group in itertools.groupby(frame, lambda x: x.surrounding):
             ast_to_intermediate: Dict[str, str] = {}
-            nodes = [g.node for g in group]
-            for node in nodes:
+            for node, _, arg_values in group:
                 # Replaces nested calls with intermediate vars.
                 for inner_call, intermediate in ast_to_intermediate.items():
                     node.code_str = node.code_str.replace(inner_call, intermediate, 1)
                 if node.type is NodeType.CALL:
-                    # TODO: computes param_to_arg
                     ast_to_intermediate[node.code_str] = f"r{i}_"
                     node.code_str = f"r{i}_ = " + node.code_str
                     node.step_into = frame_groups[node.frame_id + (i,)][0].node
@@ -282,6 +278,12 @@ def build_flow(cm: ComputationManager) -> Flow:
                     node.next.vars[f"r{i}_"] = node.returned_from.return_value
                     i += 1
                 node.code_ast = utils.parse_code_str(node.code_str)
+                if node.type is NodeType.CALL:
+                    node.set_param_arg_mapping(
+                        callsite.get_param_to_arg(
+                            node.code_ast.body[0].value, arg_values
+                        )
+                    )
 
             if len(node.code_ast.body) != 1:
                 continue

@@ -4,7 +4,8 @@
     "next": "",
     "prev": "",
     "step_into": "def f(x, y):",
-    "returned_from": "cyberbrain.register(y)  # register has to be called after init"
+    "returned_from": "cyberbrain.register(y)  # register has to be called after init",
+    "param_to_arg": {}
   },
   {
     "code": "def f(x, y):",
@@ -25,7 +26,11 @@
     "next": "y = f(x, r0_)",
     "prev": "x = 1",
     "step_into": "return x + y",
-    "returned_from": "return x + y"
+    "returned_from": "return x + y",
+    "param_to_arg": {
+      "x": [],
+      "y": []
+    }
   },
   {
     "code": "return x + y",
@@ -39,7 +44,15 @@
     "next": "cyberbrain.register(y)  # register has to be called after init",
     "prev": "r0_ = f(1, 1)",
     "step_into": "return x + y",
-    "returned_from": "return x + y"
+    "returned_from": "return x + y",
+    "param_to_arg": {
+      "x": [
+        "x"
+      ],
+      "y": [
+        "r0_"
+      ]
+    }
   },
   {
     "code": "return x + y",
