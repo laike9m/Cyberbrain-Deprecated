@@ -168,11 +168,7 @@ def get_param_arg_pairs(
 
 
 def map_param_to_arg(
-    callsite_ast: ast.Call,
-    arg_info: inspect.ArgInfo,
-    *,
-    callsite_frame_id: FrameID,
-    callee_frame_id: FrameID,
+    callsite_ast: ast.Call, arg_info: inspect.ArgInfo
 ) -> Dict[FrameID, Set[FrameID]]:
     """Maps argument identifiers to parameter identifiers.
 
