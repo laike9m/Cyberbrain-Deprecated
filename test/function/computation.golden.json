@@ -51,14 +51,14 @@
       "event": "line",
       "filepath": "simple_func.py",
       "lineno": 11,
-      "code_str": "y = f(x, f(1, 1))  # y is our target.",
+      "code_str": "y = f(x, f(1, 1))",
       "frame_id": "(0, 0)"
     },
     {
       "event": "line",
       "filepath": "simple_func.py",
       "lineno": 12,
-      "code_str": "cyberbrain.register(y)  # register has to be called after init",
+      "code_str": "cyberbrain.register(y)",
       "frame_id": "(0, 0)"
     }
   ],

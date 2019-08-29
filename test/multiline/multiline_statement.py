@@ -23,4 +23,4 @@ x = f(
     longlonglonglonglonglonglonglonglonglong=3,
 )
 
-cyberbrain.register(y)  # register has to be called after init
+cyberbrain.register(y)
