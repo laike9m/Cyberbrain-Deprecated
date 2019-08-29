@@ -5,7 +5,7 @@ import inspect
 import sys
 
 import astor
-from hamcrest import equal_to, assert_that
+from hamcrest import assert_that, equal_to
 
 from . import callsite
 from .basis import ID
@@ -69,33 +69,22 @@ def test_map_param_to_arg():
     def f(foo, bar, baz=1, *args, **kwargs):
         return inspect.getargvalues(inspect.currentframe())
 
-    CALLER_F = (0,)
-    CALLEE_F = (0, 0)
-
     # Tests passing values directly.
-    assert callsite.map_param_to_arg(
-        _get_call(ast.parse("f(1,2)")),
-        f(1, 2),
-        callsite_frame_id=CALLER_F,
-        callee_frame_id=CALLEE_F,
-    ) == {ID("foo"): set(), ID("bar"): set()}
+    assert callsite.map_param_to_arg(_get_call(ast.parse("f(1,2)")), f(1, 2)) == {
+        ID("foo"): set(),
+        ID("bar"): set(),
+    }
 
     # Tests passing variables.
     a, b, c = 1, 2, 3
     assert callsite.map_param_to_arg(
-        _get_call(ast.parse("f(a,b,c)")),
-        f(a, b, z=c),
-        callsite_frame_id=CALLER_F,
-        callee_frame_id=CALLEE_F,
+        _get_call(ast.parse("f(a,b,c)")), f(a, b, z=c)
     ) == {ID("foo"): {ID("a")}, ID("bar"): {ID("b")}, ID("baz"): {ID("c")}}
 
     # Tests catching extra args.
     d, e = 4, 5
     assert callsite.map_param_to_arg(
-        _get_call(ast.parse("f(a,b,c,d,qux=e)")),
-        f(a, b, c, d, qux=e),
-        callsite_frame_id=CALLER_F,
-        callee_frame_id=CALLEE_F,
+        _get_call(ast.parse("f(a,b,c,d,qux=e)")), f(a, b, c, d, qux=e)
     ) == {
         ID("foo"): {ID("a")},
         ID("bar"): {ID("b")},
@@ -106,10 +95,7 @@ def test_map_param_to_arg():
 
     # Tests binding multiple params to one argument.
     assert callsite.map_param_to_arg(
-        _get_call(ast.parse("f(a,(b,c),c,qux=(d, e))")),
-        f(a, (b, c), c, qux=(d, e)),
-        callsite_frame_id=CALLER_F,
-        callee_frame_id=CALLEE_F,
+        _get_call(ast.parse("f(a,(b,c),c,qux=(d, e))")), f(a, (b, c), c, qux=(d, e))
     ) == {
         ID("foo"): {ID("a")},
         ID("bar"): {ID("b"), ID("c")},
@@ -122,21 +108,15 @@ def test_map_param_to_arg():
         return inspect.getargvalues(inspect.currentframe())
 
     assert callsite.map_param_to_arg(
-        _get_call(ast.parse("g(d,qux=e)")),
-        g(d, qux=e),
-        callsite_frame_id=CALLER_F,
-        callee_frame_id=CALLEE_F,
+        _get_call(ast.parse("g(d,qux=e)")), g(d, qux=e)
     ) == {ID("foo"): {ID("d")}, ID("bar"): {ID("e")}}
 
     # Tests signature without args or kwargs.
     def h(x):
         return inspect.getargvalues(inspect.currentframe())
 
-    assert callsite.map_param_to_arg(
-        _get_call(ast.parse("h(a)")),
-        h(a),
-        callsite_frame_id=CALLER_F,
-        callee_frame_id=CALLEE_F,
-    ) == {ID("x"): {ID("a")}}
+    assert callsite.map_param_to_arg(_get_call(ast.parse("h(a)")), h(a)) == {
+        ID("x"): {ID("a")}
+    }
 
     # TODO: tests nested call.
