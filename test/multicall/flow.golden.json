@@ -11,7 +11,10 @@
     "next": "r1_ = f(y=2)",
     "prev": "def f(*args, **kwargs):",
     "step_into": "pass",
-    "returned_from": "pass"
+    "returned_from": "pass",
+    "param_to_arg": {
+      "kwargs": []
+    }
   },
   {
     "code": "pass",
@@ -25,7 +28,10 @@
     "next": "x = {r0_, r1_}",
     "prev": "r0_ = f(x=1)",
     "step_into": "pass",
-    "returned_from": "pass"
+    "returned_from": "pass",
+    "param_to_arg": {
+      "kwargs": []
+    }
   },
   {
     "code": "pass",

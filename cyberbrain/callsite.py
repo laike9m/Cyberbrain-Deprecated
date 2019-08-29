@@ -167,7 +167,7 @@ def get_param_arg_pairs(
         yield arg, param
 
 
-def map_param_to_arg(
+def get_param_to_arg(
     callsite_ast: ast.Call, arg_info: inspect.ArgInfo
 ) -> Dict[FrameID, Set[FrameID]]:
     """Maps argument identifiers to parameter identifiers.

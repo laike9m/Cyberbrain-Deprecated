@@ -18,7 +18,10 @@
     "next": "cyberbrain.register(y)  # register has to be called after init",
     "prev": "def f(**kwargs):",
     "step_into": "pass",
-    "returned_from": "pass"
+    "returned_from": "pass",
+    "param_to_arg": {
+      "kwargs": []
+    }
   },
   {
     "code": "pass",

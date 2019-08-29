@@ -2,6 +2,7 @@
 
 import json
 import os
+from pprint import pprint
 from typing import Dict
 
 from absl import flags
@@ -16,6 +17,15 @@ COMPUTATION_TEST_OUTPUT = "computation.json"
 COMPUTATION_GOLDEN = "computation.golden.json"
 FLOW_TEST_OUTPUT = "flow.json"
 FLOW_GOLDEN = "flow.golden.json"
+
+
+class _SetEncoder(json.JSONEncoder):
+    """Custom encoder to dump set as list."""
+
+    def default(self, obj):
+        if isinstance(obj, set):
+            return list(obj)
+        return json.JSONEncoder.default(self, obj)
 
 
 def dump_computation(cm: ComputationManager):
@@ -33,24 +43,27 @@ def dump_computation(cm: ComputationManager):
         str(fid): [c.to_dict() for c in comps] for fid, comps in cm.frame_groups.items()
     }
     if FLAGS.mode == "debug":
-        print(f"Computation is:\n{output}")
+        pprint(f"Computation is:\n{output}")
         return
 
     with open(filepath, "w") as f:
-        json.dump(obj=output, fp=f, indent=2)
+        json.dump(obj=output, fp=f, indent=2, cls=_SetEncoder)
 
 
 def dump_flow(flow: Flow):
     output = []
 
     def dump_node(node: Node) -> Dict:
-        return {
+        result = {
             "code": node.code_str,
             "next": getattr(node.next, "code_str", ""),
             "prev": getattr(node.prev, "code_str", ""),
             "step_into": getattr(node.step_into, "code_str", ""),
             "returned_from": getattr(node.returned_from, "code_str", ""),
         }
+        if hasattr(node, "param_to_arg"):
+            result["param_to_arg"] = node.param_to_arg
+        return result
 
     def traverse_node(node: Node):
         while node is not None:
@@ -68,8 +81,8 @@ def dump_flow(flow: Flow):
         print(yellow("Generating test data: " + filepath))
 
     if FLAGS.mode == "debug":
-        print(f"Flow is:\n{output}")
+        pprint(f"Flow is:\n{output}")
         return
 
     with open(filepath, "w") as f:
-        json.dump(obj=output, fp=f, indent=2)
+        json.dump(obj=output, fp=f, indent=2, cls=_SetEncoder)
