@@ -33,7 +33,7 @@
       "event": "line",
       "filepath": "multiline_statement.py",
       "lineno": 26,
-      "code_str": "cyberbrain.register(y)  # register has to be called after init",
+      "code_str": "cyberbrain.register(y)",
       "frame_id": "(0,)"
     }
   ],

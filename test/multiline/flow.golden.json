@@ -15,7 +15,7 @@
   },
   {
     "code": "x = f(longlonglonglonglonglonglonglong=1,\n    longlonglonglonglonglonglonglonglong=2,\n    longlonglonglonglonglonglonglonglonglong=3)",
-    "next": "cyberbrain.register(y)  # register has to be called after init",
+    "next": "cyberbrain.register(y)",
     "prev": "def f(**kwargs):",
     "step_into": "pass",
     "returned_from": "pass",
@@ -31,7 +31,7 @@
     "returned_from": ""
   },
   {
-    "code": "cyberbrain.register(y)  # register has to be called after init",
+    "code": "cyberbrain.register(y)",
     "next": "",
     "prev": "x = f(longlonglonglonglonglonglonglong=1,\n    longlonglonglonglonglonglonglonglong=2,\n    longlonglonglonglonglonglonglonglonglong=3)",
     "step_into": "",

@@ -1,15 +1,10 @@
 """Backtraces var change from target to program start."""
 
-import ast
-import typing
 
-from deepdiff import DeepDiff
-from crayons import yellow, cyan
+from crayons import cyan, yellow
 
 from . import utils
-from .basis import ID
-from .flow import Node, Flow, VarAppearance, VarModification, VarSwitch
-from .basis import FrameID
+from .flow import Flow, Node, VarSwitch
 
 
 def _print_node(current: Node, next: Node):

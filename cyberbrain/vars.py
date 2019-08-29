@@ -3,8 +3,7 @@
 import copy
 import inspect
 import itertools
-
-from collections import defaultdict, UserDict
+from collections import UserDict
 
 
 class Vars(UserDict):
@@ -16,7 +15,7 @@ class Vars(UserDict):
         del frame
 
     def __getitem__(self, name):
-        return self.vars[name]
+        return self.data[name]
 
     def _scan_namespaces(self, frame):
         """Records variables from bottom to top."""

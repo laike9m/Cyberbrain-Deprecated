@@ -4,8 +4,8 @@ import sys
 
 from absl import flags
 
-from . import backtrace, flow, testing, utils
-from .basis import FrameID, _dummy
+from . import backtrace, flow, format, testing, utils
+from .basis import _dummy
 from .computation import computation_manager
 
 FLAGS = flags.FLAGS
@@ -71,7 +71,8 @@ def register(target=_dummy):
     global_frame.f_trace = None
     if target is not _dummy:
         execution_flow = flow.build_flow(computation_manager)
-        # backtrace.trace_flow(execution_flow)
+        backtrace.trace_flow(execution_flow)
+        # format.generate_output(execution_flow)
 
     if FLAGS.mode in {"test", "golden", "debug"}:
         testing.dump_computation(computation_manager)
