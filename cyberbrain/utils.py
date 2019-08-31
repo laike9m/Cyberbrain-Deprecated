@@ -91,6 +91,7 @@ def _get_lineno_base(toks) -> int:
     for i, tok in enumerate(toks):
         if tok.type not in {token_ENCODING, token_NL, token.STRING, token_COMMENT}:
             return tok.end[0]
+    assert False, "Failed to find base line number."
 
 
 def _get_lineno_offset(frame) -> int:

@@ -61,7 +61,11 @@ def test_get_callsite_ast():
     assert_ast(outer_callsite_ast, "h(f(1))")
 
 
-def _get_call(module_ast):
+def _get_call(module_ast: ast.Module) -> ast.Call:
+    assert isinstance(
+        module_ast.body[0], ast.Expr
+    ), "Passed in code is not a call expression."
+
     return module_ast.body[0].value
 
 
