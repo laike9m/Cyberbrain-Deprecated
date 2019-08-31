@@ -1,10 +1,13 @@
 """Formats trace result to user friendly output."""
 
 import itertools
+from os.path import abspath, expanduser, join
 
 from graphviz import Digraph
 
 from .flow import Flow, Node
+
+DESKTOP = abspath(join(expanduser("~"), "Desktop"))
 
 # g = Digraph(
 #     name="Cyberbrain Output", graph_attr=[("forcelabels", "true")], format="canon"
@@ -104,8 +107,8 @@ def generate_subgraph(frame_start: NodeView):
             current = current.next
 
 
-def generate_output(flow: Flow):
+def generate_output(flow: Flow, filename=None):
     generate_subgraph(NodeView(flow.start))
 
     # print(g.pipe().decode("utf-8"))
-    g.render("output1.svg", view=True)
+    g.render(join(DESKTOP, filename or "output"), view=True)
