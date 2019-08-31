@@ -5,7 +5,7 @@ import ast
 import inspect
 from collections import defaultdict
 from pathlib import PurePath
-from typing import Dict, List, Optional, Union
+from typing import Dict, List, Union
 
 import black
 
@@ -16,6 +16,8 @@ from .vars import Vars
 
 class Computation(metaclass=abc.ABCMeta):
     """Base class to represent a computation unit of the program."""
+
+    code_str: str = ...
 
     def to_dict(self):
         """Serializes attrs to dict."""
@@ -33,10 +35,10 @@ class Line(Computation):
     def __init__(
         self,
         *,
-        code_str: ast.AST,
+        code_str: str,
         filepath: str,
         lineno: int,
-        vars,
+        vars: Vars,
         frame_id: FrameID,
         event_type: str,
         surrounding: Surrounding,
@@ -72,11 +74,10 @@ class Call(Computation):
         self,
         *,
         callsite_ast: ast.AST,
-        outer_callsite_ast: Optional[ast.AST],
         source_location: SourceLocation,
         arg_values: inspect.ArgInfo,
         func_name: str,
-        vars,
+        vars: Vars,
         event_type: str,
         frame_id: FrameID,
         callee_frame_id: FrameID,
@@ -108,7 +109,7 @@ class Call(Computation):
     def create(frame):
         caller_frame = frame.f_back
         _, surrounding = utils.get_code_str_and_surrounding(caller_frame)
-        callsite_ast, outer_callsite_ast = callsite.get_callsite_ast(
+        callsite_ast, _ = callsite.get_callsite_ast(
             caller_frame.f_code, caller_frame.f_lasti
         )
         # If it's not ast.Call, like ast.ListComp, ignore for now.
@@ -116,7 +117,6 @@ class Call(Computation):
             return None
         return Call(
             callsite_ast=callsite_ast,
-            outer_callsite_ast=outer_callsite_ast,
             source_location=SourceLocation(
                 filepath=caller_frame.f_code.co_filename, lineno=caller_frame.f_lineno
             ),

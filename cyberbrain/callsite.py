@@ -8,13 +8,13 @@ import itertools
 import sys
 from collections import namedtuple
 from functools import lru_cache
-from typing import Dict, Iterable, Set, Tuple
+from typing import Dict, Iterable, Optional, Set, Tuple
 
 import bytecode as b
 import uncompyle6
 
 from . import utils
-from .basis import ID, FrameID
+from .basis import ID
 
 MARK = "__MARK__"
 
@@ -67,9 +67,9 @@ class MarkedCallVisitor(ast.NodeVisitor):
 
     def __init__(self):
         self.activated = False
-        self.callsite_ast = None
+        self.callsite_ast: Optional[ast.Call] = None
 
-    def get_outer_call(self):
+    def get_outer_call(self) -> Optional[ast.Call]:
         """Finds outer call in case callsite_ast represents a nested call.
 
         Given f(g(h()))
@@ -117,7 +117,7 @@ class MarkedCallVisitor(ast.NodeVisitor):
 
 
 @lru_cache()
-def get_callsite_ast(code, last_i) -> ast.AST:
+def get_callsite_ast(code, last_i) -> Tuple[ast.AST, Optional[ast.Call]]:
     bc = b.Bytecode.from_code(code)
     index = compute_offset(bc, last_i)
     bc.insert(index, b.Instr("LOAD_ATTR", MARK))
@@ -126,12 +126,14 @@ def get_callsite_ast(code, last_i) -> ast.AST:
     uncompyle6.deparse_code2str(code=bc.to_code(), out=string_io)
     visitor = MarkedCallVisitor()
     visitor.visit(ast.parse(string_io.getvalue()))
+    if visitor.callsite_ast is None:
+        raise RuntimeError("visitor.callsite_ast is None!")
     return visitor.callsite_ast, visitor.get_outer_call()
 
 
 def get_param_arg_pairs(
     callsite_ast: ast.Call, arg_info: inspect.ArgInfo
-) -> Iterable[Tuple[str, str]]:
+) -> Iterable[Tuple[ast.AST, str]]:
     """Generates parameter, argument pairs.
 
     Example:
@@ -169,7 +171,7 @@ def get_param_arg_pairs(
 
 def get_param_to_arg(
     callsite_ast: ast.Call, arg_info: inspect.ArgInfo
-) -> Dict[FrameID, Set[FrameID]]:
+) -> Dict[ID, Set[ID]]:
     """Maps argument identifiers to parameter identifiers.
 
     For now we'll flatten parameter identifiers as long as they contribute to the same

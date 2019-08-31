@@ -80,7 +80,9 @@ class TrackingMetadata:
                 self.arg_to_param[arg] = param
 
     def get_args(self) -> Set[ID]:
+        # pytype: disable=bad-return-type
         return set(itertools.chain.from_iterable(self.param_to_arg.values()))
+        # pytype: enable=bad-return-type
 
     def add_var_appearances(self, *var_appearances: VarAppearance):
         self.var_appearances.extend(var_appearances)
@@ -123,10 +125,10 @@ class Node:
             self.frame_id = frame_id
         elif isinstance(frame_id, tuple):
             self.frame_id = FrameID(frame_id)
-        self.prev = None
-        self.next = None
-        self.step_into = None
-        self.returned_from = None
+        self.prev: Optional[Node] = None
+        self.next: Optional[Node] = None
+        self.step_into: Optional[Node] = None
+        self.returned_from: Optional[Node] = None
         self.metadata = TrackingMetadata(**kwargs)
 
     def __repr__(self):
@@ -204,7 +206,7 @@ class Flow:
         self.target = target
         self._update_target_id()
 
-    def _update_target_id(self) -> ID:
+    def _update_target_id(self):
         """Gets ID('x') out of cyberbrain.register(x)."""
         register_call_ast = ast.parse(self.target.code_str.strip())
         assert register_call_ast.body[0].value.func.value.id == "cyberbrain"
@@ -299,6 +301,7 @@ def build_flow(cm: ComputationManager) -> Flow:
                 # This happens when "f()" was replaced by "r0_".
                 assert node.type is NodeType.LINE
                 prev = node.prev
+                assert prev is not None
                 assert prev.type is NodeType.CALL and prev.code_str.startswith(
                     f"{stmt.value.id}"
                 )
@@ -318,8 +321,10 @@ def build_flow(cm: ComputationManager) -> Flow:
                 # We don't need to modify frame_groups, it's not used in tracing.
                 value = stmt.value
                 prev = node.prev
-                assert prev.type is NodeType.CALL and prev.code_str.startswith(
-                    f"{value.id} ="
+                assert (
+                    prev
+                    and prev.type is NodeType.CALL
+                    and prev.code_str.startswith(f"{value.id} =")
                 )
                 prev.next = node.next
                 if node.next:
