@@ -162,7 +162,7 @@ class Node:
     ) -> Iterable[Union[VarModification, VarAppearance]]:
         """Gets variable changes and stores them to current node.
 
-        current and next are guaranteed to be in the same frame.
+        Current and next must live in the same frame.
         """
         assert self.frame_id == other.frame_id
         for var_id in other.tracking:
@@ -266,7 +266,10 @@ def build_flow(cm: ComputationManager) -> Flow:
         i = 0  # call index in this frame.
         for _, group in itertools.groupby(frame, lambda x: x.surrounding):
             ast_to_intermediate: Dict[str, str] = {}
+            intermediate_vars = {}  # Mapping of intermediate vars and their values.
             for node, _, arg_values in group:
+                # ri_ appeared before should be captured in node.vars.
+                node.vars.update(intermediate_vars)
                 # Replaces nested calls with intermediate vars.
                 for inner_call, intermediate in ast_to_intermediate.items():
                     node.code_str = node.code_str.replace(inner_call, intermediate, 1)
@@ -276,8 +279,7 @@ def build_flow(cm: ComputationManager) -> Flow:
                     node.step_into = frame_groups[node.frame_id + (i,)][0].node
                     node.step_into.prev = node
                     node.returned_from = frame_groups[node.frame_id + (i,)][-1].node
-                    # Binds ri_ to next line, becasue it appears during this line.
-                    node.next.vars[f"r{i}_"] = node.returned_from.return_value
+                    intermediate_vars[f"r{i}_"] = node.returned_from.return_value
                     i += 1
                 node.code_ast = utils.parse_code_str(node.code_str)
                 if node.type is NodeType.CALL:

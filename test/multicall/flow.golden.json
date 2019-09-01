@@ -12,6 +12,9 @@
     "prev": "def f(*args, **kwargs):",
     "step_into": "pass",
     "returned_from": "pass",
+    "var_changes": [
+      "appear r0_=None\n"
+    ],
     "param_to_arg": {
       "kwargs": []
     }
@@ -29,6 +32,12 @@
     "prev": "r0_ = f(x=1)",
     "step_into": "pass",
     "returned_from": "pass",
+    "var_changes": [
+      "appear r1_=None\n"
+    ],
+    "tracking": [
+      "r0_"
+    ],
     "param_to_arg": {
       "kwargs": []
     }
@@ -45,13 +54,23 @@
     "next": "cyberbrain.register(x)",
     "prev": "r1_ = f(y=2)",
     "step_into": "",
-    "returned_from": ""
+    "returned_from": "",
+    "var_changes": [
+      "appear x={None}\n"
+    ],
+    "tracking": [
+      "r1_",
+      "r0_"
+    ]
   },
   {
     "code": "cyberbrain.register(x)",
     "next": "",
     "prev": "x = {r0_, r1_}",
     "step_into": "",
-    "returned_from": ""
+    "returned_from": "",
+    "tracking": [
+      "x"
+    ]
   }
 ]
