@@ -4,20 +4,32 @@
     "next": "y = x",
     "prev": "",
     "step_into": "",
-    "returned_from": ""
+    "returned_from": "",
+    "var_changes": [
+      "appear x=hello world\n"
+    ]
   },
   {
     "code": "y = x",
     "next": "cyberbrain.register(y)",
     "prev": "x = \"hello world\"",
     "step_into": "",
-    "returned_from": ""
+    "returned_from": "",
+    "var_changes": [
+      "appear y=hello world\n"
+    ],
+    "tracking": [
+      "x"
+    ]
   },
   {
     "code": "cyberbrain.register(y)",
     "next": "",
     "prev": "y = x",
     "step_into": "",
-    "returned_from": ""
+    "returned_from": "",
+    "tracking": [
+      "y"
+    ]
   }
 ]

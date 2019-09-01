@@ -4,13 +4,19 @@
     "next": "cyberbrain.register(x)",
     "prev": "",
     "step_into": "",
-    "returned_from": ""
+    "returned_from": "",
+    "var_changes": [
+      "appear x=[1, 1, 1]\n"
+    ]
   },
   {
     "code": "cyberbrain.register(x)",
     "next": "",
     "prev": "x = [1 for i in range(3)]",
     "step_into": "",
-    "returned_from": ""
+    "returned_from": "",
+    "tracking": [
+      "x"
+    ]
   }
 ]

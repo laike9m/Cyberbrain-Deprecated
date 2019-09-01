@@ -5,6 +5,9 @@
     "prev": "",
     "step_into": "a = bar.func_in_bar()",
     "returned_from": "return a",
+    "var_changes": [
+      "appear x=1\n"
+    ],
     "param_to_arg": {}
   },
   {
@@ -13,6 +16,9 @@
     "prev": "x = foo.func_in_foo()",
     "step_into": "return 1",
     "returned_from": "return 1",
+    "var_changes": [
+      "appear a=1\n"
+    ],
     "param_to_arg": {}
   },
   {
@@ -27,13 +33,19 @@
     "next": "",
     "prev": "a = bar.func_in_bar()",
     "step_into": "",
-    "returned_from": ""
+    "returned_from": "",
+    "tracking": [
+      "a"
+    ]
   },
   {
     "code": "cyberbrain.register(x)",
     "next": "",
     "prev": "x = foo.func_in_foo()",
     "step_into": "",
-    "returned_from": ""
+    "returned_from": "",
+    "tracking": [
+      "x"
+    ]
   }
 ]
