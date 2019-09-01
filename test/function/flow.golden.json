@@ -19,7 +19,10 @@
     "next": "r0_ = f(1, 1)",
     "prev": "def f(x, y):",
     "step_into": "",
-    "returned_from": ""
+    "returned_from": "",
+    "var_changes": [
+      "appear x=1\n"
+    ]
   },
   {
     "code": "r0_ = f(1, 1)",
@@ -27,6 +30,12 @@
     "prev": "x = 1",
     "step_into": "return x + y",
     "returned_from": "return x + y",
+    "var_changes": [
+      "appear r0_=2\n"
+    ],
+    "tracking": [
+      "x"
+    ],
     "param_to_arg": {
       "x": [],
       "y": []
@@ -37,7 +46,11 @@
     "next": "",
     "prev": "r0_ = f(1, 1)",
     "step_into": "",
-    "returned_from": ""
+    "returned_from": "",
+    "tracking": [
+      "x",
+      "y"
+    ]
   },
   {
     "code": "y = f(x, r0_)",
@@ -45,6 +58,13 @@
     "prev": "r0_ = f(1, 1)",
     "step_into": "return x + y",
     "returned_from": "return x + y",
+    "var_changes": [
+      "appear y=3\n"
+    ],
+    "tracking": [
+      "r0_",
+      "x"
+    ],
     "param_to_arg": {
       "x": [
         "x"
@@ -59,13 +79,20 @@
     "next": "",
     "prev": "y = f(x, r0_)",
     "step_into": "",
-    "returned_from": ""
+    "returned_from": "",
+    "tracking": [
+      "x",
+      "y"
+    ]
   },
   {
     "code": "cyberbrain.register(y)",
     "next": "",
     "prev": "y = f(x, r0_)",
     "step_into": "",
-    "returned_from": ""
+    "returned_from": "",
+    "tracking": [
+      "y"
+    ]
   }
 ]

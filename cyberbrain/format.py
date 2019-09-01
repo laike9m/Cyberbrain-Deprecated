@@ -9,10 +9,10 @@ from .flow import Flow, Node
 
 DESKTOP = abspath(join(expanduser("~"), "Desktop"))
 
-# g = Digraph(
-#     name="Cyberbrain Output", graph_attr=[("forcelabels", "true")], format="canon"
-# )
-g = Digraph(name="Cyberbrain Output")
+g = Digraph(
+    name="Cyberbrain Output", graph_attr=[("forcelabels", "true")], format="canon"
+)
+# g = Digraph(name="Cyberbrain Output")
 
 
 class NodeView:
@@ -110,5 +110,5 @@ def generate_subgraph(frame_start: NodeView):
 def generate_output(flow: Flow, filename=None):
     generate_subgraph(NodeView(flow.start))
 
-    # print(g.pipe().decode("utf-8"))
-    g.render(join(DESKTOP, filename or "output"), view=True)
+    print(g.pipe().decode("utf-8"))
+    # g.render(join(DESKTOP, filename or "output"), view=True)

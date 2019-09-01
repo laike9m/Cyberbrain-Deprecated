@@ -2,6 +2,7 @@
 
 import json
 import os
+from collections import defaultdict
 from pprint import pprint
 from typing import Dict
 
@@ -50,24 +51,36 @@ def dump_computation(cm: ComputationManager):
         json.dump(obj=output, fp=f, indent=2, cls=_SetEncoder)
 
 
-def dump_flow(flow: Flow):
-    output = []
-
-    def dump_node(node: Node) -> Dict:
-        result = {
+def _dump_node(node: Node) -> Dict:
+    result = defaultdict(list)
+    result.update(
+        {
             "code": node.code_str,
             "next": getattr(node.next, "code_str", ""),
             "prev": getattr(node.prev, "code_str", ""),
             "step_into": getattr(node.step_into, "code_str", ""),
             "returned_from": getattr(node.returned_from, "code_str", ""),
         }
-        if hasattr(node, "param_to_arg"):
-            result["param_to_arg"] = node.param_to_arg
-        return result
+    )
+    for ap in node.var_appearances:
+        result["var_changes"].append(f"appear {ap.id}={ap.value}\n")
+    for mod in node.var_modifications:
+        result["var_changes"].append(
+            f"modify {mod.id} {mod.old_value} -> {mod.new_value}\n"
+        )
+    if node.tracking:
+        result["tracking"] = node.tracking
+    if hasattr(node, "param_to_arg"):
+        result["param_to_arg"] = node.param_to_arg
+    return result
+
+
+def dump_flow(flow: Flow):
+    output = []
 
     def traverse_node(node: Node):
         while node is not None:
-            output.append(dump_node(node))
+            output.append(_dump_node(node))
             if node.is_callsite():
                 traverse_node(node.step_into)
             node = node.next
