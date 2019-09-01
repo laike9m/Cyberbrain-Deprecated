@@ -77,3 +77,7 @@ def test_list_comp(run_scripts_and_compare):
 
 def test_multicall(run_scripts_and_compare):
     run_scripts_and_compare("multicall", "multicall.py")
+
+
+def test_doc_example(run_scripts_and_compare):
+    run_scripts_and_compare("doc_example", "doc_example.py")

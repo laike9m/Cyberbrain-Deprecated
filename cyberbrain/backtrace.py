@@ -28,7 +28,6 @@ def trace_flow(flow: Flow):
             if any(current.get_and_update_var_changes(next)):
                 # If any change happened, track all ids appeared in this node.
                 current.add_tracking(*utils.find_names(current.code_ast))
-            _print_node(current, next)
             next, current = current, current.prev
             continue
 
@@ -45,7 +44,6 @@ def trace_flow(flow: Flow):
                             value=current.vars[arg_id],
                         )
                     )
-            _print_node(current, next)
             next, current = current, current.prev
             continue
 
@@ -62,5 +60,4 @@ def trace_flow(flow: Flow):
                 returned_from.add_tracking(*utils.find_names(returned_from.code_ast))
         returned_from.update_var_changes_before_return()
 
-        _print_node(current, next)
         next, current = returned_from, returned_from.prev
