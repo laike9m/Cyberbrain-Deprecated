@@ -146,6 +146,9 @@ class Node:
     def is_callsite(self):
         return self.step_into is not None
 
+    def is_target(self):
+        return self._is_target
+
     def build_relation(self, **relation_dict: Dict[str, "Node"]):
         """A convenient function to add relations at once.
 
@@ -204,6 +207,7 @@ class Flow:
         self.start = start
         self.start.prev = self.ROOT
         self.target = target
+        self.target._is_target = True
         self._update_target_id()
 
     def _update_target_id(self):
