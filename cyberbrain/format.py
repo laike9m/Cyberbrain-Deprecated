@@ -18,26 +18,26 @@ g = Digraph(
 class NodeView:
     """Class that wraps a node and deal with visualization."""
 
-    _name_cache = {}  # Maps node address to their node to avoid duplicates.
+    _portname_cache = {}  # Maps node address to their node to avoid duplicates.
     _incrementor = itertools.count()  # Generates 1, 2, 3, ...
 
     def __init__(self, node: Node):
         self._node = node
-        self._name = self._generate_name()
+        self._portname = self._generate_portname()
 
     def __getattr__(self, name):
         """Redirects attribute access to stored node."""
         return getattr(self._node, name)
 
-    def _generate_name(self):
+    def _generate_portname(self):
         node_addr = id(self._node)
-        if node_addr not in self._name_cache:
-            self._name_cache[node_addr] = str(next(self._incrementor))
-        return self._name_cache[node_addr]
+        if node_addr not in self._portname_cache:
+            self._portname_cache[node_addr] = str(next(self._incrementor))
+        return self._portname_cache[node_addr]
 
     @property
-    def name(self):
-        return self._name
+    def portname(self):
+        return self._portname
 
     @property
     def tracking(self):
@@ -72,39 +72,28 @@ class NodeView:
 
 def generate_subgraph(frame_start: NodeView):
     current = frame_start
-    with g.subgraph(
-        name="cluster_" + str(frame_start.frame_id),
-        graph_attr=[
-            ("style", "filled"),
-            ("color", "lightgrey"),
-            ("label", str(frame_start.frame_id)),
-            ("overlap", "scale"),
-        ],
-        node_attr=[("style", "filled"), ("color", "white")],
-    ) as sub:
-        while current is not None:
-            sub.node(
-                current.name,
-                label=current.code_str,
-                fillcolor="lightblue",
-                style="filled",
-            )
-            if current.var_changes:
-                # Creates a subgraph so that node and metadata are on the same height.
-                with g.subgraph(name=current.name + "_meta_sub") as meta_sub:
-                    name_metadata = current.name + "_metadata"
-                    meta_sub.node(current.name)
-                    meta_sub.node(name_metadata, label=current.var_changes, shape="cds")
-                    meta_sub.attr(rank="same")
-                    meta_sub.edge(name_metadata, current.name, style="invis")
-            if current.next:
-                sub.edge(current.name, current.next.name)
-            if current.is_callsite():
-                generate_subgraph(current.step_into)
-                sub.edge(current.name, current.step_into.name)
-                if current.returned_from:
-                    sub.edge(current.returned_from.name, current.name)
-            current = current.next
+    name = str(frame_start.frame_id) + "_code"
+    lines: List[str] = []
+    while current is not None:
+        if current.var_changes or current.is_target():
+            # Only inserts code if there are var changes on this node.
+            lines.append(f"<{current.portname}> {current.code_str}")
+        if current.var_changes:
+            name_metadata = current.portname + "_metadata"
+            g.node(name_metadata, label=current.var_changes, shape="cds")
+            g.edge(name_metadata, f"{name}:{current.portname}")
+        if current.is_callsite():
+            g.edge(f"{name}:{current.portname}", generate_subgraph(current.step_into))
+        current = current.next
+    code_node = g.node(
+        name,
+        label="{%s}" % " | ".join(lines),
+        fillcolor="lightblue",
+        style="filled",
+        shape="record",
+        xlabel=str(frame_start.frame_id),
+    )
+    return name
 
 
 def generate_output(flow: Flow, filename=None):
