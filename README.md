@@ -7,4 +7,4 @@ A Cyberbrain that helps you remember everything.
 Prerequisite: [Graphviz](https://www.graphviz.org/download/)
 
 # Developement
-First install `poetry`, then run `poetry update`.
+First install `poetry`, then run `poetry install`.
