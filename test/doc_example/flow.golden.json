@@ -1,6 +1,6 @@
 [
   {
-    "code": "fo = 1  # start",
+    "code": "fo = 1",
     "next": "func_a(fo)",
     "prev": "",
     "step_into": "",
@@ -12,9 +12,9 @@
   {
     "code": "func_a(fo)",
     "next": "",
-    "prev": "fo = 1  # start",
-    "step_into": "ba = [foo]  # b",
-    "returned_from": "cyberbrain.register(foo)  # target",
+    "prev": "fo = 1",
+    "step_into": "ba = [foo]",
+    "returned_from": "cyberbrain.register(foo)",
     "tracking": [
       "fo"
     ],
@@ -25,7 +25,7 @@
     }
   },
   {
-    "code": "ba = [foo]  # b",
+    "code": "ba = [foo]",
     "next": "func_c(ba)",
     "prev": "func_a(fo)",
     "step_into": "",
@@ -40,9 +40,9 @@
   {
     "code": "func_c(ba)",
     "next": "foo = func_f(ba)",
-    "prev": "ba = [foo]  # b",
-    "step_into": "baa.append(None)  # d",
-    "returned_from": "baa.append(\"?\")  # e",
+    "prev": "ba = [foo]",
+    "step_into": "baa.append(None)",
+    "returned_from": "baa.append(\"?\")",
     "var_changes": [
       "modify ba [1] -> [1, None, '?']\n"
     ],
@@ -57,8 +57,8 @@
     }
   },
   {
-    "code": "baa.append(None)  # d",
-    "next": "baa.append(\"?\")  # e",
+    "code": "baa.append(None)",
+    "next": "baa.append(\"?\")",
     "prev": "func_c(ba)",
     "step_into": "",
     "returned_from": "",
@@ -70,9 +70,9 @@
     ]
   },
   {
-    "code": "baa.append(\"?\")  # e",
+    "code": "baa.append(\"?\")",
     "next": "",
-    "prev": "baa.append(None)  # d",
+    "prev": "baa.append(None)",
     "step_into": "",
     "returned_from": "",
     "var_changes": [
@@ -84,10 +84,10 @@
   },
   {
     "code": "foo = func_f(ba)",
-    "next": "cyberbrain.register(foo)  # target",
+    "next": "cyberbrain.register(foo)",
     "prev": "func_c(ba)",
-    "step_into": "x = len(bar)  # g",
-    "returned_from": "return x  # h",
+    "step_into": "x = len(bar)",
+    "returned_from": "return x",
     "var_changes": [
       "modify foo 1 -> 3\n"
     ],
@@ -102,8 +102,8 @@
     }
   },
   {
-    "code": "x = len(bar)  # g",
-    "next": "return x  # h",
+    "code": "x = len(bar)",
+    "next": "return x",
     "prev": "foo = func_f(ba)",
     "step_into": "",
     "returned_from": "",
@@ -115,9 +115,9 @@
     ]
   },
   {
-    "code": "return x  # h",
+    "code": "return x",
     "next": "",
-    "prev": "x = len(bar)  # g",
+    "prev": "x = len(bar)",
     "step_into": "",
     "returned_from": "",
     "tracking": [
@@ -125,7 +125,7 @@
     ]
   },
   {
-    "code": "cyberbrain.register(foo)  # target",
+    "code": "cyberbrain.register(foo)",
     "next": "",
     "prev": "foo = func_f(ba)",
     "step_into": "",
