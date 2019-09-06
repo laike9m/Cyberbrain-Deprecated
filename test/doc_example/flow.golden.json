@@ -47,8 +47,8 @@
       "modify ba [1] -> [1, None, '?']\n"
     ],
     "tracking": [
-      "foo",
-      "ba"
+      "ba",
+      "foo"
     ],
     "param_to_arg": {
       "baa": [
@@ -92,8 +92,8 @@
       "modify foo 1 -> 3\n"
     ],
     "tracking": [
-      "foo",
-      "ba"
+      "ba",
+      "foo"
     ],
     "param_to_arg": {
       "bar": [
