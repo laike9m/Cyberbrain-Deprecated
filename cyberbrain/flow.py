@@ -111,7 +111,16 @@ class Node:
     """Basic unit of an execution flow."""
 
     __slots__ = frozenset(
-        ["type", "frame_id", "prev", "next", "step_into", "returned_from", "metadata"]
+        [
+            "type",
+            "frame_id",
+            "prev",
+            "next",
+            "step_into",
+            "returned_from",
+            "metadata",
+            "_is_target",
+        ]
     )
 
     def __init__(
@@ -130,6 +139,7 @@ class Node:
         self.step_into: Optional[Node] = None
         self.returned_from: Optional[Node] = None
         self.metadata = TrackingMetadata(**kwargs)
+        self.is_target = False
 
     def __repr__(self):
         return f"<Node {self.code_str}>"
@@ -145,9 +155,6 @@ class Node:
 
     def is_callsite(self):
         return self.step_into is not None
-
-    def is_target(self):
-        return self._is_target
 
     def build_relation(self, **relation_dict: Dict[str, "Node"]):
         """A convenient function to add relations at once.
@@ -207,7 +214,7 @@ class Flow:
         self.start = start
         self.start.prev = self.ROOT
         self.target = target
-        self.target._is_target = True
+        self.target.is_target = True
         self._update_target_id()
 
     def _update_target_id(self):

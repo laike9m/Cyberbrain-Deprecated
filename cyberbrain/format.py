@@ -2,6 +2,7 @@
 
 import itertools
 from os.path import abspath, expanduser, join
+from typing import List
 
 from graphviz import Digraph
 
@@ -9,10 +10,10 @@ from .flow import Flow, Node
 
 DESKTOP = abspath(join(expanduser("~"), "Desktop"))
 
-g = Digraph(
-    name="Cyberbrain Output", graph_attr=[("forcelabels", "true")], format="canon"
-)
-# g = Digraph(name="Cyberbrain Output")
+# g = Digraph(
+#     name="Cyberbrain Output", graph_attr=[("forcelabels", "true")], format="canon"
+# )
+g = Digraph(name="Cyberbrain Output")
 
 
 class NodeView:
@@ -75,9 +76,10 @@ def generate_subgraph(frame_start: NodeView):
     name = str(frame_start.frame_id) + "_code"
     lines: List[str] = []
     while current is not None:
-        if current.var_changes or current.is_target():
-            # Only inserts code if there are var changes on this node.
-            lines.append(f"<{current.portname}> {current.code_str}")
+        # TODO: Only inserts code if there are var changes on this node.
+        # or it is a call node and there are var changes inside the call.
+        # if current.var_changes or current.is_target:
+        lines.append(f"<{current.portname}> {current.code_str}")
         if current.var_changes:
             name_metadata = current.portname + "_metadata"
             g.node(name_metadata, label=current.var_changes, shape="cds")
@@ -85,7 +87,7 @@ def generate_subgraph(frame_start: NodeView):
         if current.is_callsite():
             g.edge(f"{name}:{current.portname}", generate_subgraph(current.step_into))
         current = current.next
-    code_node = g.node(
+    g.node(
         name,
         label="{%s}" % " | ".join(lines),
         fillcolor="lightblue",
@@ -99,5 +101,5 @@ def generate_subgraph(frame_start: NodeView):
 def generate_output(flow: Flow, filename=None):
     generate_subgraph(NodeView(flow.start))
 
-    print(g.pipe().decode("utf-8"))
-    # g.render(join(DESKTOP, filename or "output"), view=True)
+    # print(g.pipe().decode("utf-8"))
+    g.render(join(DESKTOP, filename or "output"), view=True)
