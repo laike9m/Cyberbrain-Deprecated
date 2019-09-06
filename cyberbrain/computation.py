@@ -153,9 +153,8 @@ class ComputationManager:
                 and self.frame_groups[frame_id][-1].surrounding == surrounding
             ):
                 return False
-            # Records location, computation, vars
             comp = Line(
-                code_str=code_str.strip(),
+                code_str=code_str.rsplit("#", 1)[0].strip(),  # Removes comment.
                 filepath=frame.f_code.co_filename,
                 lineno=frame.f_lineno,
                 vars=Vars(frame),

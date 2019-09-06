@@ -4,7 +4,7 @@
       "event": "line",
       "filepath": "doc_example.py",
       "lineno": 24,
-      "code_str": "fo = 1  # start",
+      "code_str": "fo = 1",
       "frame_id": "(0,)"
     },
     {
@@ -19,7 +19,7 @@
       "event": "line",
       "filepath": "doc_example.py",
       "lineno": 25,
-      "code_str": "func_a(fo)  # a",
+      "code_str": "func_a(fo)",
       "frame_id": "(0,)"
     }
   ],
@@ -28,7 +28,7 @@
       "event": "line",
       "filepath": "doc_example.py",
       "lineno": 17,
-      "code_str": "ba = [foo]  # b",
+      "code_str": "ba = [foo]",
       "frame_id": "(0, 0)"
     },
     {
@@ -43,7 +43,7 @@
       "event": "line",
       "filepath": "doc_example.py",
       "lineno": 18,
-      "code_str": "func_c(ba)  # c",
+      "code_str": "func_c(ba)",
       "frame_id": "(0, 0)"
     },
     {
@@ -58,14 +58,14 @@
       "event": "line",
       "filepath": "doc_example.py",
       "lineno": 19,
-      "code_str": "foo = func_f(ba)  # f",
+      "code_str": "foo = func_f(ba)",
       "frame_id": "(0, 0)"
     },
     {
       "event": "line",
       "filepath": "doc_example.py",
       "lineno": 20,
-      "code_str": "cyberbrain.register(foo)  # target",
+      "code_str": "cyberbrain.register(foo)",
       "frame_id": "(0, 0)"
     }
   ],
@@ -74,14 +74,14 @@
       "event": "line",
       "filepath": "doc_example.py",
       "lineno": 12,
-      "code_str": "baa.append(None)  # d",
+      "code_str": "baa.append(None)",
       "frame_id": "(0, 0, 0)"
     },
     {
       "event": "line",
       "filepath": "doc_example.py",
       "lineno": 13,
-      "code_str": "baa.append(\"?\")  # e",
+      "code_str": "baa.append(\"?\")",
       "frame_id": "(0, 0, 0)"
     }
   ],
@@ -90,14 +90,14 @@
       "event": "line",
       "filepath": "doc_example.py",
       "lineno": 7,
-      "code_str": "x = len(bar)  # g",
+      "code_str": "x = len(bar)",
       "frame_id": "(0, 0, 1)"
     },
     {
       "event": "line",
       "filepath": "doc_example.py",
       "lineno": 8,
-      "code_str": "return x  # h",
+      "code_str": "return x",
       "frame_id": "(0, 0, 1)"
     }
   ]
