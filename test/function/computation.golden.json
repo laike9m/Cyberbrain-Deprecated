@@ -1,83 +1,83 @@
 {
-  "(0,)": [
+  "(0,) <module>": [
     {
       "event": "call",
       "filepath": "simple_func.py",
       "lineno": 17,
       "code_str": "main()",
-      "caller_frame_id": "(0,)",
-      "callee_frame_id": "(0, 0)"
+      "caller_frame_id": "(0,) <module>",
+      "callee_frame_id": "(0, 0) "
     },
     {
       "event": "line",
       "filepath": "simple_func.py",
       "lineno": 17,
       "code_str": "main()",
-      "frame_id": "(0,)"
+      "frame_id": "(0,) <module>"
     }
   ],
-  "(0, 0)": [
+  "(0, 0) main": [
     {
       "event": "line",
       "filepath": "simple_func.py",
       "lineno": 7,
       "code_str": "def f(x, y):",
-      "frame_id": "(0, 0)"
+      "frame_id": "(0, 0) main"
     },
     {
       "event": "line",
       "filepath": "simple_func.py",
       "lineno": 10,
       "code_str": "x = 1",
-      "frame_id": "(0, 0)"
+      "frame_id": "(0, 0) main"
     },
     {
       "event": "call",
       "filepath": "simple_func.py",
       "lineno": 11,
       "code_str": "f(1, 1)",
-      "caller_frame_id": "(0, 0)",
-      "callee_frame_id": "(0, 0, 0)"
+      "caller_frame_id": "(0, 0) main",
+      "callee_frame_id": "(0, 0, 0) "
     },
     {
       "event": "call",
       "filepath": "simple_func.py",
       "lineno": 11,
       "code_str": "f(x, f(1, 1))",
-      "caller_frame_id": "(0, 0)",
-      "callee_frame_id": "(0, 0, 1)"
+      "caller_frame_id": "(0, 0) main",
+      "callee_frame_id": "(0, 0, 1) "
     },
     {
       "event": "line",
       "filepath": "simple_func.py",
       "lineno": 11,
       "code_str": "y = f(x, f(1, 1))",
-      "frame_id": "(0, 0)"
+      "frame_id": "(0, 0) main"
     },
     {
       "event": "line",
       "filepath": "simple_func.py",
       "lineno": 12,
       "code_str": "cyberbrain.register(y)",
-      "frame_id": "(0, 0)"
+      "frame_id": "(0, 0) main"
     }
   ],
-  "(0, 0, 0)": [
+  "(0, 0, 0) f": [
     {
       "event": "line",
       "filepath": "simple_func.py",
       "lineno": 8,
       "code_str": "return x + y",
-      "frame_id": "(0, 0, 0)"
+      "frame_id": "(0, 0, 0) f"
     }
   ],
-  "(0, 0, 1)": [
+  "(0, 0, 1) f": [
     {
       "event": "line",
       "filepath": "simple_func.py",
       "lineno": 8,
       "code_str": "return x + y",
-      "frame_id": "(0, 0, 1)"
+      "frame_id": "(0, 0, 1) f"
     }
   ]
 }

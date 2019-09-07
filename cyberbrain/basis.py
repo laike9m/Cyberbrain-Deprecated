@@ -3,8 +3,7 @@
 import sys
 from collections import defaultdict
 from enum import Enum
-from typing import Dict, Tuple, NamedTuple, Union
-
+from typing import Dict, NamedTuple, Tuple, Union
 
 # "surrounding" is a 2-element tuple (start_lineno, end_lineno), representing a
 # logical line. Line number is frame-wise.
@@ -33,6 +32,8 @@ _dummy = object()
 
 
 class NodeType(Enum):
+    """Just node types."""
+
     LINE = 1
     CALL = 2
 
@@ -66,8 +67,9 @@ class FrameID:
     # Mapping from parent frame id to max child frame index.
     child_index: Dict[Tuple, int] = defaultdict(int)
 
-    def __init__(self, frame_id_tuple):
+    def __init__(self, frame_id_tuple: Tuple[int, ...], co_name: str = ""):
         self._frame_id_tuple = frame_id_tuple
+        self.co_name = co_name
 
     def __eq__(self, other: Union["FrameID", Tuple[int, ...]]):
         if isinstance(other, FrameID):
@@ -118,7 +120,7 @@ class FrameID:
 
     def __str__(self):
         """Prints the tuple representation."""
-        return str(self._frame_id_tuple)
+        return f"{str(self._frame_id_tuple)} {self.co_name}"
 
 
 class ID(str):

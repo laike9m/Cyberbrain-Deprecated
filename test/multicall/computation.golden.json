@@ -1,59 +1,59 @@
 {
-  "(0,)": [
+  "(0,) <module>": [
     {
       "event": "line",
       "filepath": "multicall.py",
       "lineno": 8,
       "code_str": "def f(*args, **kwargs):",
-      "frame_id": "(0,)"
+      "frame_id": "(0,) <module>"
     },
     {
       "event": "call",
       "filepath": "multicall.py",
       "lineno": 12,
       "code_str": "f(x=1)",
-      "caller_frame_id": "(0,)",
-      "callee_frame_id": "(0, 0)"
+      "caller_frame_id": "(0,) <module>",
+      "callee_frame_id": "(0, 0) "
     },
     {
       "event": "call",
       "filepath": "multicall.py",
       "lineno": 12,
       "code_str": "f(y=2)",
-      "caller_frame_id": "(0,)",
-      "callee_frame_id": "(0, 1)"
+      "caller_frame_id": "(0,) <module>",
+      "callee_frame_id": "(0, 1) "
     },
     {
       "event": "line",
       "filepath": "multicall.py",
       "lineno": 12,
       "code_str": "x = {f(x=1), f(y=2)}",
-      "frame_id": "(0,)"
+      "frame_id": "(0,) <module>"
     },
     {
       "event": "line",
       "filepath": "multicall.py",
       "lineno": 15,
       "code_str": "cyberbrain.register(x)",
-      "frame_id": "(0,)"
+      "frame_id": "(0,) <module>"
     }
   ],
-  "(0, 0)": [
+  "(0, 0) f": [
     {
       "event": "line",
       "filepath": "multicall.py",
       "lineno": 9,
       "code_str": "pass",
-      "frame_id": "(0, 0)"
+      "frame_id": "(0, 0) f"
     }
   ],
-  "(0, 1)": [
+  "(0, 1) f": [
     {
       "event": "line",
       "filepath": "multicall.py",
       "lineno": 9,
       "code_str": "pass",
-      "frame_id": "(0, 1)"
+      "frame_id": "(0, 1) f"
     }
   ]
 }

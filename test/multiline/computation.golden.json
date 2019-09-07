@@ -1,49 +1,49 @@
 {
-  "(0,)": [
+  "(0,) <module>": [
     {
       "event": "line",
       "filepath": "multiline_statement.py",
       "lineno": 10,
       "code_str": "y = {\n    \"longlonglonglonglonglonglonglong\": 1,\n    \"longlonglonglonglonglonglonglonglong\": 2,\n    \"longlonglonglonglonglonglonglonglonglong\": 3,\n}",
-      "frame_id": "(0,)"
+      "frame_id": "(0,) <module>"
     },
     {
       "event": "line",
       "filepath": "multiline_statement.py",
       "lineno": 16,
       "code_str": "def f(**kwargs):",
-      "frame_id": "(0,)"
+      "frame_id": "(0,) <module>"
     },
     {
       "event": "call",
       "filepath": "multiline_statement.py",
       "lineno": 23,
       "code_str": "f(\n    longlonglonglonglonglonglonglong=1,\n    longlonglonglonglonglonglonglonglong=2,\n    longlonglonglonglonglonglonglonglonglong=3,\n)",
-      "caller_frame_id": "(0,)",
-      "callee_frame_id": "(0, 0)"
+      "caller_frame_id": "(0,) <module>",
+      "callee_frame_id": "(0, 0) "
     },
     {
       "event": "line",
       "filepath": "multiline_statement.py",
       "lineno": 20,
       "code_str": "x = f(\n    longlonglonglonglonglonglonglong=1,\n    longlonglonglonglonglonglonglonglong=2,\n    longlonglonglonglonglonglonglonglonglong=3,\n)",
-      "frame_id": "(0,)"
+      "frame_id": "(0,) <module>"
     },
     {
       "event": "line",
       "filepath": "multiline_statement.py",
       "lineno": 26,
       "code_str": "cyberbrain.register(y)",
-      "frame_id": "(0,)"
+      "frame_id": "(0,) <module>"
     }
   ],
-  "(0, 0)": [
+  "(0, 0) f": [
     {
       "event": "line",
       "filepath": "multiline_statement.py",
       "lineno": 17,
       "code_str": "pass",
-      "frame_id": "(0, 0)"
+      "frame_id": "(0, 0) f"
     }
   ]
 }

@@ -1,95 +1,95 @@
 {
-  "(0,)": [
+  "(0,) <module>": [
     {
       "event": "line",
       "filepath": "loop.py",
       "lineno": 7,
       "code_str": "for i in range(3):",
-      "frame_id": "(0,)"
+      "frame_id": "(0,) <module>"
     },
     {
       "event": "line",
       "filepath": "loop.py",
       "lineno": 8,
       "code_str": "print(i)",
-      "frame_id": "(0,)"
+      "frame_id": "(0,) <module>"
     },
     {
       "event": "line",
       "filepath": "loop.py",
       "lineno": 7,
       "code_str": "for i in range(3):",
-      "frame_id": "(0,)"
+      "frame_id": "(0,) <module>"
     },
     {
       "event": "line",
       "filepath": "loop.py",
       "lineno": 8,
       "code_str": "print(i)",
-      "frame_id": "(0,)"
+      "frame_id": "(0,) <module>"
     },
     {
       "event": "line",
       "filepath": "loop.py",
       "lineno": 7,
       "code_str": "for i in range(3):",
-      "frame_id": "(0,)"
+      "frame_id": "(0,) <module>"
     },
     {
       "event": "line",
       "filepath": "loop.py",
       "lineno": 8,
       "code_str": "print(i)",
-      "frame_id": "(0,)"
+      "frame_id": "(0,) <module>"
     },
     {
       "event": "line",
       "filepath": "loop.py",
       "lineno": 7,
       "code_str": "for i in range(3):",
-      "frame_id": "(0,)"
+      "frame_id": "(0,) <module>"
     },
     {
       "event": "line",
       "filepath": "loop.py",
       "lineno": 10,
       "code_str": "print(\"in else\")",
-      "frame_id": "(0,)"
+      "frame_id": "(0,) <module>"
     },
     {
       "event": "line",
       "filepath": "loop.py",
       "lineno": 12,
       "code_str": "while i > 0:",
-      "frame_id": "(0,)"
+      "frame_id": "(0,) <module>"
     },
     {
       "event": "line",
       "filepath": "loop.py",
       "lineno": 13,
       "code_str": "i -= 1",
-      "frame_id": "(0,)"
+      "frame_id": "(0,) <module>"
     },
     {
       "event": "line",
       "filepath": "loop.py",
       "lineno": 14,
       "code_str": "if i == 1:",
-      "frame_id": "(0,)"
+      "frame_id": "(0,) <module>"
     },
     {
       "event": "line",
       "filepath": "loop.py",
       "lineno": 15,
       "code_str": "break",
-      "frame_id": "(0,)"
+      "frame_id": "(0,) <module>"
     },
     {
       "event": "line",
       "filepath": "loop.py",
       "lineno": 17,
       "code_str": "cyberbrain.register(i)",
-      "frame_id": "(0,)"
+      "frame_id": "(0,) <module>"
     }
   ]
 }

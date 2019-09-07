@@ -1,104 +1,104 @@
 {
-  "(0,)": [
+  "(0,) <module>": [
     {
       "event": "line",
       "filepath": "doc_example.py",
       "lineno": 24,
       "code_str": "fo = 1",
-      "frame_id": "(0,)"
+      "frame_id": "(0,) <module>"
     },
     {
       "event": "call",
       "filepath": "doc_example.py",
       "lineno": 25,
       "code_str": "func_a(fo)",
-      "caller_frame_id": "(0,)",
-      "callee_frame_id": "(0, 0)"
+      "caller_frame_id": "(0,) <module>",
+      "callee_frame_id": "(0, 0) "
     },
     {
       "event": "line",
       "filepath": "doc_example.py",
       "lineno": 25,
       "code_str": "func_a(fo)",
-      "frame_id": "(0,)"
+      "frame_id": "(0,) <module>"
     }
   ],
-  "(0, 0)": [
+  "(0, 0) func_a": [
     {
       "event": "line",
       "filepath": "doc_example.py",
       "lineno": 17,
       "code_str": "ba = [foo]",
-      "frame_id": "(0, 0)"
+      "frame_id": "(0, 0) func_a"
     },
     {
       "event": "call",
       "filepath": "doc_example.py",
       "lineno": 18,
       "code_str": "func_c(ba)",
-      "caller_frame_id": "(0, 0)",
-      "callee_frame_id": "(0, 0, 0)"
+      "caller_frame_id": "(0, 0) func_a",
+      "callee_frame_id": "(0, 0, 0) "
     },
     {
       "event": "line",
       "filepath": "doc_example.py",
       "lineno": 18,
       "code_str": "func_c(ba)",
-      "frame_id": "(0, 0)"
+      "frame_id": "(0, 0) func_a"
     },
     {
       "event": "call",
       "filepath": "doc_example.py",
       "lineno": 19,
       "code_str": "func_f(ba)",
-      "caller_frame_id": "(0, 0)",
-      "callee_frame_id": "(0, 0, 1)"
+      "caller_frame_id": "(0, 0) func_a",
+      "callee_frame_id": "(0, 0, 1) "
     },
     {
       "event": "line",
       "filepath": "doc_example.py",
       "lineno": 19,
       "code_str": "foo = func_f(ba)",
-      "frame_id": "(0, 0)"
+      "frame_id": "(0, 0) func_a"
     },
     {
       "event": "line",
       "filepath": "doc_example.py",
       "lineno": 20,
       "code_str": "cyberbrain.register(foo)",
-      "frame_id": "(0, 0)"
+      "frame_id": "(0, 0) func_a"
     }
   ],
-  "(0, 0, 0)": [
+  "(0, 0, 0) func_c": [
     {
       "event": "line",
       "filepath": "doc_example.py",
       "lineno": 12,
       "code_str": "baa.append(None)",
-      "frame_id": "(0, 0, 0)"
+      "frame_id": "(0, 0, 0) func_c"
     },
     {
       "event": "line",
       "filepath": "doc_example.py",
       "lineno": 13,
       "code_str": "baa.append(\"?\")",
-      "frame_id": "(0, 0, 0)"
+      "frame_id": "(0, 0, 0) func_c"
     }
   ],
-  "(0, 0, 1)": [
+  "(0, 0, 1) func_f": [
     {
       "event": "line",
       "filepath": "doc_example.py",
       "lineno": 7,
       "code_str": "x = len(bar)",
-      "frame_id": "(0, 0, 1)"
+      "frame_id": "(0, 0, 1) func_f"
     },
     {
       "event": "line",
       "filepath": "doc_example.py",
       "lineno": 8,
       "code_str": "return x",
-      "frame_id": "(0, 0, 1)"
+      "frame_id": "(0, 0, 1) func_f"
     }
   ]
 }

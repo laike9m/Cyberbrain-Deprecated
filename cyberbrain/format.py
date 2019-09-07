@@ -83,10 +83,6 @@ def generate_subgraph(frame_start: NodeView):
                 f"<td align='left' bgcolor='yellow'>&#9700;&nbsp;{html.escape(current.var_changes)}</td></tr>"
             )
         )
-        # if current.var_changes:
-        #     name_metadata = current.portname + "_metadata"
-        #     g.node(name_metadata, label=current.var_changes, shape="cds")
-        #     g.edge(name_metadata, f"{name}:{current.portname}")
         if current.is_callsite():
             g.edge(f"{name}:{current.portname}", generate_subgraph(current.step_into))
         current = current.next
