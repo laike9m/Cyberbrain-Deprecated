@@ -1,5 +1,6 @@
 """Formats trace result to user friendly output."""
 
+import html
 import itertools
 from os.path import abspath, expanduser, join
 from typing import List
@@ -10,9 +11,6 @@ from .flow import Flow, Node
 
 DESKTOP = abspath(join(expanduser("~"), "Desktop"))
 
-# g = Digraph(
-#     name="Cyberbrain Output", graph_attr=[("forcelabels", "true")], format="canon"
-# )
 g = Digraph(name="Cyberbrain Output")
 
 
@@ -50,10 +48,10 @@ class NodeView:
         """Formats var changes."""
         output = ""
         for ap in self.var_appearances:
-            output += f"appear {ap.id}={ap.value}\n"
+            output += f"{ap.id} = {ap.value}\n"
 
         for mod in self.var_modifications:
-            output += f"modify {mod.id} {mod.old_value} -> {mod.new_value}\n"
+            output += f"{mod.id} {mod.old_value} -> {mod.new_value}\n"
 
         # TODO: add var_switch to edge
         return output
@@ -79,27 +77,29 @@ def generate_subgraph(frame_start: NodeView):
         # TODO: Only inserts code if there are var changes on this node.
         # or it is a call node and there are var changes inside the call.
         # if current.var_changes or current.is_target:
-        lines.append(f"<{current.portname}> {current.code_str}")
-        if current.var_changes:
-            name_metadata = current.portname + "_metadata"
-            g.node(name_metadata, label=current.var_changes, shape="cds")
-            g.edge(name_metadata, f"{name}:{current.portname}")
+        lines.append(
+            (
+                f"<tr><td align='left' port='{current.portname}'>{html.escape(current.code_str)}</td>"
+                f"<td align='left' bgcolor='yellow'>&#9700;&nbsp;{html.escape(current.var_changes)}</td></tr>"
+            )
+        )
+        # if current.var_changes:
+        #     name_metadata = current.portname + "_metadata"
+        #     g.node(name_metadata, label=current.var_changes, shape="cds")
+        #     g.edge(name_metadata, f"{name}:{current.portname}")
         if current.is_callsite():
             g.edge(f"{name}:{current.portname}", generate_subgraph(current.step_into))
         current = current.next
+    print("".join(lines))
     g.node(
         name,
-        label="{%s}" % " | ".join(lines),
-        fillcolor="lightblue",
-        style="filled",
-        shape="record",
+        label="<<table cellspacing='0' CELLBORDER='0'>%s</table>>" % "".join(lines),
         xlabel=str(frame_start.frame_id),
+        shape="plaintext",
     )
     return name
 
 
 def generate_output(flow: Flow, filename=None):
     generate_subgraph(NodeView(flow.start))
-
-    # print(g.pipe().decode("utf-8"))
     g.render(join(DESKTOP, filename or "output"), view=True)
