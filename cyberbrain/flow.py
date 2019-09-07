@@ -46,10 +46,10 @@ class TrackingMetadata:
     def __init__(
         self,
         vars: Dict[ID, Any],
-        source_location: SourceLocation,
         code_str: str = None,
         param_to_arg: Dict[ID, ID] = None,
         vars_before_return=None,
+        source_location: SourceLocation = None,
     ):
         self.vars = vars
         self.source_location = source_location

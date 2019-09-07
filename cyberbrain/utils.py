@@ -209,3 +209,7 @@ def parse_code_str(code_str) -> ast.AST:
 def ast_to_str(code_ast: ast.AST) -> str:
     # Makes sure code is always in the same format.
     return black.format_str(astor.to_source(code_ast), mode=black.FileMode()).strip()
+
+
+def dedent(text: str):
+    return "\n".join([line.strip() for line in text.splitlines()])
