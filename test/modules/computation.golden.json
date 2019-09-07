@@ -1,59 +1,59 @@
 {
-  "(0,)": [
+  "(0,) <module>": [
     {
       "event": "call",
       "filepath": "main.py",
       "lineno": 7,
       "code_str": "foo.func_in_foo()",
-      "caller_frame_id": "(0,)",
-      "callee_frame_id": "(0, 0)"
+      "caller_frame_id": "(0,) <module>",
+      "callee_frame_id": "(0, 0) "
     },
     {
       "event": "line",
       "filepath": "main.py",
       "lineno": 7,
       "code_str": "x = foo.func_in_foo()",
-      "frame_id": "(0,)"
+      "frame_id": "(0,) <module>"
     },
     {
       "event": "line",
       "filepath": "main.py",
       "lineno": 8,
       "code_str": "cyberbrain.register(x)",
-      "frame_id": "(0,)"
+      "frame_id": "(0,) <module>"
     }
   ],
-  "(0, 0)": [
+  "(0, 0) func_in_foo": [
     {
       "event": "call",
       "filepath": "foo.py",
       "lineno": 5,
       "code_str": "bar.func_in_bar()",
-      "caller_frame_id": "(0, 0)",
-      "callee_frame_id": "(0, 0, 0)"
+      "caller_frame_id": "(0, 0) func_in_foo",
+      "callee_frame_id": "(0, 0, 0) "
     },
     {
       "event": "line",
       "filepath": "foo.py",
       "lineno": 5,
       "code_str": "a = bar.func_in_bar()",
-      "frame_id": "(0, 0)"
+      "frame_id": "(0, 0) func_in_foo"
     },
     {
       "event": "line",
       "filepath": "foo.py",
       "lineno": 6,
       "code_str": "return a",
-      "frame_id": "(0, 0)"
+      "frame_id": "(0, 0) func_in_foo"
     }
   ],
-  "(0, 0, 0)": [
+  "(0, 0, 0) func_in_bar": [
     {
       "event": "line",
       "filepath": "bar.py",
       "lineno": 2,
       "code_str": "return 1",
-      "frame_id": "(0, 0, 0)"
+      "frame_id": "(0, 0, 0) func_in_bar"
     }
   ]
 }

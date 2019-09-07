@@ -1,25 +1,25 @@
 {
-  "(0,)": [
+  "(0,) <module>": [
     {
       "event": "line",
       "filepath": "hello.py",
       "lineno": 6,
       "code_str": "x = \"hello world\"",
-      "frame_id": "(0,)"
+      "frame_id": "(0,) <module>"
     },
     {
       "event": "line",
       "filepath": "hello.py",
       "lineno": 7,
       "code_str": "y = x",
-      "frame_id": "(0,)"
+      "frame_id": "(0,) <module>"
     },
     {
       "event": "line",
       "filepath": "hello.py",
       "lineno": 8,
       "code_str": "cyberbrain.register(y)",
-      "frame_id": "(0,)"
+      "frame_id": "(0,) <module>"
     }
   ]
 }

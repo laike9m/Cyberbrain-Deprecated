@@ -115,6 +115,8 @@ class Call(Computation):
         # If it's not ast.Call, like ast.ListComp, ignore for now.
         if not isinstance(callsite_ast, ast.Call):
             return None
+        frame_id = FrameID.create("call")
+        frame_id.co_name = caller_frame.f_code.co_name
         return Call(
             callsite_ast=callsite_ast,
             source_location=SourceLocation(
@@ -124,7 +126,7 @@ class Call(Computation):
             func_name=frame.f_code.co_name,
             vars=Vars(caller_frame),
             event_type="call",
-            frame_id=FrameID.create("call"),
+            frame_id=frame_id,
             callee_frame_id=FrameID.current(),
             surrounding=surrounding,
         )
@@ -147,6 +149,7 @@ class ComputationManager:
         if event_type == "line":
             code_str, surrounding = utils.get_code_str_and_surrounding(frame)
             frame_id = FrameID.create(event_type)
+            frame_id.co_name = frame.f_code.co_name
             # Skips if the same logical line has been added.
             if (
                 self.frame_groups[frame_id]

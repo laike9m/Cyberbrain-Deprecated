@@ -1,18 +1,18 @@
 {
-  "(0,)": [
+  "(0,) <module>": [
     {
       "event": "line",
       "filepath": "list_comp.py",
       "lineno": 18,
       "code_str": "x = [1 for i in range(3)]",
-      "frame_id": "(0,)"
+      "frame_id": "(0,) <module>"
     },
     {
       "event": "line",
       "filepath": "list_comp.py",
       "lineno": 20,
       "code_str": "cyberbrain.register(x)",
-      "frame_id": "(0,)"
+      "frame_id": "(0,) <module>"
     }
   ]
 }

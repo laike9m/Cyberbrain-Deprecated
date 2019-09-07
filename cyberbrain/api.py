@@ -54,7 +54,7 @@ global_frame = None
 
 
 def init():
-    """Inits tracing."""
+    """Initializes tracing."""
     global global_frame
 
     global_frame = sys._getframe(1)
