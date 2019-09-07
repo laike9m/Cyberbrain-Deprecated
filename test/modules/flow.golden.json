@@ -8,6 +8,7 @@
     "var_changes": [
       "appear x=1\n"
     ],
+    "location": "main.py: <module>",
     "param_to_arg": {}
   },
   {
@@ -19,6 +20,7 @@
     "var_changes": [
       "appear a=1\n"
     ],
+    "location": "foo.py: func_in_foo",
     "param_to_arg": {}
   },
   {
@@ -26,7 +28,8 @@
     "next": "",
     "prev": "a = bar.func_in_bar()",
     "step_into": "",
-    "returned_from": ""
+    "returned_from": "",
+    "location": "bar.py: func_in_bar"
   },
   {
     "code": "return a",
@@ -34,6 +37,7 @@
     "prev": "a = bar.func_in_bar()",
     "step_into": "",
     "returned_from": "",
+    "location": "foo.py: func_in_foo",
     "tracking": [
       "a"
     ]
@@ -44,6 +48,7 @@
     "prev": "x = foo.func_in_foo()",
     "step_into": "",
     "returned_from": "",
+    "location": "main.py: <module>",
     "tracking": [
       "x"
     ]

@@ -5,6 +5,7 @@
     "prev": "",
     "step_into": "def f(x, y):",
     "returned_from": "cyberbrain.register(y)",
+    "location": "simple_func.py: <module>",
     "param_to_arg": {}
   },
   {
@@ -12,7 +13,8 @@
     "next": "x = 1",
     "prev": "main()",
     "step_into": "",
-    "returned_from": ""
+    "returned_from": "",
+    "location": "simple_func.py: main"
   },
   {
     "code": "x = 1",
@@ -22,7 +24,8 @@
     "returned_from": "",
     "var_changes": [
       "appear x=1\n"
-    ]
+    ],
+    "location": "simple_func.py: main"
   },
   {
     "code": "r0_ = f(1, 1)",
@@ -33,6 +36,7 @@
     "var_changes": [
       "appear r0_=2\n"
     ],
+    "location": "simple_func.py: main",
     "tracking": [
       "x"
     ],
@@ -47,6 +51,7 @@
     "prev": "r0_ = f(1, 1)",
     "step_into": "",
     "returned_from": "",
+    "location": "simple_func.py: f",
     "tracking": [
       "x",
       "y"
@@ -61,6 +66,7 @@
     "var_changes": [
       "appear y=3\n"
     ],
+    "location": "simple_func.py: main",
     "tracking": [
       "r0_",
       "x"
@@ -80,6 +86,7 @@
     "prev": "y = f(x, r0_)",
     "step_into": "",
     "returned_from": "",
+    "location": "simple_func.py: f",
     "tracking": [
       "x",
       "y"
@@ -91,6 +98,7 @@
     "prev": "y = f(x, r0_)",
     "step_into": "",
     "returned_from": "",
+    "location": "simple_func.py: main",
     "tracking": [
       "y"
     ]

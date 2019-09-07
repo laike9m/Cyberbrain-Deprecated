@@ -4,7 +4,8 @@
     "next": "r0_ = f(x=1)",
     "prev": "",
     "step_into": "",
-    "returned_from": ""
+    "returned_from": "",
+    "location": "multicall.py: <module>"
   },
   {
     "code": "r0_ = f(x=1)",
@@ -15,6 +16,7 @@
     "var_changes": [
       "appear r0_=None\n"
     ],
+    "location": "multicall.py: <module>",
     "param_to_arg": {
       "kwargs": []
     }
@@ -24,7 +26,8 @@
     "next": "",
     "prev": "r0_ = f(x=1)",
     "step_into": "",
-    "returned_from": ""
+    "returned_from": "",
+    "location": "multicall.py: f"
   },
   {
     "code": "r1_ = f(y=2)",
@@ -35,6 +38,7 @@
     "var_changes": [
       "appear r1_=None\n"
     ],
+    "location": "multicall.py: <module>",
     "tracking": [
       "r0_"
     ],
@@ -47,7 +51,8 @@
     "next": "",
     "prev": "r1_ = f(y=2)",
     "step_into": "",
-    "returned_from": ""
+    "returned_from": "",
+    "location": "multicall.py: f"
   },
   {
     "code": "x = {r0_, r1_}",
@@ -58,6 +63,7 @@
     "var_changes": [
       "appear x={None}\n"
     ],
+    "location": "multicall.py: <module>",
     "tracking": [
       "r0_",
       "r1_"
@@ -69,6 +75,7 @@
     "prev": "x = {r0_, r1_}",
     "step_into": "",
     "returned_from": "",
+    "location": "multicall.py: <module>",
     "tracking": [
       "x"
     ]

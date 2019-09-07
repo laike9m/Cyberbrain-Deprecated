@@ -10,7 +10,7 @@ from typing import Any, Dict, Iterable, List, Optional, Set, Tuple, Union
 import astor
 
 from . import callsite, utils
-from .basis import ID, FrameID, NodeType, _dummy
+from .basis import ID, FrameID, NodeType, SourceLocation, _dummy
 from .computation import ComputationManager
 
 
@@ -46,11 +46,13 @@ class TrackingMetadata:
     def __init__(
         self,
         vars: Dict[ID, Any],
+        source_location: SourceLocation,
         code_str: str = None,
-        code_ast: ast.AST = None,
         param_to_arg: Dict[ID, ID] = None,
         vars_before_return=None,
     ):
+        self.vars = vars
+        self.source_location = source_location
         self.code_str = code_str
         self.code_ast = utils.parse_code_str(code_str)
         if param_to_arg:
@@ -68,7 +70,6 @@ class TrackingMetadata:
         # var_switches are set on call node. When some id is switched, it is not counted
         # again in var_appearances.
         self.var_switches: Set[VarSwitch] = []
-        self.vars = vars
         self.vars_before_return = vars_before_return
         self.return_value = _dummy
 
@@ -251,6 +252,7 @@ def build_flow(cm: ComputationManager) -> Flow:
                     vars=comp.vars,
                     code_str=comp.code_str,
                     vars_before_return=comp.vars_before_return,
+                    source_location=comp.source_location,
                 )
                 if hasattr(comp, "return_value"):
                     node.return_value = comp.return_value
@@ -260,6 +262,7 @@ def build_flow(cm: ComputationManager) -> Flow:
                     frame_id=frame_id,
                     vars=comp.vars,
                     code_str=comp.code_str,
+                    source_location=comp.source_location,
                 )
             if frame_groups[frame_id]:
                 frame_groups[frame_id][-1].node.next = node
