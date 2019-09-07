@@ -8,6 +8,7 @@
     "var_changes": [
       "appear c=Counter()\n"
     ],
+    "location": "call_libs.py: <module>",
     "tracking": [
       "Counter"
     ]
@@ -21,6 +22,7 @@
     "var_changes": [
       "modify c Counter() -> Counter({'red': 1})\n"
     ],
+    "location": "call_libs.py: <module>",
     "tracking": [
       "c"
     ]
@@ -34,6 +36,7 @@
     "var_changes": [
       "modify c Counter({'red': 1}) -> Counter({'red': 1, 'blue': 1})\n"
     ],
+    "location": "call_libs.py: <module>",
     "tracking": [
       "c"
     ]
@@ -47,6 +50,7 @@
     "var_changes": [
       "modify c Counter({'red': 1, 'blue': 1}) -> Counter({'red': 2, 'blue': 1})\n"
     ],
+    "location": "call_libs.py: <module>",
     "tracking": [
       "c"
     ]
@@ -57,6 +61,7 @@
     "prev": "c[\"red\"] += 1",
     "step_into": "",
     "returned_from": "",
+    "location": "call_libs.py: <module>",
     "tracking": [
       "c"
     ]
@@ -67,6 +72,7 @@
     "prev": "c.most_common(10)",
     "step_into": "",
     "returned_from": "",
+    "location": "call_libs.py: <module>",
     "tracking": [
       "c"
     ]
@@ -77,6 +83,7 @@
     "prev": "crayons.blue(\"blue\")",
     "step_into": "",
     "returned_from": "",
+    "location": "call_libs.py: <module>",
     "tracking": [
       "c"
     ]

@@ -7,7 +7,8 @@
     "returned_from": "",
     "var_changes": [
       "appear y={'longlonglonglonglonglonglonglong': 1, 'longlonglonglonglonglonglonglonglong': 2, 'longlonglonglonglonglonglonglonglonglong': 3}\n"
-    ]
+    ],
+    "location": "multiline_statement.py: <module>"
   },
   {
     "code": "def f(**kwargs):",
@@ -15,6 +16,7 @@
     "prev": "y = {\n    \"longlonglonglonglonglonglonglong\": 1,\n    \"longlonglonglonglonglonglonglonglong\": 2,\n    \"longlonglonglonglonglonglonglonglonglong\": 3,\n}",
     "step_into": "",
     "returned_from": "",
+    "location": "multiline_statement.py: <module>",
     "tracking": [
       "y"
     ]
@@ -25,6 +27,7 @@
     "prev": "def f(**kwargs):",
     "step_into": "pass",
     "returned_from": "pass",
+    "location": "multiline_statement.py: <module>",
     "tracking": [
       "y"
     ],
@@ -37,7 +40,8 @@
     "next": "",
     "prev": "x = f(longlonglonglonglonglonglonglong=1,\n    longlonglonglonglonglonglonglonglong=2,\n    longlonglonglonglonglonglonglonglonglong=3)",
     "step_into": "",
-    "returned_from": ""
+    "returned_from": "",
+    "location": "multiline_statement.py: f"
   },
   {
     "code": "cyberbrain.register(y)",
@@ -45,6 +49,7 @@
     "prev": "x = f(longlonglonglonglonglonglonglong=1,\n    longlonglonglonglonglonglonglonglong=2,\n    longlonglonglonglonglonglonglonglonglong=3)",
     "step_into": "",
     "returned_from": "",
+    "location": "multiline_statement.py: <module>",
     "tracking": [
       "y"
     ]

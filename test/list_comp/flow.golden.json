@@ -7,7 +7,8 @@
     "returned_from": "",
     "var_changes": [
       "appear x=[1, 1, 1]\n"
-    ]
+    ],
+    "location": "list_comp.py: <module>"
   },
   {
     "code": "cyberbrain.register(x)",
@@ -15,6 +16,7 @@
     "prev": "x = [1 for i in range(3)]",
     "step_into": "",
     "returned_from": "",
+    "location": "list_comp.py: <module>",
     "tracking": [
       "x"
     ]

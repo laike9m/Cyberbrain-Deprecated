@@ -3,6 +3,7 @@
 import json
 import os
 from collections import defaultdict
+from os.path import basename
 from pprint import pprint
 from typing import Dict
 
@@ -68,6 +69,9 @@ def _dump_node(node: Node) -> Dict:
         result["var_changes"].append(
             f"modify {mod.id} {mod.old_value} -> {mod.new_value}\n"
         )
+    result[
+        "location"
+    ] = f"{basename(node.source_location.filepath)}: {node.frame_id.co_name}"
     if node.tracking:
         result["tracking"] = node.tracking
     if hasattr(node, "param_to_arg"):

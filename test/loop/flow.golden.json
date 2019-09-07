@@ -7,7 +7,8 @@
     "returned_from": "",
     "var_changes": [
       "appear i=0\n"
-    ]
+    ],
+    "location": "loop.py: <module>"
   },
   {
     "code": "print(i)",
@@ -15,6 +16,7 @@
     "prev": "for i in range(3):",
     "step_into": "",
     "returned_from": "",
+    "location": "loop.py: <module>",
     "tracking": [
       "i"
     ]
@@ -28,6 +30,7 @@
     "var_changes": [
       "modify i 0 -> 1\n"
     ],
+    "location": "loop.py: <module>",
     "tracking": [
       "i"
     ]
@@ -38,6 +41,7 @@
     "prev": "for i in range(3):",
     "step_into": "",
     "returned_from": "",
+    "location": "loop.py: <module>",
     "tracking": [
       "i"
     ]
@@ -51,6 +55,7 @@
     "var_changes": [
       "modify i 1 -> 2\n"
     ],
+    "location": "loop.py: <module>",
     "tracking": [
       "i"
     ]
@@ -61,6 +66,7 @@
     "prev": "for i in range(3):",
     "step_into": "",
     "returned_from": "",
+    "location": "loop.py: <module>",
     "tracking": [
       "i"
     ]
@@ -71,6 +77,7 @@
     "prev": "print(i)",
     "step_into": "",
     "returned_from": "",
+    "location": "loop.py: <module>",
     "tracking": [
       "i"
     ]
@@ -81,6 +88,7 @@
     "prev": "for i in range(3):",
     "step_into": "",
     "returned_from": "",
+    "location": "loop.py: <module>",
     "tracking": [
       "i"
     ]
@@ -91,6 +99,7 @@
     "prev": "print(\"in else\")",
     "step_into": "",
     "returned_from": "",
+    "location": "loop.py: <module>",
     "tracking": [
       "i"
     ]
@@ -104,6 +113,7 @@
     "var_changes": [
       "modify i 2 -> 1\n"
     ],
+    "location": "loop.py: <module>",
     "tracking": [
       "i"
     ]
@@ -114,6 +124,7 @@
     "prev": "i -= 1",
     "step_into": "",
     "returned_from": "",
+    "location": "loop.py: <module>",
     "tracking": [
       "i"
     ]
@@ -124,6 +135,7 @@
     "prev": "if i == 1:",
     "step_into": "",
     "returned_from": "",
+    "location": "loop.py: <module>",
     "tracking": [
       "i"
     ]
@@ -134,6 +146,7 @@
     "prev": "break",
     "step_into": "",
     "returned_from": "",
+    "location": "loop.py: <module>",
     "tracking": [
       "i"
     ]

@@ -7,7 +7,8 @@
     "returned_from": "",
     "var_changes": [
       "appear x=hello world\n"
-    ]
+    ],
+    "location": "hello.py: <module>"
   },
   {
     "code": "y = x",
@@ -18,6 +19,7 @@
     "var_changes": [
       "appear y=hello world\n"
     ],
+    "location": "hello.py: <module>",
     "tracking": [
       "x"
     ]
@@ -28,6 +30,7 @@
     "prev": "y = x",
     "step_into": "",
     "returned_from": "",
+    "location": "hello.py: <module>",
     "tracking": [
       "y"
     ]

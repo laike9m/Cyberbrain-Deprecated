@@ -2,7 +2,7 @@
 
 import html
 import itertools
-from os.path import abspath, expanduser, join
+from os.path import abspath, basename, expanduser, join
 from typing import List
 
 from graphviz import Digraph
@@ -77,20 +77,26 @@ def generate_subgraph(frame_start: NodeView):
         # TODO: Only inserts code if there are var changes on this node.
         # or it is a call node and there are var changes inside the call.
         # if current.var_changes or current.is_target:
+        # TODO: syntax hilight.
         lines.append(
             (
                 f"<tr><td align='left' port='{current.portname}'>{html.escape(current.code_str)}</td>"
                 f"<td align='left' bgcolor='yellow'>&#9700;&nbsp;{html.escape(current.var_changes)}</td></tr>"
             )
-        )
+        )  # &#9700 is a triangle: ◤
         if current.is_callsite():
             g.edge(f"{name}:{current.portname}", generate_subgraph(current.step_into))
         current = current.next
-    print("".join(lines))
+    rows = [
+        (
+            "<tr><td align='left' colspan='2' color='red'><font color='#0097a7'>"
+            f"{html.escape(basename(frame_start.source_location.filepath))}"
+            f": {html.escape(frame_start.frame_id.co_name)}</font></td></tr>"
+        )
+    ] + lines
     g.node(
         name,
-        label="<<table cellspacing='0' CELLBORDER='0'>%s</table>>" % "".join(lines),
-        xlabel=str(frame_start.frame_id),
+        label="<<table cellspacing='0' CELLBORDER='0'>%s</table>>" % "".join(rows),
         shape="plaintext",
     )
     return name
