@@ -7,11 +7,18 @@ from typing import List
 
 from graphviz import Digraph
 
+from . import utils
 from .flow import Flow, Node
 
 DESKTOP = abspath(join(expanduser("~"), "Desktop"))
 
+# g = Digraph(
+#     name="Cyberbrain Output", graph_attr=[("forcelabels", "true")], format="canon"
+# )
 g = Digraph(name="Cyberbrain Output")
+
+# Color comes from https://paletton.com/#uid=35d0u0kkuDpafTcfVLxoCwpucs+.
+g.attr("edge", color="#E975B0")
 
 
 class NodeView:
@@ -51,7 +58,7 @@ class NodeView:
             output += f"{ap.id} = {ap.value}\n"
 
         for mod in self.var_modifications:
-            output += f"{mod.id} {mod.old_value} -> {mod.new_value}\n"
+            output += f"{mod.id} {mod.old_value} → {mod.new_value}\n"
 
         # TODO: add var_switch to edge
         return output
@@ -77,26 +84,47 @@ def generate_subgraph(frame_start: NodeView):
         # TODO: Only inserts code if there are var changes on this node.
         # or it is a call node and there are var changes inside the call.
         # if current.var_changes or current.is_target:
-        # TODO: syntax hilight.
+        # Syntax hilight is very hard in Graphviz, because modern highlighters don't use
+        # the deprecated <font color=...> way but class and css, which is not supported
+        # in Graphviz.
         lines.append(
             (
-                f"<tr><td align='left' port='{current.portname}'>{html.escape(current.code_str)}</td>"
-                f"<td align='left' bgcolor='yellow'>&#9700;&nbsp;{html.escape(current.var_changes)}</td></tr>"
+                utils.dedent(
+                    f"""<tr><td align='left' port='{current.portname}'>
+                                <font face='Consolas'>
+                                    {html.escape(current.code_str)}
+                                </font>
+                            </td>"
+                            <td align='left' sides='b' border='1' color='grey' bgcolor='#F9FE80'>
+                                ◤&nbsp;{html.escape(current.var_changes)}
+                            </td>
+                        </tr>
+                    """
+                )
             )
-        )  # &#9700 is a triangle: ◤
+        )
         if current.is_callsite():
             g.edge(f"{name}:{current.portname}", generate_subgraph(current.step_into))
         current = current.next
-    rows = [
-        (
-            "<tr><td align='left' colspan='2' color='red'><font color='#0097a7'>"
-            f"{html.escape(basename(frame_start.source_location.filepath))}"
-            f": {html.escape(frame_start.frame_id.co_name)}</font></td></tr>"
-        )
-    ] + lines
+    rows = (
+        [
+            utils.dedent(
+                f"""<tr><td sides='b' border='1' align='left' colspan='2' color='grey'>
+                            <font color='#0AB127'>
+                                {html.escape(
+                                    basename(frame_start.source_location.filepath))}
+                                : {html.escape(frame_start.frame_id.co_name)}
+                            </font>
+                        </td>
+                    </tr>
+                """
+            )
+        ]
+        + lines
+    )
     g.node(
         name,
-        label="<<table cellspacing='0' CELLBORDER='0'>%s</table>>" % "".join(rows),
+        label="<<table cellspacing='0' cellborder='0'>%s</table>>" % "".join(rows),
         shape="plaintext",
     )
     return name
@@ -104,4 +132,5 @@ def generate_subgraph(frame_start: NodeView):
 
 def generate_output(flow: Flow, filename=None):
     generate_subgraph(NodeView(flow.start))
+    # print(g.pipe().decode("utf-8"))
     g.render(join(DESKTOP, filename or "output"), view=True)
