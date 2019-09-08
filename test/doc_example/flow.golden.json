@@ -14,7 +14,7 @@
     "code": "func_a(fo)",
     "next": "",
     "prev": "fo = 1",
-    "step_into": "ba = [foo]",
+    "step_into": "for i in range(2):",
     "returned_from": "cyberbrain.register(foo)",
     "location": "doc_example.py: <module>",
     "tracking": [
@@ -27,9 +27,64 @@
     }
   },
   {
+    "code": "for i in range(2):",
+    "next": "pass",
+    "prev": "func_a(fo)",
+    "step_into": "",
+    "returned_from": "",
+    "location": "doc_example.py: func_a",
+    "tracking": [
+      "foo"
+    ]
+  },
+  {
+    "code": "pass",
+    "next": "for i in range(2):",
+    "prev": "for i in range(2):",
+    "step_into": "",
+    "returned_from": "",
+    "location": "doc_example.py: func_a",
+    "tracking": [
+      "foo"
+    ]
+  },
+  {
+    "code": "for i in range(2):",
+    "next": "pass",
+    "prev": "pass",
+    "step_into": "",
+    "returned_from": "",
+    "location": "doc_example.py: func_a",
+    "tracking": [
+      "foo"
+    ]
+  },
+  {
+    "code": "pass",
+    "next": "for i in range(2):",
+    "prev": "for i in range(2):",
+    "step_into": "",
+    "returned_from": "",
+    "location": "doc_example.py: func_a",
+    "tracking": [
+      "foo"
+    ]
+  },
+  {
+    "code": "for i in range(2):",
+    "next": "ba = [foo]",
+    "prev": "pass",
+    "step_into": "",
+    "returned_from": "",
+    "location": "doc_example.py: func_a",
+    "tracking": [
+      "foo"
+    ]
+  },
+  {
     "code": "ba = [foo]",
     "next": "func_c(ba)",
-    "prev": "func_a(fo)",
+    "prev": "for i in range(2):",
     "step_into": "",
     "returned_from": "",
     "var_changes": [

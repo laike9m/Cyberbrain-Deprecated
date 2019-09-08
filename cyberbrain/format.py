@@ -18,7 +18,7 @@ DESKTOP = abspath(join(expanduser("~"), "Desktop"))
 g = Digraph(name="Cyberbrain Output")
 
 # Color comes from https://paletton.com/#uid=35d0u0kkuDpafTcfVLxoCwpucs+.
-g.attr("edge", color="#E975B0")
+g.attr("edge", color="#E975B0", penwidth="2")
 
 
 class NodeView:
@@ -81,9 +81,10 @@ def generate_subgraph(frame_start: NodeView):
     name = str(frame_start.frame_id) + "_code"
     lines: List[str] = []
     while current is not None:
-        # TODO: Only inserts code if there are var changes on this node.
-        # or it is a call node and there are var changes inside the call.
-        # if current.var_changes or current.is_target:
+        # TODO: Only inserts call node if there are var changes inside the call.
+        if not (current.var_changes or current.is_target or current.is_callsite):
+            current = current.next
+            continue
         # Syntax hilight is very hard in Graphviz, because modern highlighters don't use
         # the deprecated <font color=...> way but class and css, which is not supported
         # in Graphviz.
@@ -103,7 +104,7 @@ def generate_subgraph(frame_start: NodeView):
                 )
             )
         )
-        if current.is_callsite():
+        if current.is_callsite:
             g.edge(f"{name}:{current.portname}", generate_subgraph(current.step_into))
         current = current.next
     rows = (
