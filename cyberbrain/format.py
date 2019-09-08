@@ -60,7 +60,9 @@ class NodeView:
         for mod in self.var_modifications:
             output += f"{mod.id} {mod.old_value} → {mod.new_value}\n"
 
-        # TODO: add var_switch to edge
+        if self.is_target:
+            output += "🐸🐸🐸🐸🐸🐸"
+
         return output
 
     @property
@@ -89,23 +91,30 @@ def generate_subgraph(frame_start: NodeView):
         # the deprecated <font color=...> way but class and css, which is not supported
         # in Graphviz.
         lines.append(
-            (
-                utils.dedent(
-                    f"""<tr><td align='left' port='{current.portname}'>
-                                <font face='Consolas'>
-                                    {html.escape(current.code_str)}
-                                </font>
-                            </td>"
-                            <td align='left' sides='b' border='1' color='grey' bgcolor='#F9FE80'>
-                                ◤&nbsp;{html.escape(current.var_changes)}
-                            </td>
-                        </tr>
-                    """
-                )
+            utils.dedent(
+                f"""<tr><td align='left' port='{current.portname}'>
+                            <font face='Consolas'>
+                                {html.escape(current.code_str)}
+                            </font>
+                        </td>"
+                        <td align='left' sides='b' border='1' color='grey' bgcolor='#F9FE80'>
+                            ◤&nbsp;{html.escape(current.var_changes)}
+                        </td>
+                    </tr>
+                """
             )
         )
         if current.is_callsite:
-            g.edge(f"{name}:{current.portname}", generate_subgraph(current.step_into))
+            g.edge(
+                f"{name}:{current.portname}",
+                generate_subgraph(current.step_into),
+                # TODO: Ideally this should be param → argument expression,
+                # e.g. x → [1, 2, 3], so that users can see the passed value.
+                label="\n".join(
+                    f" {','.join(args)} → {param}"
+                    for param, args in current.param_to_arg.items()
+                ),
+            )
         current = current.next
     rows = (
         [
