@@ -73,7 +73,8 @@ def register(target=_dummy):
     if target is not _dummy:
         execution_flow = flow.build_flow(computation_manager)
         backtrace.trace_flow(execution_flow)
-        # format.generate_output(execution_flow, os.path.basename(FLAGS.test_dir))
+        graph_name = os.path.basename(FLAGS.test_dir) if FLAGS.test_dir else "output"
+        # format.generate_output(execution_flow, graph_name)
         if FLAGS.mode in {"test", "golden", "debug"}:
             testing.dump_computation(computation_manager)
             testing.dump_flow(execution_flow)

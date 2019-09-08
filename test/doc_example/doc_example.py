@@ -14,6 +14,8 @@ def func_c(baa):
 
 
 def func_a(foo):
+    for i in range(2):
+        pass
     ba = [foo]  # b
     func_c(ba)  # c
     foo = func_f(ba)  # f

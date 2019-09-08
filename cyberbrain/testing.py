@@ -85,7 +85,7 @@ def dump_flow(flow: Flow):
     def traverse_node(node: Node):
         while node is not None:
             output.append(_dump_node(node))
-            if node.is_callsite():
+            if node.is_callsite:
                 traverse_node(node.step_into)
             node = node.next
 

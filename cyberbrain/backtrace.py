@@ -23,7 +23,7 @@ def trace_flow(flow: Flow):
 
     while current is not flow.ROOT:
         # Case 1: non-callsite
-        if not current.is_callsite():
+        if not current.is_callsite:
             current.sync_tracking_with(next)
             if any(current.get_and_update_var_changes(next)):
                 # If any change happened, track all ids appeared in this node.

@@ -120,7 +120,7 @@ class Node:
             "step_into",
             "returned_from",
             "metadata",
-            "_is_target",
+            "is_target",
         ]
     )
 
@@ -154,6 +154,7 @@ class Node:
         else:
             setattr(self.metadata, name, value)
 
+    @property
     def is_callsite(self):
         return self.step_into is not None
 
