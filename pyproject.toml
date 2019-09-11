@@ -1,23 +1,36 @@
 [tool.poetry]
 name = "cyberbrain"
-version = "0.0.1"
+version = "0.0.0.1"
 description = "A Cyberbrain that helps you remember everything."
 authors = ["laike9m <laike9m@gmail.com>"]
 license = "MIT"
+readme="README.md"
+homepage = "https://github.com/laike9m/Cyberbrain"
+repository = "https://github.com/laike9m/Cyberbrain"
+keywords = ["debug", "debugging", "debugger"]
+include = [
+    "LICENSE",
+]
+classifiers = [
+    "Development Status :: 1 - Planning",
+    "Topic :: Software Development :: Debuggers",
+    "Topic :: Software Development :: Libraries :: Python Modules"
+]
 
 [tool.poetry.dependencies]
 python = "^3.6.7"
 bytecode = "^0.8.0"
-uncompyle6 = { git = "https://github.com/rocky/python-uncompyle6.git", branch = "master" }
+uncompyle6 = "^3.4.0"
 crayons = "^0.2.0"
 astor = "^0.8.0"
 deepdiff = "^4.0"
 dataclasses = "^0.6.0"
 graphviz = "^0.11.1"
 absl-py = "^0.7.1"
-black = { git="https://github.com/psf/black.git", branch = "master"}
 
 [tool.poetry.dev-dependencies]
+black = { git="https://github.com/psf/black.git", branch = "master"}
+uncompyle6 = { git = "https://github.com/rocky/python-uncompyle6.git", branch = "master" }
 pytest = "^4.6"
 tox = "^3.13"
 tox-run-command = "^0.4.0"

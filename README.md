@@ -1,10 +1,45 @@
 # Cyberbrain
-A Cyberbrain that helps you remember everything.
 
 <a href="https://github.com/ambv/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
 [![Build Status](https://dev.azure.com/laike9m/laike9m/_apis/build/status/laike9m.Cyberbrain?branchName=master)](https://dev.azure.com/laike9m/laike9m/_build/latest?definitionId=1&branchName=master)
 
-Prerequisite: [Graphviz](https://www.graphviz.org/download/)
+![](https://ae01.alicdn.com/kf/H8409631752a24540927419d7fb445196g.jpg)
+
+A Cyberbrain that helps you remember everything.
+
+NOTE: This is a WIP, **don't** use it in production.
+
+## How to use
+1. Install [Graphviz](https://www.graphviz.org/download/)
+2. In your program, first call `cyberbrain.init()`, then call `cyberbrain.register(target_variable)`.
+
+Here's an example.
+
+```python
+def func_f(bar):
+    x = len(bar)
+    return x
+
+def func_c(baa):
+    baa.append(None)
+    baa.append('?')
+
+def func_a(foo):
+    for i in range(2): pass
+    ba = [foo]
+    func_c(ba)
+    foo = func_f(ba)  # foo is our target
+    cyberbrain.register(foo)
+
+import cyberbrain
+cyberbrain.init()
+fo = 1
+func_a(fo)
+```
+
+Run it, a pdf like this will be generated and automatically opened.
+
+![](https://ae01.alicdn.com/kf/H54eb1ca260244f1ebc1a0035fa1e28edj.jpg)
 
 # Developement
-First install `poetry`, then run `poetry install`.
+First install [`Poetry`](https://github.com/sdispater/poetry), then run `poetry install`.
