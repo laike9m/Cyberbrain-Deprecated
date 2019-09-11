@@ -9,7 +9,8 @@ NOTE: This is a WIP, **don't** use it in production.
 
 ## How to use
 1. Install [Graphviz](https://www.graphviz.org/download/)
-2. In your program, first call `cyberbrain.init()`, then call `cyberbrain.register(target_variable)`.
+2. `pip install cyberbrain`
+3. In your program, first call `cyberbrain.init()`, then call `cyberbrain.register(target_variable)`.
 
 Here's an example.
 
