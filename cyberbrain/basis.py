@@ -1,6 +1,5 @@
 """Some basic data structures used throughout the project."""
 
-import sys
 from collections import defaultdict
 from enum import Enum
 from typing import Dict, NamedTuple, Tuple, Union
