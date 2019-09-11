@@ -1,11 +1,9 @@
-# Cyberbrain
+# Cyberbrain: helps you remember everything
 
 <a href="https://github.com/ambv/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
 [![Build Status](https://dev.azure.com/laike9m/laike9m/_apis/build/status/laike9m.Cyberbrain?branchName=master)](https://dev.azure.com/laike9m/laike9m/_build/latest?definitionId=1&branchName=master)
 
-![](https://ae01.alicdn.com/kf/H8409631752a24540927419d7fb445196g.jpg)
-
-A Cyberbrain that helps you remember everything.
+<img width="500px" src="https://ae01.alicdn.com/kf/H8409631752a24540927419d7fb445196g.jpg">
 
 NOTE: This is a WIP, **don't** use it in production.
 
@@ -39,7 +37,7 @@ func_a(fo)
 
 Run it, a pdf like this will be generated and automatically opened.
 
-![](https://ae01.alicdn.com/kf/H54eb1ca260244f1ebc1a0035fa1e28edj.jpg)
+<img width="500px" src="https://ae01.alicdn.com/kf/H54eb1ca260244f1ebc1a0035fa1e28edj.jpg">
 
 # Developement
 First install [`Poetry`](https://github.com/sdispater/poetry), then run `poetry install`.
