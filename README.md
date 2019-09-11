@@ -38,7 +38,7 @@ func_a(fo)
 
 Run it, a pdf like this will be generated and automatically opened.
 
-<img width="500px" src="https://ae01.alicdn.com/kf/H54eb1ca260244f1ebc1a0035fa1e28edj.jpg">
+<img width="600px" src="https://ae01.alicdn.com/kf/H54eb1ca260244f1ebc1a0035fa1e28edj.jpg">
 
 # Developement
 First install [`Poetry`](https://github.com/sdispater/poetry), then run `poetry install`.
