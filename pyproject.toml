@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "cyberbrain"
-version = "0.0.0.1"
+version = "0.0.0.2"
 description = "A Cyberbrain that helps you remember everything."
 authors = ["laike9m <laike9m@gmail.com>"]
 license = "MIT"
@@ -19,6 +19,7 @@ classifiers = [
 
 [tool.poetry.dependencies]
 python = "^3.6.7"
+black = { git="https://github.com/psf/black.git", branch = "master"}
 bytecode = "^0.8.0"
 uncompyle6 = "^3.4.0"
 crayons = "^0.2.0"
@@ -29,7 +30,6 @@ graphviz = "^0.11.1"
 absl-py = "^0.7.1"
 
 [tool.poetry.dev-dependencies]
-black = { git="https://github.com/psf/black.git", branch = "master"}
 uncompyle6 = { git = "https://github.com/rocky/python-uncompyle6.git", branch = "master" }
 pytest = "^4.6"
 tox = "^3.13"
