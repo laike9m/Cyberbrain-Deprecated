@@ -5,7 +5,7 @@
 
 <img width="500px" src="https://ae01.alicdn.com/kf/H8409631752a24540927419d7fb445196g.jpg">
 
-NOTE: This is a WIP, **don't** use it in production.
+NOTE: This is a WIP, **DON'T** use it in production.
 
 ## How to use
 1. Install [Graphviz](https://www.graphviz.org/download/)
@@ -38,7 +38,7 @@ func_a(fo)
 
 Run it, a pdf like this will be generated and automatically opened.
 
-<img width="600px" src="https://ae01.alicdn.com/kf/H54eb1ca260244f1ebc1a0035fa1e28edj.jpg">
+<img width="600px" src="https://pic.superbed.cn/item/5d74c79c451253d178e9d58d.jpg">
 
 # Developement
 First install [`Poetry`](https://github.com/sdispater/poetry), then run `poetry install`.
