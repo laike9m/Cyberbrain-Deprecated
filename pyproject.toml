@@ -19,7 +19,6 @@ classifiers = [
 
 [tool.poetry.dependencies]
 python = "^3.6.7"
-black = { git="https://github.com/psf/black.git", branch = "master"}
 bytecode = "^0.8.0"
 uncompyle6 = "^3.4.0"
 crayons = "^0.2.0"
@@ -28,6 +27,7 @@ deepdiff = "^4.0"
 dataclasses = "^0.6.0"
 graphviz = "^0.11.1"
 absl-py = "^0.7.1"
+black = {version = "^18.3-alpha.0",allows-prereleases = true}
 
 [tool.poetry.dev-dependencies]
 uncompyle6 = { git = "https://github.com/rocky/python-uncompyle6.git", branch = "master" }
