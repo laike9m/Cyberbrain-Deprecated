@@ -9,6 +9,8 @@ NOTE: This is a WIP, **DON'T** use it in production.
 
 📢 I'm looking for collaborators who's interested in **visualization**. Please don't hesitate to contact me.
 
+I gave a talk at PyCon China 2019 about Cyberbrain, slide can be found [here](https://yanshuo.io/assets/player/?deck=5d6c9136d37616007449891e#/).
+
 ## How to use
 1. Install [Graphviz](https://www.graphviz.org/download/)
 2. `pip install cyberbrain`
