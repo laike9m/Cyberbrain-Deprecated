@@ -27,7 +27,7 @@ deepdiff = "^4.0"
 dataclasses = "^0.6.0"
 graphviz = "^0.11.1"
 absl-py = "^0.7.1"
-black = {version = "^18.3-alpha.0",allows-prereleases = true}
+black = {version = "*", allows-prereleases = true}
 
 [tool.poetry.dev-dependencies]
 uncompyle6 = { git = "https://github.com/rocky/python-uncompyle6.git", branch = "master" }
@@ -38,7 +38,7 @@ tox-pyenv = "^1.1"
 pyhamcrest = "^1.9"
 astpretty = "^1.6"
 pytest-parallel = "^0.0.9"
-pytype = "^2019.8"
+pytype = "*"
 
 [build-system]
 requires = ["poetry>=0.12"]
