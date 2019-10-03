@@ -36,8 +36,7 @@ class Line(Computation):
         self,
         *,
         code_str: str,
-        filepath: str,
-        lineno: int,
+        source_location: SourceLocation,
         vars: Vars,
         frame_id: FrameID,
         event_type: str,
@@ -50,7 +49,7 @@ class Line(Computation):
             ).strip()
         except black.InvalidInput:
             pass
-        self.source_location = SourceLocation(filepath=filepath, lineno=lineno)
+        self.source_location = source_location
         self.vars = vars
         self.event_type = event_type
         self.frame_id = frame_id
@@ -158,8 +157,9 @@ class ComputationManager:
                 return False
             comp = Line(
                 code_str=code_str.rsplit("#", 1)[0].strip(),  # Removes comment.
-                filepath=frame.f_code.co_filename,
-                lineno=frame.f_lineno,
+                source_location=SourceLocation(
+                    filepath=frame.f_code.co_filename, lineno=frame.f_lineno
+                ),
                 vars=Vars(frame),
                 event_type=event_type,
                 frame_id=frame_id,
