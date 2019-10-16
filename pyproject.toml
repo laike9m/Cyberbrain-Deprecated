@@ -31,6 +31,7 @@ black = {version = "*", allows-prereleases = true}
 
 [tool.poetry.dev-dependencies]
 uncompyle6 = { git = "https://github.com/rocky/python-uncompyle6.git", branch = "master" }
+pylint = { git = "https://github.com/PyCQA/pylint.git", branch = "master" }
 pytest = "^4.6"
 tox = "^3.13"
 tox-run-command = "^0.4.0"
@@ -39,6 +40,11 @@ pyhamcrest = "^1.9"
 astpretty = "^1.6"
 pytest-parallel = "^0.0.9"
 pytype = "*"
+
+[tool.pylint.messages_control]
+disable = """
+bad-continuation,attribute-defined-outside-init,W0511,R0902,R0913,W0622,C0116,C0103,R0903
+"""
 
 [build-system]
 requires = ["poetry>=0.12"]
