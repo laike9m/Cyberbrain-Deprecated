@@ -73,8 +73,7 @@ class FrameID:
     def __eq__(self, other: Union["FrameID", Tuple[int, ...]]):
         if isinstance(other, FrameID):
             return self._frame_id_tuple == other._frame_id_tuple
-        elif isinstance(other, Tuple):
-            return self._frame_id_tuple == other
+        return isinstance(other, Tuple) and self._frame_id_tuple == other
 
     def __hash__(self):
         return hash(self._frame_id_tuple)
@@ -102,20 +101,19 @@ class FrameID:
 
     @classmethod
     def create(cls, event: str):
+        assert event in {"line", "call", "return"}
         if event == "line":
             return cls.current()
-        elif event == "call":
+        if event == "call":
             frame_id = cls.current()
             cls.current_ = cls.current_ + (cls.child_index[cls.current_],)
             return frame_id  # callsite is in caller frame.
-        elif event == "return":
+        if event == "return":
             call_frame = cls.current()
             cls.current_ = cls.current_[:-1]
             # After exiting call frame, increments call frame's child index.
             cls.child_index[cls.current_] += 1
             return call_frame
-        else:
-            raise AttributeError("event type wrong: ", event)
 
     def __str__(self):
         """Prints the tuple representation."""
