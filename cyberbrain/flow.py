@@ -58,7 +58,7 @@ class TrackingMetadata:
         if param_to_arg:
             self.set_param_arg_mapping(param_to_arg)
 
-        # It seems that tracking and data should all be flattened, aka they should
+        # It seems that tracking and data should all be flattened, aka they should    sdss
         # simply be a mapping of ID -> value. When backtracing, we don't really care
         # about where an identifer is defined in, we only care about whether its value
         # has changed during execution.
@@ -229,6 +229,9 @@ class Flow:
         self.target.add_tracking(ID(register_call_ast.body[0].value.args[0].id))
 
 
+NodeInfo = namedtuple("NodeInfo", ["node", "surrounding", "arg_values"])
+
+
 def build_flow(cm: ComputationManager) -> Flow:
     """Builds flow from computations.
 
@@ -241,7 +244,6 @@ def build_flow(cm: ComputationManager) -> Flow:
     """
     start_node: Node
     target_node: Node
-    NodeInfo = namedtuple("NodeInfo", ["node", "surrounding", "arg_values"])
     frame_groups: Dict[FrameID, List[NodeInfo]] = defaultdict(list)
 
     for frame_id, comps in cm.frame_groups.items():
@@ -274,10 +276,17 @@ def build_flow(cm: ComputationManager) -> Flow:
             if comp is cm.target:
                 target_node = node
 
+    replace_calls(frame_groups)
+
     # Assuming init is called at program start. This may change in the future.
     start_node = frame_groups[(0,)][0].node
 
-    for frame_id, frame in frame_groups.items():
+    return Flow(start_node, target_node)
+
+
+def replace_calls(frame_groups: Dict[FrameID, List[NodeInfo]]):
+    """Replaces call exprs with intermediate variables."""
+    for _, frame in frame_groups.items():
         i = 0  # call index in this frame.
         for _, group in itertools.groupby(frame, lambda x: x.surrounding):
             ast_to_intermediate: Dict[str, str] = {}
@@ -298,14 +307,15 @@ def build_flow(cm: ComputationManager) -> Flow:
                     i += 1
                 node.code_ast = utils.parse_code_str(node.code_str)
                 if node.type is NodeType.CALL:
+                    assert arg_values, "call node should have arg_values."
                     node.set_param_arg_mapping(
                         callsite.get_param_to_arg(
                             node.code_ast.body[0].value, arg_values
                         )
                     )
 
-            if len(node.code_ast.body) != 1:
-                continue
+            # Deals with some special cases.
+            assert len(node.code_ast.body) == 1
             stmt = node.code_ast.body[0]
 
             if (
@@ -314,13 +324,15 @@ def build_flow(cm: ComputationManager) -> Flow:
                 and re.match(r"r[\d]+_", stmt.value.id)
                 and node.prev
             ):
-                # Last line is "r0_", removes this node.
-                # This happens when "f()" was replaced by "r0_".
+                # Current node is "r0_", previous node is "r0_ = f()".
+                # This happens when the whole line is just "f()".
+                # Solution: removes current node, restores previous node to "f()".
                 assert node.type is NodeType.LINE
                 prev = node.prev
-                assert prev is not None
-                assert prev.type is NodeType.CALL and prev.code_str.startswith(
-                    f"{stmt.value.id}"
+                assert (
+                    prev is not None
+                    and prev.type is NodeType.CALL
+                    and prev.code_str.startswith(f"{stmt.value.id}")
                 )
                 prev.next = node.next
                 if node.next:
@@ -334,7 +346,7 @@ def build_flow(cm: ComputationManager) -> Flow:
                 and node.prev
             ):
                 # Current node represents "a = r0_", previous node is "r0_ = f()"
-                # Changes previous to 'a = f()', discards current node.
+                # Solution: changes previous to 'a = f()', discards current node.
                 # We don't need to modify frame_groups, it's not used in tracing.
                 value = stmt.value
                 prev = node.prev
@@ -348,5 +360,3 @@ def build_flow(cm: ComputationManager) -> Flow:
                     node.next.prev = prev
                 prev.code_ast.body[0].targets = stmt.targets
                 prev.code_str = astor.to_source(prev.code_ast).strip()
-
-    return Flow(start_node, target_node)

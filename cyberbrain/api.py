@@ -30,12 +30,13 @@ def global_tracer(frame, event_type, arg):
         return
     # print("\nglobal: ", frame, event_type, frame.f_code.co_filename, frame.f_lineno)
 
-    if event_type == "call":
-        succeeded = computation_manager.add_computation(event_type, frame, arg)
-        # https://docs.python.org/3/library/inspect.html#the-interpreter-stack
-        del frame
-        if succeeded:
-            return local_tracer
+    assert event_type == "call"
+    succeeded = computation_manager.add_computation(event_type, frame, arg)
+
+    # https://docs.python.org/3/library/inspect.html#the-interpreter-stack
+    del frame
+    if succeeded:
+        return local_tracer
 
 
 def local_tracer(frame, event_type, arg):

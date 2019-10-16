@@ -145,6 +145,7 @@ class ComputationManager:
 
         Returns Whether a new computation has been created and added.
         """
+        assert event_type in {"line", "call", "return"}
         if event_type == "line":
             code_str, surrounding = utils.get_code_str_and_surrounding(frame)
             frame_id = FrameID.create(event_type)
@@ -169,7 +170,8 @@ class ComputationManager:
                 self.target = comp
             self.frame_groups[frame_id].append(comp)
             return True
-        elif event_type == "call":
+
+        if event_type == "call":
             computation = Call.create(frame)
             # Don't trace cyberbrain.register.
             if not computation or computation.code_str.startswith(self.REGISTER_CALL):
@@ -189,12 +191,13 @@ class ComputationManager:
                 self.frame_groups[frame_id].append(computation)
 
             return True
-        elif event_type == "return":
-            frame_id = FrameID.create(event_type)
-            assert self.frame_groups[frame_id][-1].event_type == "line"
-            self.frame_groups[frame_id][-1].return_value = arg
-            self.frame_groups[frame_id][-1].vars_before_return = Vars(frame)
-            return True
+
+        # even is "return".
+        frame_id = FrameID.create(event_type)
+        assert self.frame_groups[frame_id][-1].event_type == "line"
+        self.frame_groups[frame_id][-1].return_value = arg
+        self.frame_groups[frame_id][-1].vars_before_return = Vars(frame)
+        return True
 
 
 computation_manager = ComputationManager()
