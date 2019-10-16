@@ -36,6 +36,6 @@ jobs:
         image: [linux, macOs]
     before:
       - script: |
-          pip install -U pip poetry tox
+          pip install poetry tox
           poetry config settings.virtualenvs.create false
         displayName: 'setup'
