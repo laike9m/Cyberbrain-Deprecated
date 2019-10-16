@@ -39,5 +39,5 @@ jobs:
           python -m pip install --upgrade pip poetry
           poetry config settings.virtualenvs.create false
         displayName: 'setup'
-      - script: poetry install && poetry develop
-        displayName: 'install dependencies'
+      - script: poetry install --no-dev
+        displayName: 'Install dependencies'
