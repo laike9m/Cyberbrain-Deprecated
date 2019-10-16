@@ -36,8 +36,6 @@ jobs:
         image: [linux, macOs]
     before:
       - script: |
-          python -m pip install --upgrade pip poetry
+          pip install -U pip poetry tox
           poetry config settings.virtualenvs.create false
         displayName: 'setup'
-      - script: poetry install --no-dev
-        displayName: 'Install dependencies'

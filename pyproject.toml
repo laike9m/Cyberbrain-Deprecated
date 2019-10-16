@@ -20,7 +20,7 @@ classifiers = [
 [tool.poetry.dependencies]
 python = "^3.6.7"
 bytecode = "^0.8.0"
-uncompyle6 = "^3.4.0"
+uncompyle6 = { git = "https://github.com/rocky/python-uncompyle6.git", branch = "master" }
 crayons = "^0.2.0"
 astor = "^0.8.0"
 deepdiff = "^4.0"
@@ -30,7 +30,6 @@ absl-py = "^0.7.1"
 black = {version = "*", allows-prereleases = true}
 
 [tool.poetry.dev-dependencies]
-uncompyle6 = { git = "https://github.com/rocky/python-uncompyle6.git", branch = "master" }
 pylint = { git = "https://github.com/PyCQA/pylint.git", branch = "master" }
 pytest = "^4.6"
 tox = "^3.13"
