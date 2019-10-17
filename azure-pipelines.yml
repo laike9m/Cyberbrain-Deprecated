@@ -9,26 +9,35 @@ pr:
     include:
     - master
 
-variables:
-  PYTEST_ADDOPTS: "-v -v -ra --showlocals"
-  PYTEST_XDIST_PROC_NR: 'auto'
-  CI_RUN: 'yes'
+strategy:
+  matrix:
+    linux:
+      imageName: 'ubuntu-16.04'
+    mac:
+      imageName: 'macos-10.13'
+    windows:
+      imageName: 'vs2017-win2016'
 
 jobs:
-- template: run-tox-env.yml@tox
-  parameters:
-    jobs:
-      py36:
+- job: 'Test'
+  pool:
+    vmImage: $(imageName)
+  strategy:
+    matrix:
+      Python36:
         python.version: '3.6.9'
-        image: [linux, windows, macOs]
-      py37:
+      Python37:
         python.version: '3.7.4'
-        image: [linux, windows, macOs]
-    before:
-      - script: |
-          pip install poetry
-          poetry config settings.virtualenvs.create false
-          poetry install --no-dev
-          pip install pytest pytest-parallel
-          pytest
-        displayName: 'test'
+  steps:
+  - task: UsePythonVersion@0
+    displayName: 'Use Python $(python.version)'
+    inputs:
+      versionSpec: '$(python.version)'
+
+  - script: |
+      pip install poetry
+      poetry config settings.virtualenvs.create false
+      poetry install --no-dev
+      pip install pytest pytest-parallel
+      pytest
+    displayName: 'Run tests'
