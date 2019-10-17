@@ -1,15 +1,3 @@
-# Using https://github.com/tox-dev/azure-pipelines-template
-# and learned from https://github.com/wasp/waspy/blob/master/azure-pipelines.yml
-
-name: $(BuildDefinitionName)_$(Date:yyyyMMdd)$(Rev:.rr)
-resources:
-  repositories:
-  - repository: tox
-    type: github
-    endpoint: github
-    name: tox-dev/azure-pipelines-template
-    ref: refs/tags/0.2
-
 trigger:
   batch: true
   branches:
@@ -31,11 +19,16 @@ jobs:
   parameters:
     jobs:
       py36:
+        python.version: '3.6.9'
         image: [linux, windows, macOs]
       py37:
-        image: [linux, macOs]
+        python.version: '3.7.4'
+        image: [linux, windows, macOs]
     before:
       - script: |
-          pip install poetry tox
+          pip install poetry
           poetry config settings.virtualenvs.create false
-        displayName: 'setup'
+          poetry install --no-dev
+          pip install pytest pytest-parallel
+          pytest
+        displayName: 'test'
