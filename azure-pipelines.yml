@@ -2,23 +2,30 @@ trigger:
   batch: true
   branches:
     include:
-    - master
+    - '*'
 
 pr:
   branches:
     include:
-    - master
+    - '*'
 
 jobs:
 - job: 'Test'
   strategy:
+    matrix:
+      linux:
+        imageName: 'ubuntu-16.04'
+      mac:
+        imageName: 'macos-10.13'
+      windows:
+        imageName: 'vs2017-win2016'
     matrix:
       Python36:
         python.version: '3.6.9'
       Python37:
         python.version: '3.7.4'
   pool:
-    vmImage: 'macos-10.13'
+    vmImage: $(imageName)
   steps:
   - task: UsePythonVersion@0
     displayName: 'Use Python $(python.version)'
