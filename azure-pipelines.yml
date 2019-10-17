@@ -9,25 +9,16 @@ pr:
     include:
     - master
 
-strategy:
-  matrix:
-    linux:
-      imageName: 'ubuntu-16.04'
-    mac:
-      imageName: 'macos-10.13'
-    windows:
-      imageName: 'vs2017-win2016'
-
 jobs:
 - job: 'Test'
-  pool:
-    vmImage: $(imageName)
   strategy:
     matrix:
       Python36:
         python.version: '3.6.9'
       Python37:
         python.version: '3.7.4'
+  pool:
+    vmImage: 'macos-10.13'
   steps:
   - task: UsePythonVersion@0
     displayName: 'Use Python $(python.version)'
@@ -38,6 +29,6 @@ jobs:
       pip install poetry
       poetry config settings.virtualenvs.create false
       poetry install --no-dev
-      pip install pytest pytest-parallel
+      pip install pytest pytest-parallel pyhamcrest
       pytest
     displayName: 'Run tests'
