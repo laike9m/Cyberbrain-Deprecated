@@ -53,7 +53,8 @@ def compute_offset(instrs: b.Bytecode, last_i):
         if current_offset == last_i + 2 and utils.is_call_instruction(instr):
             break
 
-        assert False, "No way the program reaches here."
+        if current_offset > last_i + 2:
+            raise RuntimeError("No way the program reaches here.")
 
     # Inserts __MARK__ after CALL_XXX.
     return index + 1
