@@ -4,8 +4,12 @@ import os
 from subprocess import Popen
 
 import pytest
-from cyberbrain.testing import (COMPUTATION_GOLDEN, COMPUTATION_TEST_OUTPUT,
-                                FLOW_GOLDEN, FLOW_TEST_OUTPUT)
+from cyberbrain.testing import (
+    COMPUTATION_GOLDEN,
+    COMPUTATION_TEST_OUTPUT,
+    FLOW_GOLDEN,
+    FLOW_TEST_OUTPUT,
+)
 
 
 @pytest.fixture
