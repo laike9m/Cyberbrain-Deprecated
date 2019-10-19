@@ -36,6 +36,6 @@ jobs:
         image: [linux, windows, macOs]
     before:
       - script: |
-          pip install poetry
+          curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python
           poetry config settings.virtualenvs.create false
         displayName: 'Run tests'
