@@ -192,7 +192,7 @@ class ComputationManager:
 
             return True
 
-        # even is "return".
+        # event is "return".
         frame_id = FrameID.create(event_type)
         assert self.frame_groups[frame_id][-1].event_type == "line"
         self.frame_groups[frame_id][-1].return_value = arg

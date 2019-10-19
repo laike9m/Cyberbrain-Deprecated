@@ -11,6 +11,7 @@ from functools import lru_cache
 
 import astor
 import black
+import bytecode
 from deepdiff import DeepDiff
 
 from .basis import ID, Surrounding
@@ -213,3 +214,7 @@ def ast_to_str(code_ast: ast.AST) -> str:
 
 def dedent(text: str):
     return "\n".join([line.strip() for line in text.splitlines()])
+
+
+def is_call_instruction(instr: bytecode.Instr):
+    return instr.name.startswith("CALL_")

@@ -22,24 +22,40 @@ MARK = "__MARK__"
 Args = namedtuple("Args", ["args", "kwargs"])
 
 
-def _compute_offset(instr):
-    if sys.version_info >= (3, 6):
-        return 2
-    return (1, 3)[instr.opcode < dis.HAVE_ARGUMENT]
-
-
 def compute_offset(instrs: b.Bytecode, last_i):
-    now = 0
+    current_offset = 0
     for index, instr in enumerate(instrs):
-        # Only real instruction should increase offset
-        if type(instr) != b.Instr:
+        # Only increases offset if it's a real instruction.
+        if not isinstance(instr, b.Instr):
             continue
-        now += _compute_offset(instr)
-        if now > last_i:
+
+        # When calling a function, there are two possible locations that
+        # caller_frame.last_i can point to:
+        #
+        #   1. The CALL_XXX instruction. This is the "correct" behavior defined in
+        #      https://docs.python.org/3.7/library/inspect.html#types-and-members.
+        #
+        #   2. The instruction just before CALL_XXX. This is caused by the "PREDICT"
+        #      optimization, described in
+        #      https://github.com/python/cpython/blob/v3.7.5/Python/ceval.c#L888-L900
+        #      Note that in this case, The instruction last_i points to must not be
+        #      another call.
+        #
+        # We want to find the CALL_XXX instruction that triggers the 'call' event, and
+        # that is either at offset last_i or last_i + 2.
+        if current_offset < last_i:
+            current_offset += 2  # Since Cyberbrain is Python 3.6+ only, it's always 2.
+            continue
+
+        if current_offset == last_i and utils.is_call_instruction(instr):
             break
-    # When calling a function, caller_frame.last_i points to the instruction just before
-    # CALL_XXX. When now > last_i, it stops at CALL_XXX, by adding 1 we get the position
-    # after CALL_XXX, and that's where we want to insert __MARK__.
+
+        if current_offset == last_i + 2 and utils.is_call_instruction(instr):
+            break
+
+        assert False, "No way the program reaches here."
+
+    # Inserts __MARK__ after CALL_XXX.
     return index + 1
 
 
