@@ -34,8 +34,3 @@ jobs:
         image: [linux, windows, macOs]
       py37:
         image: [linux, windows, macOs]
-    before:
-      - script: |
-          pip install poetry
-          poetry config settings.virtualenvs.create false
-        displayName: 'Run tests'
