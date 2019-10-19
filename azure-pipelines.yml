@@ -1,34 +1,41 @@
+# Using https://github.com/tox-dev/azure-pipelines-template
+# and learned from https://github.com/wasp/waspy/blob/master/azure-pipelines.yml
+
+name: $(BuildDefinitionName)_$(Date:yyyyMMdd)$(Rev:.rr)
+resources:
+  repositories:
+  - repository: tox
+    type: github
+    endpoint: github
+    name: tox-dev/azure-pipelines-template
+    ref: refs/tags/0.2
+
 trigger:
   batch: true
   branches:
     include:
-    - '*'
+    - master
 
 pr:
   branches:
     include:
-    - '*'
+    - master
+
+variables:
+  PYTEST_ADDOPTS: "-v -v -ra --showlocals"
+  PYTEST_XDIST_PROC_NR: 'auto'
+  CI_RUN: 'yes'
 
 jobs:
-- job: 'Test'
-  strategy:
-    matrix:
-      Python36:
-        python.version: '3.6.9'
-      Python37:
-        python.version: '3.7.4'
-  pool:
-    vmImage: 'vs2017-win2016'
-  steps:
-  - task: UsePythonVersion@0
-    displayName: 'Use Python $(python.version)'
-    inputs:
-      versionSpec: '$(python.version)'
-
-  - script: |
-      pip install poetry
-      poetry config settings.virtualenvs.create false
-      poetry install --no-dev
-      pip install pytest pytest-parallel pyhamcrest
-      pytest
-    displayName: 'Run tests'
+- template: run-tox-env.yml@tox
+  parameters:
+    jobs:
+      py36:
+        image: [linux, windows, macOs]
+      py37:
+        image: [linux, windows, macOs]
+    before:
+      - script: |
+          pip install poetry
+          poetry config settings.virtualenvs.create false
+        displayName: 'Run tests'
