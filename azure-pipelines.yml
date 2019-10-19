@@ -33,9 +33,9 @@ jobs:
       py36:
         image: [linux, windows, macOs]
       py37:
-        image: [linux, macOs]
+        image: [linux, windows, macOs]
     before:
       - script: |
-          pip install poetry tox
+          pip install poetry
           poetry config settings.virtualenvs.create false
-        displayName: 'setup'
+        displayName: 'Run tests'
