@@ -38,4 +38,5 @@ jobs:
       - script: |
           curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python
           poetry config settings.virtualenvs.create false
+          echo "##vso[task.prependpath]$HOME/.poetry/bin"
         displayName: 'Run tests'
