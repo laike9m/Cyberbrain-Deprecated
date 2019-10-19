@@ -8,7 +8,7 @@ from pprint import pprint
 from typing import Dict
 
 from absl import flags
-from crayons import yellow
+from crayons import yellow  # pylint: disable=E0611
 
 from .computation import ComputationManager
 from .flow import Flow, Node
@@ -24,10 +24,10 @@ FLOW_GOLDEN = "flow.golden.json"
 class _SetEncoder(json.JSONEncoder):
     """Custom encoder to dump set as list."""
 
-    def default(self, obj):
-        if isinstance(obj, set):
-            return sorted(list(obj))
-        return json.JSONEncoder.default(self, obj)
+    def default(self, o):  # pylint: disable=E0202
+        if isinstance(o, set):
+            return sorted(list(o))
+        return json.JSONEncoder.default(self, o)
 
 
 def dump_computation(cm: ComputationManager):

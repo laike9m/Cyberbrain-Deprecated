@@ -1,9 +1,9 @@
 # Cyberbrain: helps you remember everything
 
-<a href="https://github.com/ambv/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
-[![Build Status](https://dev.azure.com/laike9m/laike9m/_apis/build/status/laike9m.Cyberbrain?branchName=master)](https://dev.azure.com/laike9m/laike9m/_build/latest?definitionId=1&branchName=master)
+<img src="https://img.shields.io/badge/code%20style-black-000000.svg"> [![Build Status](https://dev.azure.com/laike9m/laike9m/_apis/build/status/laike9m.Cyberbrain?branchName=master)](https://dev.azure.com/laike9m/laike9m/_build/latest?definitionId=1&branchName=master) <img src="https://img.shields.io/badge/python-3.6.7%2B-blue">
 
-<img width="500px" src="https://ae01.alicdn.com/kf/H8409631752a24540927419d7fb445196g.jpg">
+<img width="500px" src="https://ae01.alicdn.com/kf/H8409631752a24540927419d7fb445196g.jpg"/>
+
 
 NOTE: This is a WIP, **DON'T** use it in production.
 

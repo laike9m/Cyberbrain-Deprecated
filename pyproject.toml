@@ -14,7 +14,9 @@ include = [
 classifiers = [
     "Development Status :: 1 - Planning",
     "Topic :: Software Development :: Debuggers",
-    "Topic :: Software Development :: Libraries :: Python Modules"
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7"
 ]
 
 [tool.poetry.dependencies]
@@ -43,7 +45,7 @@ pytype = "*"
 [tool.pylint.messages_control]
 disable = """
 bad-continuation,attribute-defined-outside-init,W0511,R0902,R0913,W0622,C0116,C0103,
-R0903,W0631,W0212,W0603,R1710
+R0903,W0631,W0212,W0603,R1710,R0201
 """
 
 [build-system]

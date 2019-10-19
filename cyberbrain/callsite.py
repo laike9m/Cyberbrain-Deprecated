@@ -1,11 +1,9 @@
 """Utilities to get call site."""
 
 import ast
-import dis
 import inspect
 import io
 import itertools
-import sys
 from collections import namedtuple
 from functools import lru_cache
 from typing import Dict, Iterable, Optional, Set, Tuple
