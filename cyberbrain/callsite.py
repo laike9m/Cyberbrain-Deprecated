@@ -20,7 +20,8 @@ MARK = "__MARK__"
 Args = namedtuple("Args", ["args", "kwargs"])
 
 
-def compute_offset(instrs: b.Bytecode, last_i):
+def insert_mark(instrs: b.Bytecode, last_i):
+    """Inserts a mark after the call instruction that last_i points to."""
     current_offset = 0
     for index, instr in enumerate(instrs):
         # Only increases offset if it's a real instruction.
@@ -55,7 +56,7 @@ def compute_offset(instrs: b.Bytecode, last_i):
             raise RuntimeError("No way the program reaches here.")
 
     # Inserts __MARK__ after CALL_XXX.
-    return index + 1
+    instrs.insert(index + 1, b.Instr("LOAD_ATTR", MARK))
 
 
 class MarkedCallVisitor(ast.NodeVisitor):
@@ -134,8 +135,7 @@ class MarkedCallVisitor(ast.NodeVisitor):
 @lru_cache()
 def get_callsite_ast(code, last_i) -> Tuple[ast.AST, Optional[ast.Call]]:
     bc = b.Bytecode.from_code(code)
-    index = compute_offset(bc, last_i)
-    bc.insert(index, b.Instr("LOAD_ATTR", MARK))
+    insert_mark(bc, last_i)
 
     string_io = io.StringIO()
     uncompyle6.deparse_code2str(code=bc.to_code(), out=string_io)
