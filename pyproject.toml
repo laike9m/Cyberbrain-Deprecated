@@ -20,8 +20,8 @@ classifiers = [
 ]
 
 [tool.poetry.dependencies]
-python = "^3.6.7"
-bytecode = "^0.8.0"
+python = ">= 3.6.7, < 3.8"
+bytecode = { git = "https://github.com/vstinner/bytecode.git", branch = "master" }
 uncompyle6 = { git = "https://github.com/rocky/python-uncompyle6.git", branch = "master" }
 xdis = { git = "https://github.com/rocky/python-xdis.git", branch = "master" }
 crayons = "^0.2.0"
@@ -40,8 +40,8 @@ tox-run-command = "^0.4.0"
 tox-pyenv = "^1.1"
 pyhamcrest = "^1.9"
 astpretty = "^1.6"
-pytest-parallel = "^0.0.9"
 pytype = "*"
+pytest-xdist = "^1.30"
 
 [tool.pylint.messages_control]
 disable = """

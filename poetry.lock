@@ -10,6 +10,14 @@ version = "0.7.1"
 six = "*"
 
 [[package]]
+category = "dev"
+description = "apipkg: namespace control and lazy-import mechanism"
+name = "apipkg"
+optional = false
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
+version = "1.5"
+
+[[package]]
 category = "main"
 description = "A small Python module for determining appropriate platform-specific dirs, e.g. a \"user data dir\"."
 name = "appdirs"
@@ -86,8 +94,12 @@ description = "Python module to generate and modify bytecode"
 name = "bytecode"
 optional = false
 python-versions = "*"
-version = "0.8.0"
+version = "0.9.0.dev0"
 
+[package.source]
+reference = "27ca8c163046b61a0c51f4ea9b6024835ad9487a"
+type = "git"
+url = "https://github.com/vstinner/bytecode"
 [[package]]
 category = "main"
 description = "Composable command line interface toolkit"
@@ -142,6 +154,17 @@ version = "4.0.8"
 [package.dependencies]
 jsonpickle = ">=1.0"
 ordered-set = ">=3.1.1"
+
+[[package]]
+category = "dev"
+description = "execnet: rapid multi-Python deployment"
+name = "execnet"
+optional = false
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
+version = "1.7.1"
+
+[package.dependencies]
+apipkg = ">=1.4"
 
 [[package]]
 category = "dev"
@@ -351,14 +374,28 @@ version = ">=4.0.0"
 
 [[package]]
 category = "dev"
-description = "a pytest plugin for parallel and concurrent testing"
-name = "pytest-parallel"
+description = "run tests in isolated forked subprocesses"
+name = "pytest-forked"
 optional = false
-python-versions = "*"
-version = "0.0.9"
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
+version = "1.1.3"
 
 [package.dependencies]
-pytest = ">=3.0.0"
+pytest = ">=3.1.0"
+
+[[package]]
+category = "dev"
+description = "pytest xdist plugin for distributed testing and loop-on-failing modes"
+name = "pytest-xdist"
+optional = false
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
+version = "1.30.0"
+
+[package.dependencies]
+execnet = ">=1.1"
+pytest = ">=4.4.0"
+pytest-forked = "*"
+six = "*"
 
 [[package]]
 category = "dev"
@@ -527,11 +564,12 @@ version = "0.6.0"
 more-itertools = "*"
 
 [metadata]
-content-hash = "448a5b1b775f94f9df86a005415f50b2442e3697454033453ec7fbabfa12cf1e"
+content-hash = "9e6d3bbdb64508f3a7bb7bdd172de6680b718de37aa3fb9daaf36fa519a9b8ac"
 python-versions = "^3.6.7"
 
 [metadata.hashes]
 absl-py = ["b943d1c567743ed0455878fcd60bc28ac9fae38d129d1ccfad58079da00b8951"]
+apipkg = ["37228cda29411948b422fae072f57e31d3396d2ee1c9783775980ee9c9990af6", "58587dd4dc3daefad0487f6d9ae32b4542b185e1c36db6993290e7c41ca2b47c"]
 appdirs = ["9e5896d1372858f8dd3344faf4e5014d21849c756c8d5701f78f8a103b372d92", "d8b24664561d0d34ddfaec54636d502d7cea6e29c3eaf68f3df6180863e2166e"]
 astor = ["0e41295809baf43ae8303350e031aff81ae52189b6f881f36d623fa8b2f1960e", "37a6eed8b371f1228db08234ed7f6cfdc7817a3ed3824797e20cbb11dc2a7862"]
 astpretty = ["d45c06d07cbd4387aaa696cbb955d809fd6977fea8d00c9c409c1524d358cd54", "f9769a73381a9095581435d9477811b2cdd9cd4c721e2650db564624183191a1"]
@@ -539,13 +577,14 @@ astroid = ["09a3fba616519311f1af8a461f804b68f0370e100c9264a035aa7846d7852e33", "
 atomicwrites = ["03472c30eb2c5d1ba9227e4c2ca66ab8287fbfbbda3888aa93dc2e28fc6811b4", "75a9445bac02d8d058d5e1fe689654ba5a6556a1dfd8ce6ec55a0ed79866cfa6"]
 attrs = ["08a96c641c3a74e44eb59afb61a24f2cb9f4d7188748e76ba4bb5edfa3cb7d1c", "f7b7ce16570fe9965acd6d30101a28f62fb4a7f9e926b3bbc9b61f8b04247e72"]
 black = ["09a9dcb7c46ed496a9850b76e4e825d6049ecd38b611f1224857a79bd985a8cf", "68950ffd4d9169716bcb8719a56c07a2f4485354fec061cdd5910aa07369731c"]
-bytecode = ["68b1d591c7af0e5c5273e028d3cc0299fbe374dff0cf9149ec7e569be0c573e7", "c43d5052cbff076bfdf5b0b93ff6c76e461aab628ce47d30637bb200b6b7bb2c"]
+bytecode = []
 click = ["2335065e6395b9e67ca716de5f7526736bfa6ceead690adf616d925bdc622b13", "5b94b49521f6456670fdb30cd82a4eca9412788a93fa6dd6df72c94d5a8ff2d7"]
 colorama = ["05eed71e2e327246ad6b38c540c4a3117230b19679b875190486ddd2d721422d", "f8ac84de7840f5b9c4e3347b3c1eaa50f7e49c2b07596221daec5edaabbd7c48"]
 crayons = ["41f0843815a8e3ac6fb445b7970d8b9c766e6f164092d84e7ea809b4c91418ec", "8edcadb7f197e25f2cc094aec5bf7f1b6001d3f76c82d56f8d46f6fb1405554f"]
 dataclasses = ["454a69d788c7fda44efd71e259be79577822f5e3f53f029a22d08004e951dc9f", "6988bd2b895eef432d562370bb707d540f32f7360ab13da45340101bc2307d84"]
 decorator = ["86156361c50488b84a3f148056ea716ca587df2f0de1d34750d35c21312725de", "f069f3a01830ca754ba5258fde2278454a0b5b79e0d7f5c13b3b97e57d4acff6"]
 deepdiff = ["51a1228346c91c8dbb586caefb9df6dddfed3a0abff834e72f547a5e405e0fc6", "62ca21020e9c01383b5c45b9d89f418bdb78b4bb53f1d2374cd09db549e6959a"]
+execnet = ["cacb9df31c9680ec5f95553976c4da484d407e85e41c83cb812aa014f0eddc50", "d4efd397930c46415f62f8a31388d6be4f27a91d7550eb79bc64a756e0056547"]
 filelock = ["18d82244ee114f543149c66a6e0c14e9c4f8a1044b5cdaadd0f82159d6a6ff59", "929b7d63ec5b7d6b71b0fa5ac14e030b3f70b75747cef1b10da9b879fef15836"]
 graphviz = ["6d0f69c107cfdc9bd1df3763fad99569bbcba29d0c52ffcbc6f266621d8bf709", "914b8b124942d82e3e1dcef499c9fe77c10acd3d18a1cfeeb2b9de05f6d24805"]
 importlab = ["d855350d19dc10a17aabd2fe6f4b428ff1a936071f692fbf686a73694d26a51c"]
@@ -565,7 +604,8 @@ pyhamcrest = ["6b672c02fdf7470df9674ab82263841ce8333fb143f32f021f6cb26f0e512420"
 pylint = []
 pyparsing = ["6f98a7b9397e206d78cc01df10131398f1c8b8510a2f4d97d9abd82e1aacdd80", "d9338df12903bbf5d65a0e4e87c2161968b10d2e489652bb47001d82a9b028b4"]
 pytest = ["5d0d20a9a66e39b5845ab14f8989f3463a7aa973700e6cdf02db69da9821e738", "692d9351353ef709c1126266579edd4fd469dcf6b5f4f583050f72161d6f3592"]
-pytest-parallel = ["94df6b0ebf48e03cbce66622d55ba6bd2cb116b06cfb39cc5fc4d2d310df25ca", "c4226352462ae32ff01d47a642d087005c3b9bf995cea61fc37a4becb146278d"]
+pytest-forked = ["1805699ed9c9e60cb7a8179b8d4fa2b8898098e82d229b0825d8095f0f261100", "1ae25dba8ee2e56fb47311c9638f9e58552691da87e82d25b0ce0e4bf52b7d87"]
+pytest-xdist = ["5d1b1d4461518a6023d56dab62fb63670d6f7537f23e2708459a557329accf48", "a8569b027db70112b290911ce2ed732121876632fb3f40b1d39cd2f72f58b147"]
 pytype = ["ff43dd0abc144ddf4d895ea52918b5d4bbd0f96b690af205e477cb1074b6ef4e"]
 pyyaml = ["0113bc0ec2ad727182326b61326afa3d1d8280ae1122493553fd6f4397f33df9", "01adf0b6c6f61bd11af6e10ca52b7d4057dd0be0343eb9283c878cf3af56aee4", "5124373960b0b3f4aa7df1707e63e9f109b5263eca5976c66e08b1c552d4eaf8", "5ca4f10adbddae56d824b2c09668e91219bb178a1eee1faa56af6f99f11bf696", "7907be34ffa3c5a32b60b95f4d95ea25361c951383a894fec31be7252b2b6f34", "7ec9b2a4ed5cad025c2278a1e6a19c011c80a3caaac804fd2d329e9cc2c287c9", "87ae4c829bb25b9fe99cf71fbb2140c448f534e24c998cc60f39ae4f94396a73", "9de9919becc9cc2ff03637872a440195ac4241c80536632fffeb6a1e25a74299", "a5a85b10e450c66b49f98846937e8cfca1db3127a9d5d1e31ca45c3d0bef4c5b", "b0997827b4f6a7c286c01c5f60384d218dca4ed7d9efa945c3e1aa623d5709ae", "b631ef96d3222e62861443cc89d6563ba3eeb816eeb96b2629345ab795e53681", "bf47c0607522fdbca6c9e817a6e81b08491de50f3766a7a0e6a5be7905961b41", "f81025eddd0327c7d4cfe9b62cf33190e1e736cc6e97502b3ec425f574b3e7a8"]
 six = ["3350809f0555b11f552448330d0b52d5f24c91a322ea4a15ef22629740f3761c", "d16a0141ec1a18405cd4ce8b4613101da75da0e9a7aec5bdd4fa804d0e0eba73"]
