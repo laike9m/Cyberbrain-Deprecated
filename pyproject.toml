@@ -23,6 +23,7 @@ classifiers = [
 python = "^3.6.7"
 bytecode = "^0.8.0"
 uncompyle6 = { git = "https://github.com/rocky/python-uncompyle6.git", branch = "master" }
+xdis = { git = "https://github.com/rocky/python-xdis.git", branch = "master" }
 crayons = "^0.2.0"
 astor = "^0.8.0"
 deepdiff = "^4.0"
