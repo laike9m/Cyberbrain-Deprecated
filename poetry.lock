@@ -567,7 +567,7 @@ python-versions = "*"
 version = "4.1.1"
 
 [package.source]
-reference = "5f769d516ced17cbc7743b3199184cb3c84d6035"
+reference = "95bd39880311ee26b9230485b37688ba5acf9ff0"
 type = "git"
 url = "https://github.com/rocky/python-xdis.git"
 [[package]]

@@ -3,7 +3,7 @@
     {
       "event": "line",
       "filepath": "multiline_statement.py",
-      "lineno": 10,
+      "lineno": "9 ~ 13",
       "code_str": "y = {\n    \"longlonglonglonglonglonglonglong\": 1,\n    \"longlonglonglonglonglonglonglonglong\": 2,\n    \"longlonglonglonglonglonglonglonglonglong\": 3,\n}",
       "frame_id": "(0,) <module>"
     },
@@ -17,7 +17,7 @@
     {
       "event": "call",
       "filepath": "multiline_statement.py",
-      "lineno": 23,
+      "lineno": "20 ~ 24",
       "code_str": "f(\n    longlonglonglonglonglonglonglong=1,\n    longlonglonglonglonglonglonglonglong=2,\n    longlonglonglonglonglonglonglonglonglong=3,\n)",
       "caller_frame_id": "(0,) <module>",
       "callee_frame_id": "(0, 0) "
@@ -25,7 +25,7 @@
     {
       "event": "line",
       "filepath": "multiline_statement.py",
-      "lineno": 20,
+      "lineno": "20 ~ 24",
       "code_str": "x = f(\n    longlonglonglonglonglonglonglong=1,\n    longlonglonglonglonglonglonglonglong=2,\n    longlonglonglonglonglonglonglonglonglong=3,\n)",
       "frame_id": "(0,) <module>"
     },

@@ -17,10 +17,23 @@ from .vars import Vars
 class Computation(metaclass=abc.ABCMeta):
     """Base class to represent a computation unit of the program."""
 
-    code_str: str = ...
+    code_str: str
+    event_type: str
+    source_location: SourceLocation
 
     def to_dict(self):
         """Serializes attrs to dict."""
+        surrounding = self.source_location.surrounding
+        if surrounding.start_lineno == surrounding.end_lineno:
+            lineno_str = surrounding.start_lineno
+        else:
+            lineno_str = f"{surrounding.start_lineno} ~ {surrounding.end_lineno}"
+        return {
+            "event": self.event_type,
+            "filepath": PurePath(self.source_location.filepath).name,
+            "lineno": lineno_str,
+            "code_str": self.code_str,
+        }
 
     def __repr__(self):
         return self.code_str
@@ -57,13 +70,7 @@ class Line(Computation):
         self.vars_before_return = None
 
     def to_dict(self):
-        return {
-            "event": self.event_type,
-            "filepath": PurePath(self.source_location.filepath).name,
-            "lineno": self.source_location.lineno,
-            "code_str": self.code_str,
-            "frame_id": str(self.frame_id),
-        }
+        return {**super().to_dict(), "frame_id": str(self.frame_id)}
 
 
 class Call(Computation):
@@ -96,10 +103,7 @@ class Call(Computation):
 
     def to_dict(self):
         return {
-            "event": self.event_type,
-            "filepath": PurePath(self.source_location.filepath).name,
-            "lineno": self.source_location.lineno,
-            "code_str": self.code_str,
+            **super().to_dict(),
             "caller_frame_id": str(self.frame_id),
             "callee_frame_id": str(self.callee_frame_id),
         }
@@ -119,7 +123,7 @@ class Call(Computation):
         return Call(
             callsite_ast=callsite_ast,
             source_location=SourceLocation(
-                filepath=caller_frame.f_code.co_filename, lineno=caller_frame.f_lineno
+                filepath=caller_frame.f_code.co_filename, surrounding=surrounding
             ),
             arg_values=inspect.getargvalues(frame),
             func_name=frame.f_code.co_name,
@@ -159,7 +163,7 @@ class ComputationManager:
             comp = Line(
                 code_str=code_str.rsplit("#", 1)[0].strip(),  # Removes comment.
                 source_location=SourceLocation(
-                    filepath=frame.f_code.co_filename, lineno=frame.f_lineno
+                    filepath=frame.f_code.co_filename, surrounding=surrounding
                 ),
                 vars=Vars(frame),
                 event_type=event_type,

@@ -20,7 +20,7 @@ classifiers = [
 ]
 
 [tool.poetry.dependencies]
-python = ">= 3.6.7, < 3.8"
+python = ">= 3.6.7"
 bytecode = { git = "https://github.com/vstinner/bytecode.git", branch = "master" }
 uncompyle6 = { git = "https://github.com/rocky/python-uncompyle6.git", branch = "master" }
 xdis = { git = "https://github.com/rocky/python-xdis.git", branch = "master" }

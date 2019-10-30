@@ -13,18 +13,14 @@ from functools import lru_cache
 import astor
 import black
 import bytecode
-from deepdiff import DeepDiff
+import deepdiff
 
 from .basis import ID, Surrounding
 
 try:
-    from token import ENCODING as token_ENCODING
     from token import NL as token_NL
-    from token import COMMENT as token_COMMENT
 except ImportError:
-    from tokenize import ENCODING as token_ENCODING
     from tokenize import NL as token_NL
-    from tokenize import COMMENT as token_COMMENT
 
 _INSTALLATION_PATHS = list(sysconfig.get_paths().values())
 
@@ -91,7 +87,7 @@ def get_code_str_and_surrounding(frame):
     (frame_id, surrounding) is distinct, therefore we can detect duplicate computations
     by checking their (frame_id, surrounding).
 
-    Both lineno in _get_lineno and tokens starts at 1.
+    Both lineno and surrounding are 1-based, aka the smallest lineno is 1.
     """
     # Step 0. Gets lineno relative to frame.
     frame_source = inspect.getsource(inspect.getmodule(frame))  # TODO: Caches result.
@@ -108,10 +104,7 @@ def get_code_str_and_surrounding(frame):
 
     # Step 2. Finds matching group.
     if len(groups) == 1:
-        return (
-            frame_source,
-            Surrounding(start_lineno=lineno, end_lineno=lineno),
-        )
+        return (frame_source, Surrounding(start_lineno=lineno, end_lineno=lineno))
 
     for group, next_group in zip(groups[:-1], groups[1:]):
         start_lineno, end_lineno = group[0].start[0], group[-1].end[0]
@@ -128,9 +121,7 @@ def get_code_str_and_surrounding(frame):
     # group doesn't start from 1), removes them.
     return (
         tokenize.untokenize(group).lstrip("\\\n"),
-        Surrounding(
-            start_lineno=group[0].start[0] - 1, end_lineno=group[-1].end[0] - 1
-        ),
+        Surrounding(start_lineno=group[0].start[0], end_lineno=group[-1].end[0]),
     )
 
 
@@ -152,7 +143,7 @@ def find_names(code_ast: ast.AST) -> typing.Set[ID]:
 
 
 def has_diff(x, y):
-    return DeepDiff(x, y) != {}
+    return deepdiff.DeepDiff(x, y) != {}
 
 
 def parse_code_str(code_str) -> ast.AST:

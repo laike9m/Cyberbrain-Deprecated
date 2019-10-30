@@ -25,7 +25,9 @@ from typing import Dict, NamedTuple, Tuple, Union
 # For the assignment of b, start_lineno = 2, end_lineno = 4
 Surrounding = NamedTuple("Surrounding", [("start_lineno", int), ("end_lineno", int)])
 
-SourceLocation = NamedTuple("SourceLocation", [("filepath", str), ("lineno", int)])
+SourceLocation = NamedTuple(
+    "SourceLocation", [("filepath", str), ("surrounding", Surrounding)]
+)
 
 _dummy = object()
 
