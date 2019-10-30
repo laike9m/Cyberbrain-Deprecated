@@ -172,6 +172,10 @@ class ComputationManager:
             return True
 
         if event_type == "call":
+            # In Python 3.8, for multiline statement, after the events triggered by each
+            # line, there will be an extra line event triggered by the first line. This
+            # will cause the lineno for call comp to be different in different Python
+            # verions.
             computation = Call.create(frame)
             # Don't trace cyberbrain.register.
             if not computation or computation.code_str.startswith(self.REGISTER_CALL):

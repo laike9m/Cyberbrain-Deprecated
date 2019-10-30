@@ -1,6 +1,7 @@
 """Utility functions."""
 
 import ast
+import dis
 import inspect
 import io
 import sysconfig
@@ -61,61 +62,21 @@ def grouped(iterable, n):
     return zip(*[iter(iterable)] * n)
 
 
-def _get_lineno_base(toks) -> int:
-    """Gets line number for the initial instruction in frame.
+def _get_lineno(frame) -> int:
+    """Gets line number given current state of the frame.
 
-    The reason we need this method is because I haven't found a good way to find the
-    start line number in a frame(it's not always zero).
-
-    For example, in a module like this:
-
-    1   # encoding: utf-8
-    2   '''
-    3   doc string
-    4   '''
-    5
-    6   import foo
-
-    co_firstlineno tells us lineno is actually 4, not zero, but more importantly, this
-    lineno is relative to the entire source file, not frame.
-
-    The first two pairs of lnotab are (4, 2), (8, 1). The '2' represents line offset
-    from end of docstring to import statement, so the lineno of 'import foo' is 4+2=6,
-    relative to the file start, but what is the lineno of 'import foo' in that frame?
-
-    One possible solution could be to always tokenize the entire file, but I don't want
-    to do that. Instead, I choose to manually count the base line number. Leading doc
-    string and comments seems to be the only case that base lineno is not 1.
-
-    Let me know if you have a better solution.
+    Line number is the absolute line number in the module where current execution is at.
+    In the past we used to calculate lineno based on lnotab, but since
+    `dis.findlinestarts` already does that, there's no need to do it ourselves.
     """
-    for _, tok in enumerate(toks):
-        if tok.type not in {token_ENCODING, token_NL, token.STRING, token_COMMENT}:
-            return tok.end[0]
-    assert False, "Failed to find base line number."
-
-
-def _get_lineno_offset(frame) -> int:
-    """Gets line number given byte code index.
-
-    Line number in lnotab is frame-wise, starts at 0, so is returned line number.
-
-    Algorithm is from
-    https://svn.python.org/projects/python/branches/pep-0384/Objects/lnotab_notes.txt
-
-    Note that lnotab represents increment, so we need to add first lineno to get real
-    lineno.
-    """
-    co_lnotab = frame.f_code.co_lnotab
     f_lasti = frame.f_lasti
-    lineno = addr = 0
-    for addr_incr, line_incr in grouped(co_lnotab, 2):
-        addr += addr_incr
-        if addr > f_lasti:
-            return lineno
-        lineno += line_incr
+    lineno_at_lasti = 0
+    for offset, lineno in dis.findlinestarts(frame.f_code):
+        if offset > f_lasti:
+            break
+        lineno_at_lasti = lineno
     # Returns here if this is last line in that frame.
-    return lineno
+    return lineno_at_lasti
 
 
 def _tokenize_string(s):
@@ -130,12 +91,12 @@ def get_code_str_and_surrounding(frame):
     (frame_id, surrounding) is distinct, therefore we can detect duplicate computations
     by checking their (frame_id, surrounding).
 
-    Both lineno in _get_lineno_offset_from_lnotab and tokens starts at 1.
+    Both lineno in _get_lineno and tokens starts at 1.
     """
     # Step 0. Gets lineno relative to frame.
-    frame_source = inspect.getsource(frame)
+    frame_source = inspect.getsource(inspect.getmodule(frame))  # TODO: Caches result.
     toks = list(_tokenize_string(frame_source))  # assuming no exception.
-    lineno_in_frame = _get_lineno_base(toks) + _get_lineno_offset(frame)
+    lineno = _get_lineno(frame)
 
     # Step 1. Groups toks by logical lines.
     logical_line_start = 1  # skips first element token.ENCODING
@@ -149,12 +110,12 @@ def get_code_str_and_surrounding(frame):
     if len(groups) == 1:
         return (
             frame_source,
-            Surrounding(start_lineno=lineno_in_frame, end_lineno=lineno_in_frame),
+            Surrounding(start_lineno=lineno, end_lineno=lineno),
         )
 
     for group, next_group in zip(groups[:-1], groups[1:]):
         start_lineno, end_lineno = group[0].start[0], group[-1].end[0]
-        if start_lineno <= lineno_in_frame <= end_lineno:
+        if start_lineno <= lineno <= end_lineno:
             break
     else:
         # Reachs end of groups
