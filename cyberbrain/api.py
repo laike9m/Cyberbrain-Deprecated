@@ -72,13 +72,14 @@ def register(target=_dummy):
     sys.settrace(None)
     global_frame.f_trace = None
     if target is not _dummy:
+        should_dump_output = FLAGS.mode in {"test", "golden", "debug"}
+        if should_dump_output:
+            # Even if build flow fails, comp will still be dumped.
+            testing.dump_computation(computation_manager)
         execution_flow = flow.build_flow(computation_manager)
         backtrace.trace_flow(execution_flow)
         graph_name = os.path.basename(FLAGS.test_dir) if FLAGS.test_dir else "output"
-        # TODO: move dump_computation above so that even if build flow fails, comp
-        # will always be dumped.
         if FLAGS.mode in {"run", "debug"}:
             format.generate_output(execution_flow, graph_name)
-        if FLAGS.mode in {"test", "golden", "debug"}:
-            testing.dump_computation(computation_manager)
+        if should_dump_output:
             testing.dump_flow(execution_flow)
