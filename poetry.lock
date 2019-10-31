@@ -346,7 +346,7 @@ mccabe = ">=0.6,<0.7"
 toml = ">=0.7.1"
 
 [package.source]
-reference = "97f4f2ae187df933f072d74fd8347ec14213f5de"
+reference = "96b3892506de6033ecb4f6e288bd4f5b211d894c"
 type = "git"
 url = "https://github.com/PyCQA/pylint.git"
 [[package]]
@@ -528,10 +528,10 @@ version = "3.5.0"
 
 [package.dependencies]
 spark-parser = ">=1.8.9,<1.9.0"
-xdis = ">=4.1.0,<4.2.0"
+xdis = ">=4.1.2,<4.2.0"
 
 [package.source]
-reference = "86c1d12e694d0392487edbe4c312850976c127f1"
+reference = "0ae4acff9e99125d8f1e93f1d0b83e945e9e561a"
 type = "git"
 url = "https://github.com/rocky/python-uncompyle6.git"
 [[package]]
@@ -564,10 +564,10 @@ description = "Python cross-version byte-code disassembler and marshal routines"
 name = "xdis"
 optional = false
 python-versions = "*"
-version = "4.1.1"
+version = "4.1.2"
 
 [package.source]
-reference = "95bd39880311ee26b9230485b37688ba5acf9ff0"
+reference = "6adbdb3f1eac48febf6f335d2e74a5cd0db85dad"
 type = "git"
 url = "https://github.com/rocky/python-xdis.git"
 [[package]]
@@ -583,8 +583,8 @@ version = "0.6.0"
 more-itertools = "*"
 
 [metadata]
-content-hash = "15a07c285f7feba125c4c52212b65f4b3eea8a0dbdea1584125bbc8f7dbfdcf0"
-python-versions = ">= 3.6.7, < 3.8"
+content-hash = "b20d6e93d7cc3a63d23a01f95a2cbc246ddfd7265e586638a1eb6f2be8e1d3b6"
+python-versions = ">= 3.6.7"
 
 [metadata.hashes]
 absl-py = ["b943d1c567743ed0455878fcd60bc28ac9fae38d129d1ccfad58079da00b8951"]

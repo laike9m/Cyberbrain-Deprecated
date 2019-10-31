@@ -4,6 +4,7 @@ import ast
 import dis
 import inspect
 import io
+import itertools
 import sysconfig
 import token
 import tokenize
@@ -75,8 +76,20 @@ def _get_lineno(frame) -> int:
     return lineno_at_lasti
 
 
-def _tokenize_string(s):
-    return tokenize.tokenize(io.BytesIO(s.encode("utf-8")).readline)
+_source_code_cache = {}
+
+
+def _get_module_tokens(frame):
+    """Tokenizes module's source code that the frame belongs to, yields tokens."""
+    module, filename = inspect.getmodule(frame), inspect.getsourcefile(frame)
+    if filename not in _source_code_cache:
+        _source_code_cache[filename] = inspect.getsource(module)
+    it = tokenize.tokenize(
+        io.BytesIO(_source_code_cache[filename].encode("utf-8")).readline
+    )
+    next(it, None)  # Skips the first element which is always token.ENCODING
+    for tok in it:
+        yield tok
 
 
 def get_code_str_and_surrounding(frame):
@@ -89,22 +102,22 @@ def get_code_str_and_surrounding(frame):
 
     Both lineno and surrounding are 1-based, aka the smallest lineno is 1.
     """
-    # Step 0. Gets lineno relative to frame.
-    frame_source = inspect.getsource(inspect.getmodule(frame))  # TODO: Caches result.
-    toks = list(_tokenize_string(frame_source))  # assuming no exception.
     lineno = _get_lineno(frame)
 
-    # Step 1. Groups toks by logical lines.
-    logical_line_start = 1  # skips first element token.ENCODING
-    groups = []
-    for i in range(logical_line_start, len(toks)):
-        if toks[i].type == token.NEWLINE:
-            groups.append(toks[logical_line_start : i + 1])
-            logical_line_start = i + 1
+    # Groups tokens by logical lines.
+    # [tok1, tok2, NEWLINE, tok3, NEWLINE, tok4, NEWLINE] will result in
+    # [[tok1, tok2], [tok3], [tok4]]
+    groups = [
+        list(group)
+        for is_newline, group in itertools.groupby(
+            _get_module_tokens(frame), lambda tok: tok.type == token.NEWLINE
+        )
+        if not is_newline
+    ]
 
-    # Step 2. Finds matching group.
+    # Given a lineno, locates the logical line that contains this line.
     if len(groups) == 1:
-        return (frame_source, Surrounding(start_lineno=lineno, end_lineno=lineno))
+        return (groups[0], Surrounding(start_lineno=lineno, end_lineno=lineno))
 
     for group, next_group in zip(groups[:-1], groups[1:]):
         start_lineno, end_lineno = group[0].start[0], group[-1].end[0]
