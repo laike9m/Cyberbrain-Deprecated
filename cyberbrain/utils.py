@@ -10,6 +10,7 @@ import token
 import tokenize
 import typing
 from functools import lru_cache
+from typing import List, Tuple
 
 import astor
 import black
@@ -76,20 +77,34 @@ def _get_lineno(frame) -> int:
     return lineno_at_lasti
 
 
-_source_code_cache = {}
+_tokens_cache = {}
 
 
-def _get_module_tokens(frame):
-    """Tokenizes module's source code that the frame belongs to, yields tokens."""
+def _get_module_token_groups(frame) -> List[List[Tuple]]:
+    """Tokenizes module's source code that the frame belongs to, yields tokens.
+
+    Return value is a list, with every element being a list of tokens that belong to the
+    same logical line.
+    """
     module, filename = inspect.getmodule(frame), inspect.getsourcefile(frame)
-    if filename not in _source_code_cache:
-        _source_code_cache[filename] = inspect.getsource(module)
-    it = tokenize.tokenize(
-        io.BytesIO(_source_code_cache[filename].encode("utf-8")).readline
-    )
+    if filename in _tokens_cache:
+        return _tokens_cache[filename]
+
+    source_code = inspect.getsource(module)
+    it = tokenize.tokenize(io.BytesIO(source_code.encode("utf-8")).readline)
     next(it, None)  # Skips the first element which is always token.ENCODING
-    for tok in it:
-        yield tok
+    # Groups tokens by logical lines.
+    # [tok1, tok2, NEWLINE, tok3, NEWLINE, tok4, NEWLINE] will result in
+    # [[tok1, tok2], [tok3], [tok4]]
+    groups = [
+        list(group)
+        for is_newline, group in itertools.groupby(
+            it, lambda tok: tok.type == token.NEWLINE
+        )
+        if not is_newline
+    ]
+    _tokens_cache[filename] = groups
+    return groups
 
 
 def get_code_str_and_surrounding(frame):
@@ -103,17 +118,7 @@ def get_code_str_and_surrounding(frame):
     Both lineno and surrounding are 1-based, aka the smallest lineno is 1.
     """
     lineno = _get_lineno(frame)
-
-    # Groups tokens by logical lines.
-    # [tok1, tok2, NEWLINE, tok3, NEWLINE, tok4, NEWLINE] will result in
-    # [[tok1, tok2], [tok3], [tok4]]
-    groups = [
-        list(group)
-        for is_newline, group in itertools.groupby(
-            _get_module_tokens(frame), lambda tok: tok.type == token.NEWLINE
-        )
-        if not is_newline
-    ]
+    groups = _get_module_token_groups(frame)
 
     # Given a lineno, locates the logical line that contains this line.
     if len(groups) == 1:
