@@ -8,8 +8,9 @@ from pathlib import PurePath
 from typing import Dict, List, Union
 
 import black
+import executing
 
-from . import callsite, utils
+from . import utils
 from .basis import FrameID, SourceLocation, Surrounding
 from .vars import Vars
 
@@ -112,9 +113,7 @@ class Call(Computation):
     def create(frame):
         caller_frame = frame.f_back
         _, surrounding = utils.get_code_str_and_surrounding(caller_frame)
-        callsite_ast, _ = callsite.get_callsite_ast(
-            caller_frame.f_code, caller_frame.f_lasti
-        )
+        callsite_ast = executing.Source.executing(caller_frame).node
         # If it's not ast.Call, like ast.ListComp, ignore for now.
         if not isinstance(callsite_ast, ast.Call):
             return None

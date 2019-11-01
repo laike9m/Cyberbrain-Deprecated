@@ -2,63 +2,9 @@
 
 import ast
 import inspect
-import sys
-
-import astor
-from hamcrest import assert_that, equal_to
 
 from . import callsite
 from .basis import ID
-
-
-def assert_ast(ast_node, code_str):
-    assert_that(astor.to_source(ast_node).strip(), equal_to(code_str))
-
-
-def test_get_callsite_ast():
-    x = 1
-
-    def f(*args, **kwargs):
-        callsite_frame = sys._getframe(1)
-        return callsite.get_callsite_ast(callsite_frame.f_code, callsite_frame.f_lasti)
-
-    def g(*args, **kwargs):
-        callsite_frame = sys._getframe(1)
-        callsite_ast, outer_callsite_ast = callsite.get_callsite_ast(
-            callsite_frame.f_code, callsite_frame.f_lasti
-        )
-        assert_ast(callsite_ast, "g(1, 1)")
-        assert_ast(outer_callsite_ast, "f(x, g(1, 1), True if x else False)")
-
-    callsite_ast, outer_callsite_ast = f(1)
-    # We can't use assert here cause pytest will modify source and mess up things.
-    assert_ast(callsite_ast, "f(1)")
-    assert_that(outer_callsite_ast, equal_to(None))
-
-    callsite_ast, outer_callsite_ast = f(1, x=2)
-    # We can't use assert here cause pytest will modify source and mess up things.
-    assert_ast(callsite_ast, "f(1, x=2)")
-    assert_that(outer_callsite_ast, equal_to(None))
-
-    callsite_ast, outer_callsite_ast = f(x, g(1, 1), True if x else False)
-    assert_ast(callsite_ast, "f(x, g(1, 1), True if x else False)")
-    assert_that(outer_callsite_ast, equal_to(None))
-
-    # Tests multiline won't affect processing ast.
-    # fmt: off
-    callsite_ast, outer_callsite_ast = f(x,
-                                         g(1, 1),
-                                         True if x else False)
-    assert_ast(callsite_ast, "f(x, g(1, 1), True if x else False)")
-    assert_that(outer_callsite_ast, equal_to(None))
-    # fmt: on
-
-    def h(x):
-        return x
-
-    callsite_ast, outer_callsite_ast = h(h(h(f(1))))
-    assert_ast(callsite_ast, "f(1)")
-    assert_ast(outer_callsite_ast, "h(f(1))")
 
 
 def _get_call(module_ast: ast.Module) -> ast.Call:

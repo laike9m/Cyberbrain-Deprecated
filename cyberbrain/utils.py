@@ -14,7 +14,6 @@ from typing import List, Tuple
 
 import astor
 import black
-import bytecode
 import deepdiff
 
 from .basis import ID, Surrounding
@@ -80,7 +79,7 @@ def _get_lineno(frame) -> int:
 _tokens_cache = {}
 
 
-def _get_module_token_groups(frame) -> List[List[Tuple]]:
+def _get_module_token_groups(frame) -> List[List[tokenize.TokenInfo]]:
     """Tokenizes module's source code that the frame belongs to, yields tokens.
 
     Return value is a list, with every element being a list of tokens that belong to the
@@ -107,7 +106,7 @@ def _get_module_token_groups(frame) -> List[List[Tuple]]:
     return groups
 
 
-def get_code_str_and_surrounding(frame):
+def get_code_str_and_surrounding(frame) -> Tuple[str, Surrounding]:
     """Gets code string and surrounding information for line event.
 
     The reason to record both code_str and surrounding is because code_str is not
@@ -118,11 +117,14 @@ def get_code_str_and_surrounding(frame):
     Both lineno and surrounding are 1-based, aka the smallest lineno is 1.
     """
     lineno = _get_lineno(frame)
-    groups = _get_module_token_groups(frame)
+    groups: List[List[tokenize.TokenInfo]] = _get_module_token_groups(frame)
 
     # Given a lineno, locates the logical line that contains this line.
     if len(groups) == 1:
-        return (groups[0], Surrounding(start_lineno=lineno, end_lineno=lineno))
+        return (
+            inspect.getsource(frame),
+            Surrounding(start_lineno=lineno, end_lineno=lineno),
+        )
 
     for group, next_group in zip(groups[:-1], groups[1:]):
         start_lineno, end_lineno = group[0].start[0], group[-1].end[0]
@@ -137,6 +139,8 @@ def get_code_str_and_surrounding(frame):
         group.pop(0)
     # When untokenizing, Python adds \\\n for absent lines(because lineno in
     # group doesn't start from 1), removes them.
+    # Note that since we've removed the leading ENCODING token, untokenize will return
+    # a str instead of encoded bytes.
     return (
         tokenize.untokenize(group).lstrip("\\\n"),
         Surrounding(start_lineno=group[0].start[0], end_lineno=group[-1].end[0]),
@@ -184,7 +188,3 @@ def ast_to_str(code_ast: ast.AST) -> str:
 
 def dedent(text: str):
     return "\n".join([line.strip() for line in text.splitlines()])
-
-
-def is_call_instruction(instr: bytecode.Instr):
-    return instr.name.startswith("CALL_")
