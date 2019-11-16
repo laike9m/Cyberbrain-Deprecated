@@ -8,7 +8,6 @@ resources:
     type: github
     endpoint: github
     name: tox-dev/azure-pipelines-template
-    ref: refs/tags/0.2
 
 trigger:
   batch: true
