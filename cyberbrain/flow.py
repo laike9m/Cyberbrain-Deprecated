@@ -1,6 +1,7 @@
 """Execution flow that represents a program's execution."""
 
 import ast
+import inspect
 import itertools
 import re
 from collections import defaultdict, namedtuple
@@ -47,7 +48,6 @@ class TrackingMetadata:
         self,
         vars: Dict[ID, Any],
         code_str: str = None,
-        param_to_arg: Dict[ID, ID] = None,
         vars_before_return=None,
         source_location: SourceLocation = None,
     ):
@@ -55,8 +55,6 @@ class TrackingMetadata:
         self.source_location = source_location
         self.code_str = code_str
         self.code_ast = utils.parse_code_str(code_str)
-        if param_to_arg:
-            self.set_param_arg_mapping(param_to_arg)
 
         # It seems that tracking and data should all be flattened, aka they should    sdss
         # simply be a mapping of ID -> value. When backtracing, we don't really care
@@ -74,7 +72,11 @@ class TrackingMetadata:
         self.return_value = _dummy
         self.is_relevant_return = False
 
-    def set_param_arg_mapping(self, param_to_arg: Dict[ID, ID]):
+    def set_param_arg_mapping(self, arg_values: inspect.ArgInfo):
+        param_to_arg = callsite.get_param_to_arg(
+            self.code_ast.body[0].value, arg_values
+        )
+        self.param_values = arg_values.locals  # Maps param name to its value.
         self.param_to_arg = param_to_arg
         self.arg_to_param = {}
         for param, args in param_to_arg.items():
@@ -334,11 +336,7 @@ def replace_calls(frame_groups: Dict[FrameID, List[NodeInfo]]):
                 node.code_ast = utils.parse_code_str(node.code_str)
                 if node.type is NodeType.CALL:
                     assert arg_values, "call node should have arg_values."
-                    node.set_param_arg_mapping(
-                        callsite.get_param_to_arg(
-                            node.code_ast.body[0].value, arg_values
-                        )
-                    )
+                    node.set_param_arg_mapping(arg_values)
 
             # Deals with some special cases.
             assert len(node.code_ast.body) == 1

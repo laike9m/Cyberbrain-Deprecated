@@ -1,6 +1,8 @@
 """Unit tests for flow."""
 
-from . import backtrace, format
+import inspect
+
+from . import backtrace
 from .flow import Node, Flow
 from .basis import ID
 
@@ -64,18 +66,18 @@ def create_flow():
 
     # Creates nodes.
     node_start = Node(GLOBAL_FRAME, code_str="fo = 1", vars={**functions})
-    node_a = Node(
-        GLOBAL_FRAME,
-        code_str="func_a(fo)",
-        param_to_arg={ID("foo"): {ID("fo")}},
-        vars={ID("fo"): 1, **functions},
+    node_a = Node(GLOBAL_FRAME, code_str="func_a(fo)", vars={ID("fo"): 1, **functions})
+    node_a.set_param_arg_mapping(
+        inspect.ArgInfo(args=["foo"], varargs=None, keywords=None, locals={"foo": 1})
     )
     node_b = Node(FUNC_A_FRAME, code_str="ba = [foo]", vars={ID("foo"): 1, **functions})
     node_c = Node(
         FUNC_A_FRAME,
         code_str="func_c(ba)",
-        param_to_arg={ID("baa"): {ID("ba")}},
         vars={ID("foo"): 1, ID("ba"): [1], **functions},
+    )
+    node_c.set_param_arg_mapping(
+        inspect.ArgInfo(args=["baa"], varargs=None, keywords=None, locals={"baa": [1]})
     )
     node_d = Node(
         FUNC_C_FRAME, code_str="baa.append(None)", vars={ID("baa"): [1], **functions}
@@ -89,8 +91,12 @@ def create_flow():
     node_f = Node(
         FUNC_A_FRAME,
         code_str="foo = func_f(ba)",
-        param_to_arg={ID("bar"): {ID("ba")}},
         vars={ID("foo"): 1, ID("ba"): [1, None, "?"], **functions},
+    )
+    node_f.set_param_arg_mapping(
+        inspect.ArgInfo(
+            args=["bar"], varargs=None, keywords=None, locals={"bar": [1, None, "?"]}
+        )
     )
     node_g = Node(
         FUNC_F_FRAME,

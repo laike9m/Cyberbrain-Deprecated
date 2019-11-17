@@ -2,7 +2,7 @@
 
 <img src="https://img.shields.io/badge/code%20style-black-000000.svg"> [![Build Status](https://dev.azure.com/laike9m/laike9m/_apis/build/status/laike9m.Cyberbrain?branchName=master)](https://dev.azure.com/laike9m/laike9m/_build/latest?definitionId=1&branchName=master) <img src="https://img.shields.io/badge/python-3.6.7%2B-blue">
 
-<img width="500px" src="https://ae01.alicdn.com/kf/H8409631752a24540927419d7fb445196g.jpg"/>
+<img width="500px" src="images/cb_concept.jpg"/>
 
 
 NOTE: This is a WIP, **DON'T** use it in production.
@@ -42,7 +42,7 @@ func_a(fo)
 
 Run it, a pdf like this will be generated and automatically opened.
 
-<img width="600px" src="https://pic.superbed.cn/item/5d74c79c451253d178e9d58d.jpg">
+<img width="600px" src="images/cb_output.png">
 
 # Developement
 First install [`Poetry`](https://github.com/sdispater/poetry), then run `poetry install`.
