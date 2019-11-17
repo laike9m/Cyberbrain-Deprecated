@@ -6,7 +6,7 @@ import itertools
 from collections import UserDict
 
 
-class Vars(UserDict):
+class Vars(UserDict):  # pylint: disable=too-many-ancestors
     """A class that holds variable values in a trace event."""
 
     def __init__(self, frame):

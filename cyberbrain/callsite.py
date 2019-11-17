@@ -9,9 +9,6 @@ from typing import Dict, Iterable, Set, Tuple
 from . import utils
 from .basis import ID
 
-MARK = "__MARK__"
-
-
 Args = namedtuple("Args", ["args", "kwargs"])
 
 
@@ -66,10 +63,9 @@ def get_param_to_arg(
     f(x = {a: 1, b: 2}, y=1, z=2)
 
     Generates:
-
     {
-        ID('x', (0, 0)): {ID('a', (0,)), ID('b', (0,))},
-        ID('kwargs', (0, 0)): {ID('y', (0,)), ID('z', (0,))}
+        ID('x'): {ID('a'), ID('b')},
+        ID('kwargs'): {ID('y'), ID('z')}
     }
 
     In the future, we *might* record fine grained info.

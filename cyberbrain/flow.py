@@ -72,6 +72,7 @@ class TrackingMetadata:
         self.var_switches: Set[VarSwitch] = []
         self.vars_before_return = vars_before_return
         self.return_value = _dummy
+        self.is_relevant_return = False
 
     def set_param_arg_mapping(self, param_to_arg: Dict[ID, ID]):
         self.param_to_arg = param_to_arg
@@ -153,6 +154,18 @@ class Node:
             super().__setattr__(name, value)
         else:
             setattr(self.metadata, name, value)
+
+    @property
+    def shown_in_output(self) -> bool:
+        """Whether this node should be shown in output."""
+        # TODO: Only inserts call node if there are var changes inside the call.
+        return (
+            self.metadata.is_relevant_return
+            or self.metadata.var_appearances
+            or self.metadata.var_modifications
+            or self.is_target
+            or self.is_callsite
+        )
 
     @property
     def is_callsite(self):
@@ -331,19 +344,19 @@ def replace_calls(frame_groups: Dict[FrameID, List[NodeInfo]]):
             assert len(node.code_ast.body) == 1
             stmt = node.code_ast.body[0]
 
-            if (
-                isinstance(stmt, ast.Expr)
-                and isinstance(stmt.value, ast.Name)
-                and re.match(r"r[\d]+_", stmt.value.id)
-                and node.prev
-            ):
+            # Checks if LHS is ri_ and ri_ only, e.g. r1_ = f(1, 2)
+            lhs_is_ri = lambda stmt: (
+                isinstance(stmt.value, ast.Name) and re.match(r"r[\d]+_", stmt.value.id)
+            )
+
+            if isinstance(stmt, ast.Expr) and lhs_is_ri(stmt):
                 # Current node is "r0_", previous node is "r0_ = f()".
                 # This happens when the whole line is just "f()".
                 # Solution: removes current node, restores previous node to "f()".
                 assert node.type is NodeType.LINE
                 prev = node.prev
                 assert (
-                    prev is not None
+                    prev
                     and prev.type is NodeType.CALL
                     and prev.code_str.startswith(f"{stmt.value.id}")
                 )
@@ -352,12 +365,7 @@ def replace_calls(frame_groups: Dict[FrameID, List[NodeInfo]]):
                     node.next.prev = prev
                 prev.code_str = prev.code_str.split("=", 1)[1].lstrip()
                 prev.code_ast = utils.parse_code_str(node.code_str)
-            elif (
-                isinstance(stmt, ast.Assign)
-                and isinstance(stmt.value, ast.Name)
-                and re.match(r"r[\d]+_", stmt.value.id)
-                and node.prev
-            ):
+            elif isinstance(stmt, ast.Assign) and lhs_is_ri(stmt):
                 # Current node represents "a = r0_", previous node is "r0_ = f()"
                 # Solution: changes previous to 'a = f()', discards current node.
                 # We don't need to modify frame_groups, it's not used in tracing.

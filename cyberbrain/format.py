@@ -63,6 +63,9 @@ class NodeView:
         if self.is_target:
             output += "🐸🐸🐸🐸🐸🐸"
 
+        if self.is_relevant_return:
+            output += f"return {self.return_value}"
+
         return output
 
     @property
@@ -83,8 +86,7 @@ def generate_subgraph(frame_start: NodeView):
     name = str(frame_start.frame_id) + "_code"
     lines: List[str] = []
     while current is not None:
-        # TODO: Only inserts call node if there are var changes inside the call.
-        if not (current.var_changes or current.is_target or current.is_callsite):
+        if not current.shown_in_output:
             current = current.next
             continue
         # Syntax hilight is very hard in Graphviz, because modern highlighters don't use

@@ -1,15 +1,7 @@
 """Backtraces var change from target to program start."""
 
-
-from crayons import cyan, yellow
-
 from . import utils
 from .flow import Flow, Node, VarSwitch
-
-
-def _print_node(current: Node, next: Node):
-    """For debug."""
-    print(yellow("current is: "), f"{current}\n", cyan("next is: "), f"{next}\n")
 
 
 def trace_flow(flow: Flow):
@@ -57,6 +49,8 @@ def trace_flow(flow: Flow):
             if var_change.id in args:
                 returned_from.add_tracking(current.arg_to_param[var_change.id])
             elif var_change.id in ids_assigned_to:
+                # The return statement contributes to relevant changes.
+                returned_from.is_relevant_return = True
                 returned_from.add_tracking(*utils.find_names(returned_from.code_ast))
         returned_from.update_var_changes_before_return()
 
