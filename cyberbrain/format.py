@@ -113,7 +113,7 @@ def generate_subgraph(frame_start: NodeView):
                 # TODO: Ideally this should be param → argument expression,
                 # e.g. x → [1, 2, 3], so that users can see the passed value.
                 label="\n".join(
-                    f" {','.join(args)} → {param} ({current.param_values[param]})"
+                    f" {','.join(args)} → {param}, {current.step_into.vars[param]}"
                     for param, args in current.param_to_arg.items()
                 ),
             )

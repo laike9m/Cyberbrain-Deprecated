@@ -76,7 +76,6 @@ class TrackingMetadata:
         param_to_arg = callsite.get_param_to_arg(
             self.code_ast.body[0].value, arg_values
         )
-        self.param_values = arg_values.locals  # Maps param name to its value.
         self.param_to_arg = param_to_arg
         self.arg_to_param = {}
         for param, args in param_to_arg.items():
