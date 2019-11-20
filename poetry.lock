@@ -347,6 +347,14 @@ type = "git"
 url = "https://github.com/PyCQA/pylint.git"
 
 [[package]]
+category = "main"
+description = "A development tool to measure, monitor and analyze the memory behavior of Python objects."
+name = "pympler"
+optional = false
+python-versions = "*"
+version = "0.8"
+
+[[package]]
 category = "dev"
 description = "Python parsing module"
 name = "pyparsing"
@@ -541,7 +549,7 @@ version = "0.6.0"
 more-itertools = "*"
 
 [metadata]
-content-hash = "13cbc9a66cf8d0f994a26d2e110d7df47c213771e8f254f0fc7cb5218c3f0bc3"
+content-hash = "9190f3173eb81ad280e821ff121ada679cac981858a23d80f01af302cd11dfd3"
 python-versions = ">= 3.6.7"
 
 [metadata.hashes]
@@ -580,6 +588,7 @@ pluggy = ["0db4b7601aae1d35b4a033282da476845aa19185c1e6964b25cf324b5e4ec3e6", "f
 py = ["64f65755aee5b381cea27766a3a147c3f15b9b6b9ac88676de66ba2ae36793fa", "dc639b046a6e2cff5bbe40194ad65936d6ba360b52b3c3fe1d08a82dd50b5e53"]
 pyhamcrest = ["6b672c02fdf7470df9674ab82263841ce8333fb143f32f021f6cb26f0e512420", "7a4bdade0ed98c699d728191a058a60a44d2f9c213c51e2dd1e6fb42f2c6128a", "8ffaa0a53da57e89de14ced7185ac746227a8894dbd5a3c718bf05ddbd1d56cd", "bac0bea7358666ce52e3c6c85139632ed89f115e9af52d44b3c36e0bf8cf16a9", "f30e9a310bcc1808de817a92e95169ffd16b60cbc5a016a49c8d0e8ababfae79"]
 pylint = []
+pympler = ["f74cd2982c5cd92ded55561191945616f2bb904a0ae5cdacdb566c6696bdb922"]
 pyparsing = ["6f98a7b9397e206d78cc01df10131398f1c8b8510a2f4d97d9abd82e1aacdd80", "d9338df12903bbf5d65a0e4e87c2161968b10d2e489652bb47001d82a9b028b4"]
 pytest = ["5d0d20a9a66e39b5845ab14f8989f3463a7aa973700e6cdf02db69da9821e738", "692d9351353ef709c1126266579edd4fd469dcf6b5f4f583050f72161d6f3592"]
 pytest-forked = ["1805699ed9c9e60cb7a8179b8d4fa2b8898098e82d229b0825d8095f0f261100", "1ae25dba8ee2e56fb47311c9638f9e58552691da87e82d25b0ce0e4bf52b7d87"]

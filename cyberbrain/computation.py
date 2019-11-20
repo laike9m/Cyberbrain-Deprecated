@@ -9,6 +9,7 @@ from typing import Dict, List, Union
 
 import black
 import executing
+from pympler import asizeof
 
 from . import utils
 from .basis import FrameID, SourceLocation, Surrounding
@@ -21,9 +22,18 @@ class Computation(metaclass=abc.ABCMeta):
     code_str: str
     event_type: str
     source_location: SourceLocation
+    VARS_ATTR_NAME = "vars"
+    vars_total_size = 0
 
+    def __new__(cls, **kwargs):
+        """Automatically sums up size of vars."""
+        assert cls.VARS_ATTR_NAME in kwargs
+        Computation.vars_total_size += asizeof.asizeof(kwargs[cls.VARS_ATTR_NAME])
+        return super().__new__(cls)
+
+    @abc.abstractmethod
     def to_dict(self):
-        """Serializes attrs to dict."""
+        """Serializes attrs to dict. Subclasses must override this method."""
         surrounding = self.source_location.surrounding
         if surrounding.start_lineno == surrounding.end_lineno:
             lineno_str = surrounding.start_lineno
