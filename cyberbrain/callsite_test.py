@@ -70,3 +70,26 @@ def test_get_param_to_arg():
     }
 
     # TODO: tests nested call.
+
+
+def test_get_param_to_arg_from_method():
+    class MyClass:
+        """Class under test."""
+
+        def __init__(self, x: int, y: int):
+            self.x = x
+            self.y = y
+            self.arg_values = inspect.getargvalues(inspect.currentframe())
+
+        def __eq__(self, other):
+            return self.x == other.x and self.y == other.y
+
+        def increment(self):
+            self.x += 1
+            self.y += 1
+
+    # Tests implicit self is ignored.
+    arg_values = MyClass(1, y=2).arg_values
+    assert callsite.get_param_to_arg(
+        _get_call(ast.parse("MyClass(1, y=2)")), arg_values
+    ) == {ID("x"): set(), ID("y"): set()}

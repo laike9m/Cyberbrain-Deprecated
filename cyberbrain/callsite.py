@@ -37,8 +37,9 @@ def get_param_arg_pairs(
     pos_args = callsite_ast.args
     kw_args = callsite_ast.keywords
     # Builds a parameter list that expands *args and **kwargs to their length, so that
-    # we can emit a 1-to-1 pair of (arg, param)
-    parameters = arg_info.args[:]
+    # we can emit a 1-to-1 pair of (arg, param).
+    # Excludes self since it's not explicitly passed from caller.
+    parameters = [arg for arg in arg_info.args if arg != "self"]
 
     # There could be no *args or *kwargs in signature.
     if _ARGS is not None:
