@@ -7,14 +7,14 @@ from absl import flags
 
 from . import backtrace, flow, format, testing, utils
 from .basis import _dummy
-from .computation import computation_manager
+from .computation import computation_manager, Computation
 
 FLAGS = flags.FLAGS
 
 # run: Invoked by users.
 # test: Verifies cyberbrain's internal state is the same as golden.
 # golden: Generates golden file.
-# debug: Prints cyberbrain's internal state, but don't do assertion.
+# debug: Prints cyberbrain's internal state, but don't do assertion or dumps files.
 flags.DEFINE_enum(
     "mode",
     "run",
@@ -22,6 +22,11 @@ flags.DEFINE_enum(
     "The mode which Cyberbrain runs in.",
 )
 flags.DEFINE_string("test_dir", None, "Directory to save test output to.")
+flags.DEFINE_string(
+    "backtrace_stop_at",
+    None,
+    "Line to enable breakpoint for. Backtrace will stop when node.code_str matches this flag.",
+)
 
 
 def global_tracer(frame, event_type, arg):
@@ -71,15 +76,23 @@ def register(target=_dummy):
     FLAGS(sys.argv)  # See https://github.com/chris-chris/pysc2-examples/issues/5.
     sys.settrace(None)
     global_frame.f_trace = None
-    if target is not _dummy:
-        should_dump_output = FLAGS.mode in {"test", "golden", "debug"}
-        if should_dump_output:
-            # Even if build flow fails, comp will still be dumped.
-            testing.dump_computation(computation_manager)
-        execution_flow = flow.build_flow(computation_manager)
-        backtrace.trace_flow(execution_flow)
-        graph_name = os.path.basename(FLAGS.test_dir) if FLAGS.test_dir else "output"
-        if FLAGS.mode in {"run", "debug"}:
-            format.generate_output(execution_flow, graph_name)
-        if should_dump_output:
-            testing.dump_flow(execution_flow)
+    if target is _dummy:
+        return
+
+    should_dump_output = FLAGS.mode in {"test", "golden", "debug"}
+    if should_dump_output:
+        # Even if build flow fails, comp will still be dumped.
+        testing.dump_computation(computation_manager)
+    execution_flow = flow.build_flow(computation_manager)
+    testing.print_if_debug(testing.get_dumpable_flow(execution_flow))
+
+    backtrace.trace_flow(execution_flow)
+    graph_name = os.path.basename(FLAGS.test_dir) if FLAGS.test_dir else "output"
+    if FLAGS.mode in {"run", "debug"}:
+        format.generate_output(execution_flow, graph_name)
+    if should_dump_output:
+        testing.dump_flow(execution_flow)
+
+    if FLAGS.mode == "debug":
+        # TODO: Profile time.
+        print(f"Vars total size: {Computation.vars_total_size}")

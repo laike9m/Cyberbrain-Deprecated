@@ -26,7 +26,7 @@ class Computation(metaclass=abc.ABCMeta):
     vars_total_size = 0
 
     def __new__(cls, **kwargs):
-        """Automatically sums up size of vars."""
+        """Automatically sums up the size of vars."""
         assert cls.VARS_ATTR_NAME in kwargs
         Computation.vars_total_size += asizeof.asizeof(kwargs[cls.VARS_ATTR_NAME])
         return super().__new__(cls)

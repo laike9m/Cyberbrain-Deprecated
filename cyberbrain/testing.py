@@ -5,7 +5,7 @@ import os
 from collections import defaultdict
 from os.path import basename
 from pprint import pprint
-from typing import Dict
+from typing import Dict, List
 
 from absl import flags
 from crayons import yellow  # pylint: disable=E0611
@@ -30,6 +30,12 @@ class _SetEncoder(json.JSONEncoder):
         return json.JSONEncoder.default(self, o)
 
 
+def print_if_debug(content):
+    """Prints content if in debug mode."""
+    if FLAGS.mode == "debug":
+        pprint(content)
+
+
 def dump_computation(cm: ComputationManager):
     """Converts computations to a JSON and writes to stdout.
 
@@ -45,7 +51,7 @@ def dump_computation(cm: ComputationManager):
         str(fid): [c.to_dict() for c in comps] for fid, comps in cm.frame_groups.items()
     }
     if FLAGS.mode == "debug":
-        pprint(f"Computation is:\n{output}")
+        pprint(f"Computation is:\n{json.dumps(obj=output, indent=2, cls=_SetEncoder)}")
         return
 
     with open(filepath, "w") as f:
@@ -79,17 +85,13 @@ def _dump_node(node: Node) -> Dict:
     return result
 
 
+def get_dumpable_flow(flow: Flow) -> List[Dict]:
+    """Transforms flow to a dumpable representation."""
+    return [_dump_node(node) for node in flow]
+
+
 def dump_flow(flow: Flow):
-    output = []
-
-    def traverse_node(node: Node):
-        while node is not None:
-            output.append(_dump_node(node))
-            if node.is_callsite:
-                traverse_node(node.step_into)
-            node = node.next
-
-    traverse_node(flow.start)
+    output = get_dumpable_flow(flow)
 
     if FLAGS.mode == "test":
         filepath = os.path.join(FLAGS.test_dir, FLOW_TEST_OUTPUT)
@@ -98,7 +100,7 @@ def dump_flow(flow: Flow):
         print(yellow("Generating test data: " + filepath))
 
     if FLAGS.mode == "debug":
-        pprint(f"Flow is:\n{output}")
+        pprint(f"Flow is:\n{json.dumps(obj=output, indent=2, cls=_SetEncoder)}")
         return
 
     with open(filepath, "w") as f:

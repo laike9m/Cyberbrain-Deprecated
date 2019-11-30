@@ -139,13 +139,13 @@ def test_traverse_flow():
     backtrace.trace_flow(flow)
     assert [str(node) for node in flow] == [
         "<Node fo = 1>",
+        "<Node func_a(fo)>",
         "<Node ba = [foo]>",
+        "<Node func_c(ba)>",
         "<Node baa.append(None)>",
         "<Node baa.append('?')>",
-        "<Node func_c(ba)>",
+        "<Node foo = func_f(ba)>",
         "<Node x = len(bar)>",
         "<Node return x>",
-        "<Node foo = func_f(ba)>",
         "<Node cyberbrain.register(foo)>",
-        "<Node func_a(fo)>",
     ]

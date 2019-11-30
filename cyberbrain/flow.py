@@ -106,6 +106,8 @@ class TrackingMetadata:
         that don't exist in previous nodes.
         """
         for new_id in new_ids:
+            if new_id == "self":
+                breakpoint()
             if new_id in self.vars:
                 self.tracking.add(new_id)
 
@@ -232,7 +234,6 @@ class Flow:
         self.target = target
         self.target.is_target = True
         self._update_target_id()
-        self._cursor = None  # Current position in iteration.
 
     def _update_target_id(self):
         """Gets ID('x') out of cyberbrain.register(x)."""
@@ -249,10 +250,9 @@ class Flow:
     def _trace_frame(self, current: Node):
         """Iterates and yields node in the frame where node is at."""
         while current is not None:
-            self._cursor = current
+            yield current
             if current.is_callsite:
                 yield from self._trace_frame(current.step_into)
-            yield current
             current = current.next
 
 
