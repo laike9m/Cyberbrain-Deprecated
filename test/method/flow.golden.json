@@ -1,0 +1,104 @@
+[
+  {
+    "code": "inst = MyClass(1, 2)",
+    "next": "inst.increment()",
+    "prev": "",
+    "step_into": "self.x = x",
+    "returned_from": "self.y = y",
+    "var_changes": [
+      "appear inst=<__main__.MyClass object at 0x102962a90>\n"
+    ],
+    "location": "method.py: <module>",
+    "param_to_arg": {
+      "x": [],
+      "y": []
+    }
+  },
+  {
+    "code": "self.x = x",
+    "next": "self.y = y",
+    "prev": "inst = MyClass(1, 2)",
+    "step_into": "",
+    "returned_from": "",
+    "var_changes": [
+      "modify self <__main__.MyClass object at 0x102942ed0> -> <__main__.MyClass object at 0x102942490>\n"
+    ],
+    "location": "method.py: __init__",
+    "tracking": [
+      "self",
+      "x"
+    ]
+  },
+  {
+    "code": "self.y = y",
+    "next": "",
+    "prev": "self.x = x",
+    "step_into": "",
+    "returned_from": "",
+    "var_changes": [
+      "modify self <__main__.MyClass object at 0x102942490> -> <__main__.MyClass object at 0x102955150>\n"
+    ],
+    "location": "method.py: __init__",
+    "tracking": [
+      "self"
+    ]
+  },
+  {
+    "code": "inst.increment()",
+    "next": "cyberbrain.register(inst)",
+    "prev": "inst = MyClass(1, 2)",
+    "step_into": "self.x += 1",
+    "returned_from": "self.y += 1",
+    "var_changes": [
+      "modify inst <__main__.MyClass object at 0x102962a90> -> <__main__.MyClass object at 0x102955d10>\n"
+    ],
+    "location": "method.py: <module>",
+    "tracking": [
+      "inst"
+    ],
+    "param_to_arg": {
+      "self": [
+        "inst"
+      ]
+    }
+  },
+  {
+    "code": "self.x += 1",
+    "next": "self.y += 1",
+    "prev": "inst.increment()",
+    "step_into": "",
+    "returned_from": "",
+    "var_changes": [
+      "modify self <__main__.MyClass object at 0x102965210> -> <__main__.MyClass object at 0x102962650>\n"
+    ],
+    "location": "method.py: increment",
+    "tracking": [
+      "self"
+    ]
+  },
+  {
+    "code": "self.y += 1",
+    "next": "",
+    "prev": "self.x += 1",
+    "step_into": "",
+    "returned_from": "",
+    "var_changes": [
+      "modify self <__main__.MyClass object at 0x102962650> -> <__main__.MyClass object at 0x102955e50>\n"
+    ],
+    "location": "method.py: increment",
+    "tracking": [
+      "self"
+    ]
+  },
+  {
+    "code": "cyberbrain.register(inst)",
+    "next": "",
+    "prev": "inst.increment()",
+    "step_into": "",
+    "returned_from": "",
+    "location": "method.py: <module>",
+    "tracking": [
+      "inst"
+    ]
+  }
+]

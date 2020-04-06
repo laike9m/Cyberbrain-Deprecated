@@ -85,3 +85,7 @@ def test_multicall(run_scripts_and_compare):
 
 def test_doc_example(run_scripts_and_compare):
     run_scripts_and_compare("doc_example", "doc_example.py")
+
+
+def test_method(run_scripts_and_compare):
+    run_scripts_and_compare("method", "method.py")

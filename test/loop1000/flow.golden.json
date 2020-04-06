@@ -1,0 +1,204 @@
+[
+  {
+    "code": "class MyClass:",
+    "next": "inst = MyClass(1, 2)",
+    "prev": "",
+    "step_into": "",
+    "returned_from": "",
+    "location": "loop1000.py: <module>"
+  },
+  {
+    "code": "inst = MyClass(1, 2)",
+    "next": "for _ in range(3):",
+    "prev": "class MyClass:",
+    "step_into": "self.x = x",
+    "returned_from": "self.y = y",
+    "var_changes": [
+      "appear inst=<__main__.MyClass object at 0x1093b17d0>\n"
+    ],
+    "location": "loop1000.py: <module>",
+    "param_to_arg": {
+      "x": [],
+      "y": []
+    }
+  },
+  {
+    "code": "self.x = x",
+    "next": "self.y = y",
+    "prev": "inst = MyClass(1, 2)",
+    "step_into": "",
+    "returned_from": "",
+    "var_changes": [
+      "modify self <__main__.MyClass object at 0x1093ba410> -> <__main__.MyClass object at 0x1093ba090>\n"
+    ],
+    "location": "loop1000.py: __init__",
+    "tracking": [
+      "self",
+      "x",
+      "y"
+    ]
+  },
+  {
+    "code": "self.y = y",
+    "next": "",
+    "prev": "self.x = x",
+    "step_into": "",
+    "returned_from": "",
+    "var_changes": [
+      "modify self <__main__.MyClass object at 0x1093ba090> -> <__main__.MyClass object at 0x1093b1310>\n"
+    ],
+    "location": "loop1000.py: __init__",
+    "tracking": [
+      "self",
+      "y"
+    ]
+  },
+  {
+    "code": "for _ in range(3):",
+    "next": "inst.increment()",
+    "prev": "inst = MyClass(1, 2)",
+    "step_into": "",
+    "returned_from": "",
+    "location": "loop1000.py: <module>",
+    "tracking": [
+      "inst"
+    ]
+  },
+  {
+    "code": "inst.increment()",
+    "next": "for _ in range(3):",
+    "prev": "for _ in range(3):",
+    "step_into": "self.x += 1",
+    "returned_from": "self.y += 1",
+    "var_changes": [
+      "modify inst <__main__.MyClass object at 0x1093ba790> -> <__main__.MyClass object at 0x1093ca8d0>\n"
+    ],
+    "location": "loop1000.py: <module>",
+    "tracking": [
+      "inst"
+    ],
+    "param_to_arg": {}
+  },
+  {
+    "code": "self.x += 1",
+    "next": "self.y += 1",
+    "prev": "inst.increment()",
+    "step_into": "",
+    "returned_from": "",
+    "location": "loop1000.py: increment"
+  },
+  {
+    "code": "self.y += 1",
+    "next": "",
+    "prev": "self.x += 1",
+    "step_into": "",
+    "returned_from": "",
+    "location": "loop1000.py: increment"
+  },
+  {
+    "code": "for _ in range(3):",
+    "next": "inst.increment()",
+    "prev": "inst.increment()",
+    "step_into": "",
+    "returned_from": "",
+    "location": "loop1000.py: <module>",
+    "tracking": [
+      "inst"
+    ]
+  },
+  {
+    "code": "inst.increment()",
+    "next": "for _ in range(3):",
+    "prev": "for _ in range(3):",
+    "step_into": "self.x += 1",
+    "returned_from": "self.y += 1",
+    "var_changes": [
+      "modify inst <__main__.MyClass object at 0x1093c8910> -> <__main__.MyClass object at 0x1093a9510>\n"
+    ],
+    "location": "loop1000.py: <module>",
+    "tracking": [
+      "inst"
+    ],
+    "param_to_arg": {}
+  },
+  {
+    "code": "self.x += 1",
+    "next": "self.y += 1",
+    "prev": "inst.increment()",
+    "step_into": "",
+    "returned_from": "",
+    "location": "loop1000.py: increment"
+  },
+  {
+    "code": "self.y += 1",
+    "next": "",
+    "prev": "self.x += 1",
+    "step_into": "",
+    "returned_from": "",
+    "location": "loop1000.py: increment"
+  },
+  {
+    "code": "for _ in range(3):",
+    "next": "inst.increment()",
+    "prev": "inst.increment()",
+    "step_into": "",
+    "returned_from": "",
+    "location": "loop1000.py: <module>",
+    "tracking": [
+      "inst"
+    ]
+  },
+  {
+    "code": "inst.increment()",
+    "next": "for _ in range(3):",
+    "prev": "for _ in range(3):",
+    "step_into": "self.x += 1",
+    "returned_from": "self.y += 1",
+    "var_changes": [
+      "modify inst <__main__.MyClass object at 0x1093ba810> -> <__main__.MyClass object at 0x1093a91d0>\n"
+    ],
+    "location": "loop1000.py: <module>",
+    "tracking": [
+      "inst"
+    ],
+    "param_to_arg": {}
+  },
+  {
+    "code": "self.x += 1",
+    "next": "self.y += 1",
+    "prev": "inst.increment()",
+    "step_into": "",
+    "returned_from": "",
+    "location": "loop1000.py: increment"
+  },
+  {
+    "code": "self.y += 1",
+    "next": "",
+    "prev": "self.x += 1",
+    "step_into": "",
+    "returned_from": "",
+    "location": "loop1000.py: increment"
+  },
+  {
+    "code": "for _ in range(3):",
+    "next": "cyberbrain.register(inst)",
+    "prev": "inst.increment()",
+    "step_into": "",
+    "returned_from": "",
+    "location": "loop1000.py: <module>",
+    "tracking": [
+      "inst"
+    ]
+  },
+  {
+    "code": "cyberbrain.register(inst)",
+    "next": "",
+    "prev": "for _ in range(3):",
+    "step_into": "",
+    "returned_from": "",
+    "location": "loop1000.py: <module>",
+    "tracking": [
+      "inst"
+    ]
+  }
+]

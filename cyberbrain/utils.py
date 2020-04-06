@@ -10,13 +10,15 @@ import token
 import tokenize
 import typing
 from functools import lru_cache
+from types import FrameType
 from typing import List, Tuple
 
 import astor
 import black
 import deepdiff
+import executing
 
-from .basis import ID, Surrounding
+from .basis import ID, Surrounding, FrameBelongingType
 
 try:
     from token import NL as token_NL
@@ -188,3 +190,25 @@ def ast_to_str(code_ast: ast.AST) -> str:
 
 def dedent(text: str):
     return "\n".join([line.strip() for line in text.splitlines()])
+
+
+def get_frame_belonging_type(frame: FrameType) -> FrameBelongingType:
+    """Detects the belonging type of the given frame.
+
+    Solution comes from https://github.com/alexmojaki/executing/issues/4.
+    """
+    executing_obj = executing.Source.executing(frame)
+    node = list(executing_obj.statements)[0]
+    nodes_from_current_to_top = [node]
+
+    while hasattr(node, "parent") and node.parent:
+        nodes_from_current_to_top.append(node.parent)
+        node = node.parent
+
+    for n1, n2 in zip(nodes_from_current_to_top[:-1], nodes_from_current_to_top[1:]):
+        if isinstance(n1, ast.FunctionDef) and isinstance(n2, ast.ClassDef):
+            if frame.f_code.co_name == "__init__":
+                return FrameBelongingType.INIT_METHOD
+            return FrameBelongingType.INSTANCE_METHOD
+    else:  # pylint: disable=W0120
+        return FrameBelongingType.UNKNOWN

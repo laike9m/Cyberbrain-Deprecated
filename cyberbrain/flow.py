@@ -11,7 +11,7 @@ from typing import Any, Dict, Iterable, List, Optional, Set, Tuple, Union
 import astor
 
 from . import callsite, utils
-from .basis import ID, FrameID, NodeType, SourceLocation, _dummy
+from .basis import ID, FrameID, NodeType, SourceLocation, _dummy, FrameBelongingType
 from .computation import ComputationManager
 
 
@@ -56,7 +56,7 @@ class TrackingMetadata:
         self.code_str = code_str
         self.code_ast = utils.parse_code_str(code_str)
 
-        # It seems that tracking and data should all be flattened, aka they should    sdss
+        # It seems that tracking and data should all be flattened, aka they should
         # simply be a mapping of ID -> value. When backtracing, we don't really care
         # about where an identifer is defined in, we only care about whether its value
         # has changed during execution.
@@ -72,9 +72,11 @@ class TrackingMetadata:
         self.return_value = _dummy
         self.is_relevant_return = False
 
-    def set_param_arg_mapping(self, arg_values: inspect.ArgInfo):
+    def set_param_arg_mapping(
+        self, arg_values: inspect.ArgInfo, frame_belonging_type: FrameBelongingType
+    ):
         param_to_arg = callsite.get_param_to_arg(
-            self.code_ast.body[0].value, arg_values
+            self.code_ast.body[0].value, arg_values, frame_belonging_type
         )
         self.param_to_arg = param_to_arg
         self.arg_to_param = {}
@@ -106,8 +108,6 @@ class TrackingMetadata:
         that don't exist in previous nodes.
         """
         for new_id in new_ids:
-            if new_id == "self":
-                breakpoint()
             if new_id in self.vars:
                 self.tracking.add(new_id)
 
@@ -335,7 +335,11 @@ def replace_calls(frame_groups: Dict[FrameID, List[NodeInfo]]):
                 node.code_ast = utils.parse_code_str(node.code_str)
                 if node.type is NodeType.CALL:
                     assert arg_values, "call node should have arg_values."
-                    node.set_param_arg_mapping(arg_values)
+
+                    # frame_belonging_type is set on callee node, not caller node.
+                    node.set_param_arg_mapping(
+                        arg_values, node.step_into.frame_id.frame_belonging_type
+                    )
 
             # Deals with some special cases.
             assert len(node.code_ast.body) == 1

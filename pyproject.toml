@@ -27,12 +27,11 @@ deepdiff = "^4.0"
 dataclasses = "^0.6.0"
 graphviz = "^0.11.1"
 absl-py = "^0.7.1"
-black = {version = "*", allows-prereleases = true}
+black = {version = "*", allow-prereleases = true}
 executing = "^0.3.2"
 Pympler = "^0.8.0"
 
 [tool.poetry.dev-dependencies]
-pylint = { git = "https://github.com/PyCQA/pylint.git", branch = "master" }
 pytest = "^4.6"
 tox = "^3.13"
 tox-run-command = "^0.4.0"
@@ -41,6 +40,7 @@ pyhamcrest = "^1.9"
 astpretty = "^1.6"
 pytype = "*"
 pytest-xdist = "^1.30"
+pylint = {git = "https://github.com/PyCQA/pylint.git"}
 
 [tool.pylint.messages_control]
 disable = """

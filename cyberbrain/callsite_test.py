@@ -4,7 +4,7 @@ import ast
 import inspect
 
 from . import callsite
-from .basis import ID
+from .basis import ID, FrameBelongingType
 
 
 def _get_call(module_ast: ast.Module) -> ast.Call:
@@ -81,15 +81,24 @@ def test_get_param_to_arg_from_method():
             self.y = y
             self.arg_values = inspect.getargvalues(inspect.currentframe())
 
-        def __eq__(self, other):
-            return self.x == other.x and self.y == other.y
-
-        def increment(self):
-            self.x += 1
-            self.y += 1
+        def increment(self, delta):
+            self.x += delta
+            self.y += delta
+            self.arg_values = inspect.getargvalues(inspect.currentframe())
 
     # Tests implicit self is ignored.
-    arg_values = MyClass(1, y=2).arg_values
+    inst = MyClass(1, y=2)
     assert callsite.get_param_to_arg(
-        _get_call(ast.parse("MyClass(1, y=2)")), arg_values
+        callsite_ast=_get_call(ast.parse("MyClass(1, y=2)")),
+        arg_info=inst.arg_values,
+        frame_belonging_type=FrameBelongingType.INIT_METHOD,
     ) == {ID("x"): set(), ID("y"): set()}
+
+    # Tests 'inst' can be mapped to 'self'
+    x = 3
+    inst.increment(x)
+    assert callsite.get_param_to_arg(
+        callsite_ast=_get_call(ast.parse("inst.increment(x)")),
+        arg_info=inst.arg_values,
+        frame_belonging_type=FrameBelongingType.INSTANCE_METHOD,
+    ) == {ID("delta"): {ID("x")}, ID("self"): {ID("inst")}}

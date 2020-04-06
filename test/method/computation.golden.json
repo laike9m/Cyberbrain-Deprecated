@@ -1,0 +1,73 @@
+{
+  "(0,) <module>": [
+    {
+      "event": "call",
+      "filepath": "method.py",
+      "lineno": 17,
+      "code_str": "MyClass(1, 2)",
+      "caller_frame_id": "(0,) <module>",
+      "callee_frame_id": "(0, 0) "
+    },
+    {
+      "event": "line",
+      "filepath": "method.py",
+      "lineno": 17,
+      "code_str": "inst = MyClass(1, 2)",
+      "frame_id": "(0,) <module>"
+    },
+    {
+      "event": "call",
+      "filepath": "method.py",
+      "lineno": 18,
+      "code_str": "inst.increment()",
+      "caller_frame_id": "(0,) <module>",
+      "callee_frame_id": "(0, 1) "
+    },
+    {
+      "event": "line",
+      "filepath": "method.py",
+      "lineno": 18,
+      "code_str": "inst.increment()",
+      "frame_id": "(0,) <module>"
+    },
+    {
+      "event": "line",
+      "filepath": "method.py",
+      "lineno": 20,
+      "code_str": "cyberbrain.register(inst)",
+      "frame_id": "(0,) <module>"
+    }
+  ],
+  "(0, 0) __init__": [
+    {
+      "event": "line",
+      "filepath": "method.py",
+      "lineno": 8,
+      "code_str": "self.x = x",
+      "frame_id": "(0, 0) __init__"
+    },
+    {
+      "event": "line",
+      "filepath": "method.py",
+      "lineno": 9,
+      "code_str": "self.y = y",
+      "frame_id": "(0, 0) __init__"
+    }
+  ],
+  "(0, 1) increment": [
+    {
+      "event": "line",
+      "filepath": "method.py",
+      "lineno": 12,
+      "code_str": "self.x += 1",
+      "frame_id": "(0, 1) increment"
+    },
+    {
+      "event": "line",
+      "filepath": "method.py",
+      "lineno": 13,
+      "code_str": "self.y += 1",
+      "frame_id": "(0, 1) increment"
+    }
+  ]
+}

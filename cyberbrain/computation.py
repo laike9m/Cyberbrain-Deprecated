@@ -129,6 +129,8 @@ class Call(Computation):
             return None
         frame_id = FrameID.create("call")
         frame_id.co_name = caller_frame.f_code.co_name
+        frame_id.frame_belonging_type = utils.get_frame_belonging_type(frame)
+        print(f"{frame} frame_belonging_type: {frame_id.frame_belonging_type}")
         return Call(
             callsite_ast=callsite_ast,
             source_location=SourceLocation(
@@ -150,6 +152,8 @@ class ComputationManager:
     REGISTER_CALL = "cyberbrain.register"
 
     def __init__(self):
+        # TODO: Uses frame info(a wrapper around FrameID) to organize comps, instead of FrameID.
+        # Frame info should be reused in Flow. Don't store frame_id in comp.
         self.frame_groups: Dict[FrameID, List[Union[Line, Call]]] = defaultdict(list)
         self.target = None
 
@@ -163,6 +167,7 @@ class ComputationManager:
             code_str, surrounding = utils.get_code_str_and_surrounding(frame)
             frame_id = FrameID.create(event_type)
             frame_id.co_name = frame.f_code.co_name
+            frame_id.frame_belonging_type = utils.get_frame_belonging_type(frame)
             # Skips if the same logical line has been added.
             if (
                 self.frame_groups[frame_id]

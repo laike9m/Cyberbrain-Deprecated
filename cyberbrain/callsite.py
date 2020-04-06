@@ -4,16 +4,18 @@ import ast
 import inspect
 import itertools
 from collections import namedtuple
-from typing import Dict, Iterable, Set, Tuple
+from typing import Dict, Iterable, Set, Tuple, Optional
 
 from . import utils
-from .basis import ID
+from .basis import ID, FrameBelongingType
 
 Args = namedtuple("Args", ["args", "kwargs"])
 
 
 def get_param_arg_pairs(
-    callsite_ast: ast.Call, arg_info: inspect.ArgInfo
+    callsite_ast: ast.Call,
+    arg_info: inspect.ArgInfo,
+    frame_belonging_type: Optional[FrameBelongingType] = None,
 ) -> Iterable[Tuple[ast.AST, str]]:
     """Generates parameter, argument pairs.
 
@@ -38,8 +40,20 @@ def get_param_arg_pairs(
     kw_args = callsite_ast.keywords
     # Builds a parameter list that expands *args and **kwargs to their length, so that
     # we can emit a 1-to-1 pair of (arg, param).
-    # Excludes self since it's not explicitly passed from caller.
-    parameters = [arg for arg in arg_info.args if arg != "self"]
+    parameters = arg_info.args[:]
+
+    if frame_belonging_type == FrameBelongingType.INSTANCE_METHOD:
+        # Gets the instance id of method call, e.g. inst.f() -> inst
+        # For now, assuming the instance is a simple identifier, but we certainly need
+        # to cover more cases, like a.inst.f()
+        yield callsite_ast.func.value, "self"
+
+    # Excludes 'self' since it's not explicitly passed from caller.
+    if frame_belonging_type in {
+        FrameBelongingType.INIT_METHOD,
+        FrameBelongingType.INSTANCE_METHOD,
+    }:
+        parameters.remove("self")
 
     # There could be no *args or *kwargs in signature.
     if _ARGS is not None:
@@ -52,7 +66,9 @@ def get_param_arg_pairs(
 
 
 def get_param_to_arg(
-    callsite_ast: ast.Call, arg_info: inspect.ArgInfo
+    callsite_ast: ast.Call,
+    arg_info: inspect.ArgInfo,
+    frame_belonging_type: Optional[FrameBelongingType] = None,
 ) -> Dict[ID, Set[ID]]:
     """Maps argument identifiers to parameter identifiers.
 
@@ -73,5 +89,7 @@ def get_param_to_arg(
     """
     return {
         ID(param): utils.find_names(arg)
-        for arg, param in get_param_arg_pairs(callsite_ast, arg_info)
+        for arg, param in get_param_arg_pairs(
+            callsite_ast, arg_info, frame_belonging_type
+        )
     }

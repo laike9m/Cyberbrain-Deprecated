@@ -1,0 +1,170 @@
+{
+  "(0,) <module>": [
+    {
+      "event": "line",
+      "filepath": "loop1000.py",
+      "lineno": 8,
+      "code_str": "class MyClass:",
+      "frame_id": "(0,) <module>"
+    },
+    {
+      "event": "call",
+      "filepath": "loop1000.py",
+      "lineno": 18,
+      "code_str": "MyClass(1, 2)",
+      "caller_frame_id": "(0,) <module>",
+      "callee_frame_id": "(0, 0) "
+    },
+    {
+      "event": "line",
+      "filepath": "loop1000.py",
+      "lineno": 18,
+      "code_str": "inst = MyClass(1, 2)",
+      "frame_id": "(0,) <module>"
+    },
+    {
+      "event": "line",
+      "filepath": "loop1000.py",
+      "lineno": 20,
+      "code_str": "for _ in range(3):",
+      "frame_id": "(0,) <module>"
+    },
+    {
+      "event": "call",
+      "filepath": "loop1000.py",
+      "lineno": 21,
+      "code_str": "inst.increment()",
+      "caller_frame_id": "(0,) <module>",
+      "callee_frame_id": "(0, 1) "
+    },
+    {
+      "event": "line",
+      "filepath": "loop1000.py",
+      "lineno": 21,
+      "code_str": "inst.increment()",
+      "frame_id": "(0,) <module>"
+    },
+    {
+      "event": "line",
+      "filepath": "loop1000.py",
+      "lineno": 20,
+      "code_str": "for _ in range(3):",
+      "frame_id": "(0,) <module>"
+    },
+    {
+      "event": "call",
+      "filepath": "loop1000.py",
+      "lineno": 21,
+      "code_str": "inst.increment()",
+      "caller_frame_id": "(0,) <module>",
+      "callee_frame_id": "(0, 2) "
+    },
+    {
+      "event": "line",
+      "filepath": "loop1000.py",
+      "lineno": 21,
+      "code_str": "inst.increment()",
+      "frame_id": "(0,) <module>"
+    },
+    {
+      "event": "line",
+      "filepath": "loop1000.py",
+      "lineno": 20,
+      "code_str": "for _ in range(3):",
+      "frame_id": "(0,) <module>"
+    },
+    {
+      "event": "call",
+      "filepath": "loop1000.py",
+      "lineno": 21,
+      "code_str": "inst.increment()",
+      "caller_frame_id": "(0,) <module>",
+      "callee_frame_id": "(0, 3) "
+    },
+    {
+      "event": "line",
+      "filepath": "loop1000.py",
+      "lineno": 21,
+      "code_str": "inst.increment()",
+      "frame_id": "(0,) <module>"
+    },
+    {
+      "event": "line",
+      "filepath": "loop1000.py",
+      "lineno": 20,
+      "code_str": "for _ in range(3):",
+      "frame_id": "(0,) <module>"
+    },
+    {
+      "event": "line",
+      "filepath": "loop1000.py",
+      "lineno": 23,
+      "code_str": "cyberbrain.register(inst)",
+      "frame_id": "(0,) <module>"
+    }
+  ],
+  "(0, 0) __init__": [
+    {
+      "event": "line",
+      "filepath": "loop1000.py",
+      "lineno": 10,
+      "code_str": "self.x = x",
+      "frame_id": "(0, 0) __init__"
+    },
+    {
+      "event": "line",
+      "filepath": "loop1000.py",
+      "lineno": 11,
+      "code_str": "self.y = y",
+      "frame_id": "(0, 0) __init__"
+    }
+  ],
+  "(0, 1) increment": [
+    {
+      "event": "line",
+      "filepath": "loop1000.py",
+      "lineno": 14,
+      "code_str": "self.x += 1",
+      "frame_id": "(0, 1) increment"
+    },
+    {
+      "event": "line",
+      "filepath": "loop1000.py",
+      "lineno": 15,
+      "code_str": "self.y += 1",
+      "frame_id": "(0, 1) increment"
+    }
+  ],
+  "(0, 2) increment": [
+    {
+      "event": "line",
+      "filepath": "loop1000.py",
+      "lineno": 14,
+      "code_str": "self.x += 1",
+      "frame_id": "(0, 2) increment"
+    },
+    {
+      "event": "line",
+      "filepath": "loop1000.py",
+      "lineno": 15,
+      "code_str": "self.y += 1",
+      "frame_id": "(0, 2) increment"
+    }
+  ],
+  "(0, 3) increment": [
+    {
+      "event": "line",
+      "filepath": "loop1000.py",
+      "lineno": 14,
+      "code_str": "self.x += 1",
+      "frame_id": "(0, 3) increment"
+    },
+    {
+      "event": "line",
+      "filepath": "loop1000.py",
+      "lineno": 15,
+      "code_str": "self.y += 1",
+      "frame_id": "(0, 3) increment"
+    }
+  ]
+}

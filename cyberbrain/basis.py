@@ -39,6 +39,14 @@ class NodeType(Enum):
     CALL = 2
 
 
+class FrameBelongingType(Enum):
+    """Enum represents where the frame belongs to."""
+
+    UNKNOWN = 0  # The default type.
+    INSTANCE_METHOD = 1
+    INIT_METHOD = 2
+
+
 class FrameID:
     """Class that represents a frame.
 
@@ -59,8 +67,6 @@ class FrameID:
 
     We also maintain the frame id of current code location. New frame ids are generated
     based on event type and current frame id.
-
-    TODO: record function name.
     """
 
     current_ = (0,)
@@ -68,9 +74,15 @@ class FrameID:
     # Mapping from parent frame id to max child frame index.
     child_index: Dict[Tuple, int] = defaultdict(int)
 
-    def __init__(self, frame_id_tuple: Tuple[int, ...], co_name: str = ""):
+    def __init__(
+        self,
+        frame_id_tuple: Tuple[int, ...],
+        co_name: str = "",
+        frame_belonging_type: FrameBelongingType = FrameBelongingType.UNKNOWN,
+    ):
         self._frame_id_tuple = frame_id_tuple
         self.co_name = co_name
+        self.frame_belonging_type = frame_belonging_type
 
     def __eq__(self, other: Union["FrameID", Tuple[int, ...]]):
         if isinstance(other, FrameID):
