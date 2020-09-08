@@ -1,5 +1,7 @@
 # Cyberbrain: helps you remember everything
 
+# [Deprecation]: This project is deprecated and archived. I rewrote it from scratch, see https://github.com/laike9m/Cyberbrain.
+
 <img src="https://img.shields.io/badge/code%20style-black-000000.svg"> [![Build Status](https://dev.azure.com/laike9m/laike9m/_apis/build/status/laike9m.Cyberbrain?branchName=master)](https://dev.azure.com/laike9m/laike9m/_build/latest?definitionId=1&branchName=master) <img src="https://img.shields.io/badge/python-3.6.7%2B-blue">
 
 <img width="500px" src="images/cb_concept.jpg"/>
